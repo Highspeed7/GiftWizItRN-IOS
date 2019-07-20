@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-app-auth/android/build.gradle b/node_modules/react-native-app-auth/android/build.gradle
+index 6cada49..ac334ab 100644
+--- a/node_modules/react-native-app-auth/android/build.gradle
++++ b/node_modules/react-native-app-auth/android/build.gradle
+@@ -45,6 +45,6 @@ repositories {
+ }
+ 
+ dependencies {
+-    compile 'com.facebook.react:react-native:'+safeExtGet('reactNativeVersion', '+')
+-    compile 'net.openid:appauth:0.7.1'
++    implementation 'com.facebook.react:react-native:'+safeExtGet('reactNativeVersion', '+')
++    implementation 'net.openid:appauth:0.7.1'
+ }
