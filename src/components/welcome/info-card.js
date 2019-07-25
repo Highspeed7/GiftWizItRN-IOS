@@ -13,6 +13,7 @@ class InfoCard extends Component {
 
 const styles = StyleSheet.create({
     cardContainer: {
+        backgroundColor: 'white',
         height: 150,
         borderColor: "transparent",
         shadowColor: '#000',
@@ -22,9 +23,8 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.3,
         shadowRadius: 3,
-        elevation: 5,
-        marginTop: 15,
-        padding: 10
+        elevation: 7,
+        marginTop: 15
     }
 });
 

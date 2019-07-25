@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {authorize} from 'react-native-app-auth';
-import { ScrollView, Button, Alert, Text, AsyncStorage, Modal, StyleSheet } from 'react-native';
+import {
+     ScrollView, Button, Alert, Text, AsyncStorage, Modal, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
 import IntroStep1 from '../../components/intro-modal/step-1';
@@ -8,6 +9,10 @@ import IntroStep2 from '../../components/intro-modal/step-2';
 import IntroStep3 from '../../components/intro-modal/step-3';
 import Auxiliary from '../../hoc/auxiliary';
 import InfoCard from '../../components/welcome/info-card';
+import IntroductionCard from '../../components/info-content/introduction-card';
+import NextHolidayCard from '../../components/info-content/next-holiday-card/next-holiday-card';
+import GiftIdeasCard from '../../components/info-content/gift-ideas-card';
+import ListsViewed from '../../components/info-content/lists-viewed-card';
 
 // TODO: Move to another file.
 // const config = {
@@ -48,22 +53,22 @@ class Welcome extends Component {
         return (
             <ScrollView style={styles.scrollContainer}>
                 <InfoCard>
-                    <Text>Content 1</Text>
+                    <IntroductionCard />
                 </InfoCard>
                 <InfoCard>
-                    <Text>Content 2</Text>
+                    <NextHolidayCard />
                 </InfoCard>
                 <InfoCard>
-                    <Text>Content 3</Text>
+                    <GiftIdeasCard />
                 </InfoCard>
                 <InfoCard>
-                    <Text>Content 4</Text>
+                    <ListsViewed />
                 </InfoCard>
-                <Modal
+                {/* <Modal
                     visible={this.props.introComplete === null}
                 >
                     {renderModal()}
-                </Modal>
+                </Modal> */}
             </ScrollView>
         )
     }
@@ -71,7 +76,8 @@ class Welcome extends Component {
 
 const styles = StyleSheet.create({
     scrollContainer: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#9FC8E8'
     }
 })
 

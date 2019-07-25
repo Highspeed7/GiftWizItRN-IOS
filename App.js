@@ -20,18 +20,13 @@ import GiftLists from './src/containers/gift-lists/gift-lists';
 import Contacts from './src/containers/contacts/contacts';
 import storeConfiguration from './src/store/storeConfig';
 
-import Content2 from './src/components/content2/content2';
-import Content3 from './src/components/content3/content3';
-
 const store = storeConfiguration();
 
 // TODO: Move routing info to a seperate file.
 // TODO: Maybe move the header image to a seperate file
 const WelcomeStackNavigator = createStackNavigator(
   {
-    "Welcome": Welcome,
-    "Content2": Content2,
-    "Content3": Content3
+    "Welcome": Welcome
   },
   {
     defaultNavigationOptions: {
