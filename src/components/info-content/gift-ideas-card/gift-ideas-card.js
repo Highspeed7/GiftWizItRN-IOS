@@ -25,7 +25,7 @@ class GiftIdeasCard extends Component {
 
 const styles = StyleSheet.create({
     listItemContainer: {
-        margin: 5,
+        marginRight: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     cardText: {
-        fontFamily: 'SayItSoftly',
-        fontSize: 24
+        fontFamily: 'Graciela-Regular',
+        fontSize: 22
     }
 });
 

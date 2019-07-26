@@ -33,7 +33,7 @@ class Facts extends Component {
                     <Image source={testImage} style={styles.wizardImage} />
                 </View>
                 <View style={[styles.viewContainer, {marginTop: 60, marginBottom: 60, paddingTop: 30}]}>
-                    <Text style={{fontFamily: 'SayItSoftly', fontSize: 26}}>Get with your gifts. . .{"\n"}</Text>
+                    <Text style={{fontFamily: 'Graciela-Regular', fontSize: 26}}>Get with your gifts...{"\n"}</Text>
                     <Text style={styles.listTextItem}>
                         To solve this GiftWizIt allows you and your family members to share
                         any collection of gifts you might want for any given event.

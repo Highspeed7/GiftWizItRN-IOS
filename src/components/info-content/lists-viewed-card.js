@@ -20,8 +20,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     cardText: {
-        fontFamily: "SayItSoftly",
-        fontSize: 24
+        fontFamily: "Graciela-Regular",
+        fontSize: 22
     }
 });
 

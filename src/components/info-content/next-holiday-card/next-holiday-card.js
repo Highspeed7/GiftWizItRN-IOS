@@ -9,7 +9,7 @@ class NextHolidayCard extends Component {
         return (
             <ImageBackground style={styles.cardBgImage} source={holidayBgImage}>
                 <View style={styles.overlay}>
-                    <Text style={styles.cardText}>Be ready for the holidays. . .</Text>
+                    <Text style={styles.cardText}>Be ready for the holidays...</Text>
                     <HolidayCountdown />
                 </View>
             </ImageBackground>
@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     },
     cardText: {
         color: 'white',
-        fontFamily: 'SayItSoftly',
-        fontSize: 24
+        fontFamily: 'Graciela-Regular',
+        fontSize: 22
     },
     cardBgImage: {
         width: '100%',

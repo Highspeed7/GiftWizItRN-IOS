@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     headerText: {
-        fontFamily: 'SayItSoftly',
-        fontSize: 24
+        fontFamily: 'Graciela-Regular',
+        fontSize: 22
     },
     cardImage: {
         alignSelf: "flex-end"
