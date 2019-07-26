@@ -9,9 +9,9 @@ import IntroStep2 from '../../components/intro-modal/step-2';
 import IntroStep3 from '../../components/intro-modal/step-3';
 import Auxiliary from '../../hoc/auxiliary';
 import InfoCard from '../../components/welcome/info-card';
-import IntroductionCard from '../../components/info-content/introduction-card';
+import IntroductionCard from '../../components/info-content/introduction-card/introduction-card';
 import NextHolidayCard from '../../components/info-content/next-holiday-card/next-holiday-card';
-import GiftIdeasCard from '../../components/info-content/gift-ideas-card';
+import GiftIdeasCard from '../../components/info-content/gift-ideas-card/gift-ideas-card';
 import ListsViewed from '../../components/info-content/lists-viewed-card';
 
 // TODO: Move to another file.

@@ -1,16 +1,22 @@
 import React, {Component} from 'react';
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { Alert, View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
+import { withNavigation } from 'react-navigation';
 
-import theFactsImage from '../../../assets/images/the-facts.png';
-import cardViewBgImage from '../../../assets/images/gift-blue-bg.jpg';
+import theFactsImage from '../../../../assets/images/the-facts.png';
+import cardViewBgImage from '../../../../assets/images/gift-blue-bg.jpg';
 
 class IntroductionCard extends Component {
+    imagePressed = () => {
+        this.props.navigation.navigate("Facts");
+    }
     render() {
         return (
             <ImageBackground source={cardViewBgImage} style={styles.cardBgImage}>
                 <View style={styles.cardViewContainer}>
                     <Text style={styles.headerText}>Get with your gifts!</Text>
-                    <Image source={theFactsImage} style={styles.cardImage} />
+                    <TouchableOpacity onPress={this.imagePressed}>
+                        <Image source={theFactsImage} style={styles.cardImage} />
+                    </TouchableOpacity>
                 </View>
             </ImageBackground>
         )
@@ -34,4 +40,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default IntroductionCard;
+export default withNavigation(IntroductionCard);

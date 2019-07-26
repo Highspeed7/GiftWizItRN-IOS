@@ -17,6 +17,7 @@ import Welcome from './src/containers/welcome/welcome';
 import GetStarted from './src/components/get-started/get-started';
 import WishList from './src/containers/wish-list/wish-list';
 import GiftLists from './src/containers/gift-lists/gift-lists';
+import Facts from './src/components/info-content/introduction-card/facts';
 import Contacts from './src/containers/contacts/contacts';
 import storeConfiguration from './src/store/storeConfig';
 
@@ -26,7 +27,8 @@ const store = storeConfiguration();
 // TODO: Maybe move the header image to a seperate file
 const WelcomeStackNavigator = createStackNavigator(
   {
-    "Welcome": Welcome
+    "Welcome": Welcome,
+    "Facts": Facts
   },
   {
     defaultNavigationOptions: {

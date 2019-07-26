@@ -13,7 +13,7 @@ class HolidayCountdown extends Component {
             this.setState({
                 intervalId: intervalId
             });
-        }, (5000));
+        }, (1000));
     }
     getTimeRemaining = (endtime) => {
         let t = Date.parse(endtime) - Date.parse(new Date());
