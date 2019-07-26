@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {View, Text, FlatList, StyleSheet, Image, ScrollView } from 'react-native';
 
 import testImage from '../../../../assets/images/wizard.png';
-import Auxiliary from '../../../hoc/auxiliary';
 
 class Facts extends Component {
     // TODO: Move to an external file.
@@ -21,6 +20,7 @@ class Facts extends Component {
         }
     ]
     render() {
+        // TODO: Componentialize more.
         return (
             <ScrollView style={{backgroundColor: '#9FC8E8'}}>
                 <View style={styles.viewContainer}>
