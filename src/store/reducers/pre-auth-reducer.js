@@ -3,7 +3,7 @@ const initialState = {
     introComplete: null
 }
 
-const reducer = (state = initialState, action) => {
+const preAuthReducer = (state = initialState, action) => {
     switch(action.type) {
         case "STEP_UP":
             if((state.introStep + 1) >= 4){
@@ -28,4 +28,4 @@ const reducer = (state = initialState, action) => {
     }
 }
 
-export default reducer;
+export default preAuthReducer;

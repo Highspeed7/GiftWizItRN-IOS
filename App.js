@@ -48,8 +48,9 @@ const WelcomeStackNavigator = createStackNavigator(
 );
 
 const PostAuthStackNavigator = createBottomTabNavigator({
-  "Wish Lists": WishList,
-  "Gift Lists": GiftLists,
+  // "Home": Home,
+  "WishLists": WishList,
+  "GiftLists": GiftLists,
   "Contacts": Contacts
 });
 
@@ -57,7 +58,9 @@ const PreAuthStackNavigator = createBottomTabNavigator({
   "Welcome": {
     screen: WelcomeStackNavigator
   },
-  "Get Started": GetStarted
+  "Get Started": {
+    screen: GetStarted
+  }
 });
 
 
