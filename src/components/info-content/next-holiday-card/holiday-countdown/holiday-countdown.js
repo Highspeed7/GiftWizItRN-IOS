@@ -6,6 +6,12 @@ class HolidayCountdown extends Component {
         intervalId: null,
         currentCount: null
     }
+    componentWillUnmount = () => {
+        clearInterval(this.state.intervalId);
+        this.setState({
+            intervalId: null
+        });
+    }
     componentDidMount = () => {
         this.getTimeRemaining("2019-12-25");
         var intervalId = setInterval(() => {

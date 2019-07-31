@@ -1,4 +1,9 @@
 export {
     auth,
-    logOut
+    logOut,
+    getAuthToken
 } from './auth';
+
+export {
+    setGiftLists
+} from './test';

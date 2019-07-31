@@ -15,6 +15,7 @@ import {
   createBottomTabNavigator} from 'react-navigation';
 import Welcome from './src/containers/welcome/welcome';
 import GetStarted from './src/components/get-started/get-started';
+import Home from './src/containers/home/home';
 import WishList from './src/containers/wish-list/wish-list';
 import GiftLists from './src/containers/gift-lists/gift-lists';
 import Facts from './src/components/info-content/introduction-card/facts';
@@ -48,7 +49,7 @@ const WelcomeStackNavigator = createStackNavigator(
 );
 
 const PostAuthStackNavigator = createBottomTabNavigator({
-  // "Home": Home,
+  "Home": Home,
   "WishLists": WishList,
   "GiftLists": GiftLists,
   "Contacts": Contacts

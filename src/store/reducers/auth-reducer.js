@@ -1,6 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 
-initialState = {
+const initialState = {
     isAuthenticated: false,
     accessToken: null,
     accessTokenExpiration: null,
