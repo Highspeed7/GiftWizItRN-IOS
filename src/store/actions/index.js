@@ -9,5 +9,7 @@ export {
 } from './contacts';
 
 export {
-    setGiftLists
-} from './test';
+    setGiftLists,
+    setGiftListActive,
+    setGiftListInactive
+} from './giftLists';

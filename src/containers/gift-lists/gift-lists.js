@@ -1,38 +1,66 @@
 import React, {Component} from 'react';
-import { View, Text, ScrollView, FlatList } from 'react-native';
+import { Alert, View, Text, ScrollView, Button, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
+import Swatch from './swatch/swatch';
+import Auxiliary from '../../hoc/auxiliary';
+
 class GiftLists extends Component {
+    onSwatchPress() {
+        Alert.alert("Swatch pressed");
+    }
     componentDidMount() {
         this.props.getLists();
     }
     render() {
-        const giftLists = (this.props.giftLists !== null)
-            ? <ScrollView>
-                <FlatList
-                    horizontal={false}
-                    data={this.props.giftLists}
-                    renderItem={(list) => (
-                        <Text>{list.item.name}</Text>
-                    )}
-                />
-            </ScrollView>
-            : <Text>No gift lists yet...</Text>
+        const giftLists = (this.props.giftLists.length > 0) ? this.props.giftLists.map((list) => (
+            <TouchableOpacity key={list.id} onPress={() => this.props.setListActive(list.id)} style={styles.touchableSwatch}>
+                <Swatch style={{borderWidth: 3, borderColor: 'purple'}}>
+                    <Text>{list.name}</Text>
+                    <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
+                        <Text>{list.name}</Text>
+                        <Button title="Close" onPress={() => this.props.setListInactive(list.id)}/>
+                    </Modal>
+                </Swatch>
+            </TouchableOpacity>
+        ))
+        : null
         return (
-            <View>
+            <ScrollView style={styles.scrollView}>
                 <View>
-                    <Text>Your Gift Lists</Text>
+                <Text>Your Gift Lists</Text>
                 </View>
-                {giftLists}
-            </View>
+                <View style={styles.listsContainer}>
+                    <TouchableOpacity style={styles.touchableSwatch}>
+                        <Swatch><Text>+</Text></Swatch>
+                    </TouchableOpacity>
+                    {giftLists}
+                </View>
+            </ScrollView>
         )
     }
 }
 
+const styles = StyleSheet.create({
+    scrollView: {
+        padding: 10
+    },
+    touchableSwatch: {
+        width: '24%',
+        margin: 1
+    },
+    listsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    }
+})
+
 const mapDispatchToProps = dispatch => {
     return {
-        getLists: () => dispatch(actions.setGiftLists())
+        getLists: () => dispatch(actions.setGiftLists()),
+        setListActive: (key) => dispatch(actions.setGiftListActive(key)),
+        setListInactive: (key) => dispatch(actions.setGiftListInactive(key))
     }
 }
 

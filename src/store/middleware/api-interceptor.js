@@ -22,8 +22,10 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
                 action.type = "LIST_FAIL";
             }
+            break;
         case actionTypes.AUTH_START:
             console.log("Authentication Started");
+            break;
         case actionTypes.SET_CONTACTS:
             try {
                 token = await store.dispatch(actions.getAuthToken());
@@ -37,8 +39,10 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
                 action.type = "SET_CONTACTS_FAILED";
             }
+            break;
         default: next(action);
     }
+    next(action);
 }
 
 // const doAuth = async() => {
