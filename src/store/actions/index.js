@@ -5,5 +5,9 @@ export {
 } from './auth';
 
 export {
+    setContacts
+} from './contacts';
+
+export {
     setGiftLists
 } from './test';

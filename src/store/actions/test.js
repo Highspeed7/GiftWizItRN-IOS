@@ -9,24 +9,3 @@ export const setGiftLists = (giftLists) => {
         giftLists: giftLists
     }
 }
-
-// export const getLists = () => {
-//     return async(dispatch) => {
-//         let token = null;
-//         token = await dispatch(actions.getAuthToken());
-//         axios.defaults.headers.common['Authorization'] = '';
-//         delete axios.defaults.headers.common['Authorization'];
-
-//         if(token) {
-//             axios.defaults.headers.common['Authorization'] = `${token}`;
-//         }
-
-//         try {
-//             axios.get('https://giftwizitapi.azurewebsites.net/api/GiftLists').then((response) => {
-//                 dispatch(setGiftLists(response));
-//             })
-//         }catch(error) {
-//             dispatch({type: "LIST_FAIL"});
-//         }
-//     }
-// }

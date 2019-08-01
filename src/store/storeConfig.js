@@ -1,14 +1,17 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+
 import preAuthReducer from './reducers/pre-auth-reducer';
 import authReducer from './reducers/auth-reducer';
-import testReducer from './reducers/test-reducer';
+import giftListsReducer from './reducers/giftlists-reducer';
 import apiInterceptor from './middleware/api-interceptor';
+import contactsReducer from './reducers/contacts-reducer';
 
 const rootReducer = combineReducers({
     preAuthReducer: preAuthReducer,
     authReducer: authReducer,
-    testReducer: testReducer
+    giftListsReducer: giftListsReducer,
+    contactsReducer: contactsReducer
 });
 
 const storeConfiguration = () => {

@@ -4,3 +4,5 @@ export const AUTH_FAIL = "AUTH_FAIL";
 export const AUTH_REVOKE = "AUTH_REVOKE";
 
 export const SET_GIFTLISTS = "SET_GIFTLISTS";
+
+export const SET_CONTACTS = "SET_CONTACTS";

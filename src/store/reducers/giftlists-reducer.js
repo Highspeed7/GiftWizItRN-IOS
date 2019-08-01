@@ -4,7 +4,7 @@ const initialState = {
     giftLists: null
 }
 
-const testReducer = (state = initialState, action) => {
+const giftListsReducer = (state = initialState, action) => {
     switch(action.type) {
         case actionTypes.SET_GIFTLISTS:
             return {
@@ -15,4 +15,4 @@ const testReducer = (state = initialState, action) => {
     }
 }
 
-export default testReducer;
+export default giftListsReducer;
