@@ -3,7 +3,7 @@ import { Alert, View, Text, ScrollView, Button, Modal, StyleSheet, TouchableOpac
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-import Swatch from './swatch/swatch';
+import Swatch from '../../components/swatch/swatch';
 import Auxiliary from '../../hoc/auxiliary';
 
 class GiftLists extends Component {

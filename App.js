@@ -22,6 +22,8 @@ import Facts from './src/components/info-content/introduction-card/facts';
 import Contacts from './src/containers/contacts/contacts';
 import storeConfiguration from './src/store/storeConfig';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
 const store = storeConfiguration();
 
 // TODO: Move routing info to a seperate file.
@@ -49,10 +51,50 @@ const WelcomeStackNavigator = createStackNavigator(
 );
 
 const PostAuthStackNavigator = createBottomTabNavigator({
-  "Home": Home,
-  "WishLists": WishList,
-  "GiftLists": GiftLists,
-  "Contacts": Contacts
+  Home: {
+    screen: Home,
+    navigationOptions: {
+      tabBarIcon: <Icon 
+                      name="md-home"
+                      color="black"
+                      size={25}
+                  />,
+      tabBarLabel: "Home"
+    }
+  },
+  WishList: {
+    screen: WishList,
+    navigationOptions: {
+      tabBarIcon: <Icon 
+                      name="md-list-box"
+                      color="black"
+                      size={25}
+                  />,
+      tabBarLabel: "Wish Lists"
+    }
+  },
+  GiftLists: {
+    screen: GiftLists,
+    navigationOptions: {
+      tabBarIcon: <Icon 
+                      name="md-list-box"
+                      color="black"
+                      size={25}
+                  />,
+      tabBarLabel: "Gift Lists"
+    }
+  },
+  Contacts: {
+    screen: Contacts,
+    navigationOptions: {
+      tabBarIcon: <Icon 
+                      name="md-contacts"
+                      color="black"
+                      size={25}
+                  />,
+      tabBarLabel: "Contacts"
+    }
+  }
 });
 
 const PreAuthStackNavigator = createBottomTabNavigator({
