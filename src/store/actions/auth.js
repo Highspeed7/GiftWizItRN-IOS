@@ -84,7 +84,7 @@ export const logOut = (tokenToRevoke) => {
             await revoke(authCfg.config, {
                 tokenToRevoke
             });
-            dispatch(authClearStorage());
+            await dispatch(authClearStorage());
             dispatch(authRevoke());
         }catch(error) {
             // Do nothing yet...
