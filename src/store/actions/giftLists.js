@@ -1,7 +1,4 @@
-import axios from 'axios';
 import * as actionTypes from './actionTypes';
-import * as actions from './index';
-import AsyncStorage from '@react-native-community/async-storage';
 
 export const setGiftLists = (giftLists) => {
     return {

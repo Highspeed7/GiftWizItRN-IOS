@@ -40,6 +40,19 @@ const apiInterceptor = store => next => async action => {
                 action.type = "SET_CONTACTS_FAILED";
             }
             break;
+        case actionTypes.SET_WISH_LIST:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                let headers = {
+                    'Authorization': `bearer ${token}`
+                }
+                await axios.get('http://giftwizitapi.azurewebsites.net/api/WishList', {headers: headers}).then((response) => {
+                    action.wishList = response.data;
+                });
+            }catch(error) {
+                console.log(error);
+                action.type = "SET_WISH_LIST_FAILED";
+            }
         default: next(action);
     }
     next(action);

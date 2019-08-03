@@ -1,15 +1,18 @@
 import React, {Component} from 'react';
-import { ScrollView, View, Text, TouchableOpacity, Modal, Button } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Modal, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { WebView } from 'react-native-webview';
+import { connect } from 'react-redux';
 
-import * as scripts from '../../web-scripts/amazon';
 import Swatch from '../../components/swatch/swatch';
+import * as actions from '../../store/actions/index';
 import StoreSelector from '../../components/store-selector/store-selector';
 
 class WishList extends Component {
     state = {
         openStoreSelector: null
+    }
+    componentDidMount = () => {
+        this.props.getWishList();
     }
     addNewItemPressed = () => {
         this.setState({
@@ -17,11 +20,20 @@ class WishList extends Component {
         });
     }
     render() {
+        const wishList = (this.props.wishList.length > 0)
+        ? this.props.wishList.map((list) => (
+            <TouchableOpacity key={list.id} style={styles.touchableSwatch}>
+                <Swatch>
+                    <Image style={styles.itemImage} source={{uri: list.image}} />
+                </Swatch>
+            </TouchableOpacity>
+        ))
+        : null
         return (
-            <ScrollView>
+            <ScrollView style={styles.scrollView}>
                 <Text>Your Wish List</Text>
-                <View style={{width: '24%'}}>
-                    <TouchableOpacity onPress={this.addNewItemPressed}>
+                <View style={styles.listsContainer}>
+                    <TouchableOpacity style={styles.touchableSwatch} onPress={this.addNewItemPressed}>
                         <Swatch>                    
                             <Icon 
                                 name="md-add"
@@ -30,6 +42,7 @@ class WishList extends Component {
                             />
                         </Swatch>
                     </TouchableOpacity>
+                    {wishList}
                 </View>
                 <Modal
                     visible={this.state.openStoreSelector}
@@ -42,4 +55,34 @@ class WishList extends Component {
     }
 }
 
-export default WishList;
+const styles = StyleSheet.create({
+    itemImage: {
+        width: '100%',
+        height: '100%'
+    },
+    scrollView: {
+        padding: 10
+    },
+    touchableSwatch: {
+        width: '24%',
+        margin: 1
+    },
+    listsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    }
+})
+
+const mapDispatchToProps = dispatch => {
+    return {
+        getWishList: () => dispatch(actions.setWishList())
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        wishList: state.wishListReducer.wishList
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(WishList);

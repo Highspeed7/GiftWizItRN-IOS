@@ -8,3 +8,5 @@ export const SET_GLIST_ACTIVE = "SET_GLIST_ACTIVE";
 export const SET_GLIST_INACTIVE = "SET_GLIST_INACTIVE";
 
 export const SET_CONTACTS = "SET_CONTACTS";
+
+export const SET_WISH_LIST = "SET_WISH_LIST";

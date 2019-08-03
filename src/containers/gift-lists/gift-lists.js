@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
 import Swatch from '../../components/swatch/swatch';
-import Auxiliary from '../../hoc/auxiliary';
 
 class GiftLists extends Component {
     onSwatchPress() {
@@ -14,9 +13,10 @@ class GiftLists extends Component {
         this.props.getLists();
     }
     render() {
-        const giftLists = (this.props.giftLists.length > 0) ? this.props.giftLists.map((list) => (
+        const giftLists = (this.props.giftLists.length > 0) 
+        ? this.props.giftLists.map((list) => (
             <TouchableOpacity key={list.id} onPress={() => this.props.setListActive(list.id)} style={styles.touchableSwatch}>
-                <Swatch style={{borderWidth: 3, borderColor: 'purple'}}>
+                <Swatch>
                     <Text>{list.name}</Text>
                     <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
                         <Text>{list.name}</Text>

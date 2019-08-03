@@ -13,3 +13,7 @@ export {
     setGiftListActive,
     setGiftListInactive
 } from './giftLists';
+
+export {
+    setWishList
+} from './wishLists';
