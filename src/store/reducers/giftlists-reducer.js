@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import * as utils from '../../utils/utils';
 
 const initialState = {
     giftLists: []
@@ -11,33 +12,21 @@ const giftListsReducer = (state = initialState, action) => {
                 ...state,
                 giftLists: action.giftLists
             }
-            break;
         case actionTypes.SET_GLIST_ACTIVE:
             return {
                 ...state,
-                giftLists: updateObjectInArray(state.giftLists, {item: {active: true}, key: action.key})
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: true}, key: action.key})
             }
         case actionTypes.SET_GLIST_INACTIVE:
             return {
                 ...state,
-                giftLists: updateObjectInArray(state.giftLists, {item: {active: null}, key: action.key})
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: null}, key: action.key})
             }
         default: return state;
     }
     return state;
 }
 
-updateObjectInArray = (lists, action) => {
-    var result = lists.map((item) => {
-        if(item.id != action.key) {
-            return item;
-        }
-        return {
-            ...item,
-            ...action.item
-        }
-    })
-    return result;
-}
+
 
 export default giftListsReducer;
