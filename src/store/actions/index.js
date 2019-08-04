@@ -15,5 +15,7 @@ export {
 } from './giftLists';
 
 export {
-    setWishList
+    setWishList,
+    setWishListActive,
+    setWishListInactive
 } from './wishLists';

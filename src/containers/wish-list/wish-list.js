@@ -6,10 +6,11 @@ import { connect } from 'react-redux';
 import Swatch from '../../components/swatch/swatch';
 import * as actions from '../../store/actions/index';
 import StoreSelector from '../../components/store-selector/store-selector';
+import WishListItemModal from '../../components/wish-list/wish-list-item-modal';
 
 class WishList extends Component {
     state = {
-        openStoreSelector: null
+        openStoreSelector: null,
     }
     componentDidMount = () => {
         this.props.getWishList();
@@ -22,16 +23,22 @@ class WishList extends Component {
     render() {
         const wishList = (this.props.wishList.length > 0)
         ? this.props.wishList.map((list) => (
-            <TouchableOpacity key={list.id} style={styles.touchableSwatch}>
+            <TouchableOpacity key={list.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.setWishListActive(list.item_Id)}}>
                 <Swatch>
                     <Image style={styles.itemImage} source={{uri: list.image}} />
+                    <Modal
+                        visible={list.active != null}
+                        onRequestClose={() => this.props.setWishListInactive(list.item_Id)}
+                    >
+                        <WishListItemModal wishList={list} />
+                    </Modal>
                 </Swatch>
             </TouchableOpacity>
         ))
         : null
         return (
             <ScrollView style={styles.scrollView}>
-                <Text>Your Wish List</Text>
+                <Text>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
                 <View style={styles.listsContainer}>
                     <TouchableOpacity style={styles.touchableSwatch} onPress={this.addNewItemPressed}>
                         <Swatch>                    
@@ -75,7 +82,9 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
-        getWishList: () => dispatch(actions.setWishList())
+        getWishList: () => dispatch(actions.setWishList()),
+        setWishListActive: (key) => dispatch(actions.setWishListActive(key)),
+        setWishListInactive: (key) => dispatch(actions.setWishListInactive(key))
     }
 }
 

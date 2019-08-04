@@ -1,6 +1,6 @@
-export const updateObjectInArray = (lists, action) => {
+export const updateObjectInArray = (lists, action, idFilter) => {
     var result = lists.map((item) => {
-        if(item.id != action.key) {
+        if(item[idFilter] != action.key) {
             return item;
         }
         return {

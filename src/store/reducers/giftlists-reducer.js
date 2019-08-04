@@ -15,12 +15,12 @@ const giftListsReducer = (state = initialState, action) => {
         case actionTypes.SET_GLIST_ACTIVE:
             return {
                 ...state,
-                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: true}, key: action.key})
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: true}, key: action.key}, "id")
             }
         case actionTypes.SET_GLIST_INACTIVE:
             return {
                 ...state,
-                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: null}, key: action.key})
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: null}, key: action.key}, "id")
             }
         default: return state;
     }
