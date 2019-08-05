@@ -33,11 +33,15 @@ const authReducer = (state = initialState, action) => {
                 error: null
             }
         case actionTypes.AUTH_SUCCESS:
+            var expiration = (action.authdata.tokenAdditionalParameters.expires_on != null) 
+            ? action.authdata.tokenAdditionalParameters.expires_on
+            : action.authdata.additionalParameters.expires_on
+
             return {
                 ...state,
                 error: null,
                 accessToken: action.authdata.accessToken,
-                accessTokenExpiration: action.authdata.tokenAdditionalParameters.expires_on || action.authdata.additionalParameters.expires_on,
+                accessTokenExpiration: expiration,
                 authInProgress: false,
                 isAuthenticated: true
             }

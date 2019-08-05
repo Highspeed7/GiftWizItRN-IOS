@@ -7,10 +7,12 @@ import { config } from '../actions/authConfig';
 
 const apiInterceptor = store => next => async action => {
     let token = null;
+    let authPreviousSuccess = false;
     switch(action.type) {
         case actionTypes.SET_GIFTLISTS:
             try {
                 token = await store.dispatch(actions.getAuthToken());
+
                 let commonHeaders = {
                     'Authorization': `bearer ${token}`
                 }
@@ -39,6 +41,9 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
                 action.type = "SET_CONTACTS_FAILED";
             }
+            break;
+        case actionTypes.AUTH_SUCCESS:
+            next(action)
             break;
         case actionTypes.SET_WISH_LIST:
             try {

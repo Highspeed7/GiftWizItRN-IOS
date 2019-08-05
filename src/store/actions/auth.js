@@ -63,7 +63,7 @@ export const authRefresh = () => {
             if(authData) {
                 console.log("Dispatching to authStore");
                 await dispatch(authStoreToken(authData, false));
-                resolve();
+                resolve(authData);
             }else {
                 reject();
             }
@@ -92,34 +92,56 @@ export const logOut = (tokenToRevoke) => {
     }
 }
 
+const checkTokenExpiry = (token, storageType = "FromGlobal") => {
+    return (dispatch, getState) => {
+        const promise = new Promise(async(resolve, reject) => {
+            // Get the expiry time
+            let expires_on = null;
+            if(storageType == "FromLocal"){
+                expires_on = getState().authReducer.accessTokenExpiration;
+            }else {
+                expires_on = await AsyncStorage.getItem("gw:auth:token_expires_on");
+            }
+                
+            console.log("In expiry check function with expiry time: " + expires_on);
+
+            // Get the current time
+            let now = ((Date.now()/1000));
+            console.log("Change expires_on value");
+            if(expires_on && (parseInt(expires_on) - 150) <= now) {
+                // dispatch(authClearStorage());
+                // dispatch(authRevoke());
+                // reject({message: "Token expired"});
+                // return;
+                try {
+                    // If the token is expired, try to refresh it.
+                    let authdata = await dispatch(authRefresh());
+                    token = authdata.accessToken;
+                }catch(error) {
+                    // If refreshing fails, try to re-authenticate.
+                    await dispatch(auth());
+                    console.log("Error while refreshing token");
+                    reject();
+                    return;
+                }
+            }
+            // Expiration is ok, return with token.
+            resolve(token);
+        })
+        console.log("returning from token expiry function");
+        return promise;
+    }
+}
+
 export const getAuthToken = () => {
     return (dispatch, getState) => {
         const promise = new Promise(async(resolve, reject) => {
             let token = getState().authReducer.accessToken;
             if(!token) {
-                // Get the expiry time
-                let expires_on = await AsyncStorage.getItem("gw:auth:token_expires_on");
-                
-                // Get the current time
-                let now = (Date.now()/1000);
-                console.log("Change expires_on value");
-                if(expires_on && expires_on <= now) {
-                    // dispatch(authClearStorage());
-                    // dispatch(authRevoke());
-                    // reject({message: "Token expired"});
-                    // return;
-                    try {
-                        // If the token is expired, try to refresh it.
-                        await dispatch(authRefresh());
-                    }catch(error) {
-                        // If refreshing fails, try to re-authenticate.
-                        await dispatch(auth());
-                        console.log("Error while refreshing token");
-                    }
-                }
-
                 // Get token from async storage.
                 token = await AsyncStorage.getItem("gw:auth:token");
+                // Check expiration
+                await dispatch(checkTokenExpiry(token));
                 // If no token is found, reject and return.
                 if(!token) {
                     reject({message: "No token in store"});
@@ -129,13 +151,14 @@ export const getAuthToken = () => {
                 let authData = {};
                 authData.tokenAdditionalParameters = {};
                 authData.accessToken = token;
-                authData.tokenAdditionalParameters.expires_on = expires_on;
+                authData.tokenAdditionalParameters.expires_on = await AsyncStorage.getItem("gw:auth:token_expires_on");
                 
                 // Implement check for expired token.
                 dispatch(authSuccess(authData));
 
                 resolve(token);
             }
+            token = await dispatch(checkTokenExpiry(token, "FromLocal"));
             resolve(token);
         })
         return promise;

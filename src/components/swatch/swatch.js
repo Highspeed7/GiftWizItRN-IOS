@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         borderColor: 'transparent',
-        elevation: 1
+        elevation: 1,
+        justifyContent: 'center',
     }
 });
 
