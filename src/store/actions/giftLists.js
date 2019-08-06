@@ -20,3 +20,10 @@ export const setGiftListInactive = (key) => {
         key: key
     }
 }
+
+export const setGiftListItems = (key) => {
+    return {
+        type: actionTypes.SET_GLIST_ITEMS,
+        key: key
+    }
+}

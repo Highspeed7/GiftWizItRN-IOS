@@ -1,7 +1,7 @@
 export const config = {
     issuer: 'https://login.microsoftonline.com/b4d3aec8-2794-4abb-8517-a30636599371/v2.0',
     clientId: 'b4d3aec8-2794-4abb-8517-a30636599371',
-    redirectUrl: 'giftwi://welcome',
+    redirectUrl: 'giftwi://GetStarted',
     additionalParameters: {},
     scopes: ["https://giftwizit.onmicrosoft.com/api/read", "https://giftwizit.onmicrosoft.com/api/user_impersonation", "offline_access"],
     serviceConfiguration: {

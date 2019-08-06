@@ -3074,6 +3074,13 @@ image-size@^0.6.0:
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.6.3.tgz#e7e5c65bb534bd7cdcedd6cb5166272a85f75fb2"
   integrity sha512-47xSUiQioGaB96nqtp5/q55m0aBQSQdyIloMOc/x+QVTDZLNmXE892IIDrJ0hM1A5vcNUDD5tDffkSP5lCaIIA==
 
+immutability-helper@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-3.0.1.tgz#4f609c5afbf8d78cb297970e8af2fba8b0eda1d6"
+  integrity sha512-U92ROQQt7XkIwrdqCByUI118TQM1hXdKnRQpvKeA0HRyGSnJipu9IWHe4UD8zCN00O8UnQjQzPCgZ1CC3yBzHA==
+  dependencies:
+    invariant "^2.2.4"
+
 import-fresh@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/import-fresh/-/import-fresh-2.0.0.tgz#d81355c15612d386c61f9ddd3922d4304822a546"
@@ -5410,10 +5417,10 @@ react-native-vector-icons@^6.6.0:
     prop-types "^15.6.2"
     yargs "^13.2.2"
 
-react-native-webview@^6.6.0:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-6.6.0.tgz#162eb5c39fd29a0ad5bd91e90d30d81ddb8895c6"
-  integrity sha512-cPK9KlXG+6zUvRhj+PxHN+8k2BjhmfJzl7GTCYSVxkCN3nBenD6p1ryFOxPqq5jmhkVO7S0Mh3+ZcSA48OvMKQ==
+react-native-webview@^6.7.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-6.8.0.tgz#a8d4b0c8f4900c50dd40b7574dacc346dedb17d8"
+  integrity sha512-H7E82jTdEBSESUbXg9WVXEu8I4rc05sL1CtbVNKw3DcooHvgz9RtpdY5Dm0WiJGQCBwcCTU8/ZXebs9RD6s98g==
   dependencies:
     escape-string-regexp "1.0.5"
     invariant "2.2.4"

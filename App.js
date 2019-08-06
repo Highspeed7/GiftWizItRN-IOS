@@ -70,7 +70,7 @@ const PostAuthStackNavigator = createBottomTabNavigator({
                       color="black"
                       size={25}
                   />,
-      tabBarLabel: "Wish Lists"
+      tabBarLabel: "Wish List"
     }
   },
   GiftLists: {
@@ -101,8 +101,11 @@ const PreAuthStackNavigator = createBottomTabNavigator({
   "Welcome": {
     screen: WelcomeStackNavigator
   },
-  "Get Started": {
-    screen: GetStarted
+  "GetStarted": {
+    screen: GetStarted,
+    navigationOptions: {
+      tabBarLabel: "Get Started"
+    }
   }
 });
 

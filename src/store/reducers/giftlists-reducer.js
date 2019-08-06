@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import * as utils from '../../utils/utils';
+import update from 'immutability-helper';
 
 const initialState = {
     giftLists: []
@@ -22,9 +23,13 @@ const giftListsReducer = (state = initialState, action) => {
                 ...state,
                 giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: null}, key: action.key}, "id")
             }
+        case actionTypes.SET_GLIST_ITEMS:
+            return {
+                ...state,
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: {itemsData: action.payload.giftItems}, key: action.key}, "id")
+            }
         default: return state;
     }
-    return state;
 }
 
 

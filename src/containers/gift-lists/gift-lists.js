@@ -4,10 +4,14 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
 import Swatch from '../../components/swatch/swatch';
+import GiftListDetail from '../../components/gift-list/gift-list-detail';
 
 class GiftLists extends Component {
-    onSwatchPress() {
-        Alert.alert("Swatch pressed");
+    onSwatchPress(list) {
+        // Call to get the selected list's items.
+        // TODO: Implement a timer, so that items are refreshed based on interval
+        this.props.setListItems(list.id);
+        this.props.setListActive(list.id)
     }
     componentDidMount() {
         this.props.getLists();
@@ -15,12 +19,12 @@ class GiftLists extends Component {
     render() {
         const giftLists = (this.props.giftLists.length > 0) 
         ? this.props.giftLists.map((list) => (
-            <TouchableOpacity key={list.id} onPress={() => this.props.setListActive(list.id)} style={styles.touchableSwatch}>
+            <TouchableOpacity key={list.id} onPress={() => this.onSwatchPress(list)} style={styles.touchableSwatch}>
                 <Swatch>
                     <Text>{list.name}</Text>
                     <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
-                        <Text>{list.name}</Text>
-                        <Button title="Close" onPress={() => this.props.setListInactive(list.id)}/>
+                        {/* <Button title="Close" onPress={() => this.props.setListInactive(list.id)}/> */}
+                        <GiftListDetail list={list} />
                     </Modal>
                 </Swatch>
             </TouchableOpacity>
@@ -60,7 +64,8 @@ const mapDispatchToProps = dispatch => {
     return {
         getLists: () => dispatch(actions.setGiftLists()),
         setListActive: (key) => dispatch(actions.setGiftListActive(key)),
-        setListInactive: (key) => dispatch(actions.setGiftListInactive(key))
+        setListInactive: (key) => dispatch(actions.setGiftListInactive(key)),
+        setListItems: (key) => dispatch(actions.setGiftListItems(key))
     }
 }
 

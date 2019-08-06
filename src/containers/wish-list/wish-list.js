@@ -15,6 +15,8 @@ import ListAction from '../../components/list-actions/list-action';
 class WishList extends Component {
     state = {
         openStoreSelector: null,
+        moveMode: null,
+        deleteMode: null
     }
     componentDidMount = () => {
         this.props.getWishList();
@@ -24,10 +26,36 @@ class WishList extends Component {
             openStoreSelector: true
         });
     }
+    setMoveMode = () => {
+        this.setState({
+            moveMode: true,
+            deleteMode: null
+        })
+    }
+    cancelActions = () => {
+        this.setState({
+            moveMode: null,
+            deleteMode: null
+        })
+    }
+    setDeleteMode = () => {
+        // Set the delete mode to true
+        this.setState({
+            deleteMode: true,
+            moveMode: null
+        })
+    }
+    itemSwatchPressed = (itemId) => {
+        if(this.state.moveMode == null && this.state.deleteMode == null) {
+            this.props.setWishListActive(itemId);
+            return;
+        }
+        console.log("Setting selected items");
+    }
     render() {
         const wishList = (this.props.wishList.length > 0)
         ? this.props.wishList.map((list) => (
-            <TouchableOpacity key={list.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.setWishListActive(list.item_Id)}}>
+            <TouchableOpacity key={list.item_Id} style={styles.touchableSwatch} onPress={() => {this.itemSwatchPressed(list.item_Id)}}>
                 <Swatch>
                     <Image style={styles.itemImage} source={{uri: list.image}} />
                     <Modal
@@ -43,7 +71,7 @@ class WishList extends Component {
         return (
             <Auxiliary>
                 <View style={styles.actionContainer}>
-                    <Text>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
+                    <Text style={{fontSize: 20, textDecorationLine:"underline"}}>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
                     <View style={styles.listsContainer}>
                         <ListAction 
                             icon={() => (<FontAwesome5 
@@ -59,7 +87,7 @@ class WishList extends Component {
                                 color="black"
                                 size={25}
                             />)} 
-                            onPressed = {this.addNewItemPressed}
+                            onPressed = {this.setMoveMode}
                         />
                         <ListAction 
                             icon={() => (<FontAwesome5 
@@ -67,9 +95,23 @@ class WishList extends Component {
                                 color="black"
                                 size={25}
                             />)} 
-                            onPressed = {this.addNewItemPressed}
+                            onPressed = {this.setDeleteMode}
                         />
+                        {(this.state.deleteMode || this.state.moveMode)
+                            ? <ListAction
+                                icon={() => (<FontAwesome5
+                                    name="times"
+                                    color="black"
+                                    size={25}
+                                />)}
+                                onPressed = {this.cancelActions}
+                            />
+                            : null
+                        }
                     </View>
+                    {(this.state.deleteMode || this.state.moveMode) 
+                        ? <Text style={{fontSize: 20}}>You may select multiple items...</Text> 
+                        : <Text style={{fontSize: 20}}>Select an item to see more details...</Text>}
                 </View>
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.listsContainer}>
@@ -103,6 +145,7 @@ const styles = StyleSheet.create({
         margin: 1
     },
     listsContainer: {
+        marginBottom: 10,
         flexDirection: 'row',
         flexWrap: 'wrap'
     }
