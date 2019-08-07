@@ -157,6 +157,7 @@ export const getAuthToken = () => {
                 dispatch(authSuccess(authData));
 
                 resolve(token);
+                return;
             }
             token = await dispatch(checkTokenExpiry(token, "FromLocal"));
             resolve(token);

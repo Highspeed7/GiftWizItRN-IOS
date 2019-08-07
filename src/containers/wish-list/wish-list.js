@@ -16,7 +16,8 @@ class WishList extends Component {
     state = {
         openStoreSelector: null,
         moveMode: null,
-        deleteMode: null
+        deleteMode: null,
+        selectedItems: []
     }
     componentDidMount = () => {
         this.props.getWishList();
@@ -33,9 +34,11 @@ class WishList extends Component {
         })
     }
     cancelActions = () => {
+        const nowSelectedArr = [];
         this.setState({
             moveMode: null,
-            deleteMode: null
+            deleteMode: null,
+            selectedItems: nowSelectedArr
         })
     }
     setDeleteMode = () => {
@@ -50,14 +53,41 @@ class WishList extends Component {
             this.props.setWishListActive(itemId);
             return;
         }
-        console.log("Setting selected items");
+        if(this.isItemSelected(itemId)) {
+            this.setState((prevState, props) => {
+                const nowSelectedArr = prevState.selectedItems.filter((item) => item != itemId);
+                return {
+                    selectedItems: nowSelectedArr
+                }
+            })
+        }else {
+            this.setState((prevState, props) => {
+                return {
+                    selectedItems: prevState.selectedItems.concat(itemId)
+                }
+            });
+        }
+    }
+    isItemSelected = (itemId) => {
+        return this.state.selectedItems.indexOf(itemId) != -1;
     }
     render() {
         const wishList = (this.props.wishList.length > 0)
         ? this.props.wishList.map((list) => (
             <TouchableOpacity key={list.item_Id} style={styles.touchableSwatch} onPress={() => {this.itemSwatchPressed(list.item_Id)}}>
-                <Swatch>
+                <Swatch style={{justfiyContent: 'center'}}>
                     <Image style={styles.itemImage} source={{uri: list.image}} />
+                    {(this.isItemSelected(list.item_Id)) 
+                        ? <View style={styles.swatchSelectedContainer}>
+                                <FontAwesome5 
+                                    style={styles.swatchSelectedIcon}
+                                    name="check"
+                                    color="white"
+                                    size={25}
+                                />
+                            </View>
+                        : null    
+                    }
                     <Modal
                         visible={list.active != null}
                         onRequestClose={() => this.props.setWishListInactive(list.item_Id)}
@@ -148,6 +178,18 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         flexDirection: 'row',
         flexWrap: 'wrap'
+    },
+    swatchSelectedIcon: {
+        position: 'absolute',
+        alignSelf: 'center'
+    },
+    swatchSelectedContainer: {
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        position: 'absolute',
+        width: '100%',
+        top: 4,
+        justifyContent: 'center'
     }
 })
 

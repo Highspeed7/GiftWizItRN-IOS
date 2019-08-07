@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     swatchContainer: {
         padding: 3,
         minHeight: 80,
+        maxHeight: 80,
         width: '100%',
         alignSelf: 'flex-start',
         flexDirection: 'row',
