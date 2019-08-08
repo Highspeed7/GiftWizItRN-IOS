@@ -1,6 +1,15 @@
 import React, {Component} from 'react';
-import { ScrollView, View, Text, TouchableOpacity, Modal, StyleSheet, Image } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { 
+    ScrollView, 
+    View, 
+    Text, 
+    TouchableOpacity, 
+    Modal, 
+    StyleSheet, 
+    Image, 
+    Picker, 
+    Alert,
+    Button } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 // import iconSet from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
@@ -11,13 +20,16 @@ import StoreSelector from '../../components/store-selector/store-selector';
 import WishListItemModal from '../../components/wish-list/wish-list-item-modal';
 import Auxiliary from '../../hoc/auxiliary';
 import ListAction from '../../components/list-actions/list-action';
+import { goclone } from '../../utils/utils';
 
 class WishList extends Component {
     state = {
         openStoreSelector: null,
         moveMode: null,
         deleteMode: null,
-        selectedItems: []
+        selectedItems: [],
+        selectedGiftListId: null,
+        selectedGiftListName: null
     }
     componentDidMount = () => {
         this.props.getWishList();
@@ -28,6 +40,10 @@ class WishList extends Component {
         });
     }
     setMoveMode = () => {
+        // TODO: Return to determine whether or not to update giftLists.
+        if(this.props.giftLists.length == 0) {
+            this.props.getGiftLists();
+        }
         this.setState({
             moveMode: true,
             deleteMode: null
@@ -38,7 +54,9 @@ class WishList extends Component {
         this.setState({
             moveMode: null,
             deleteMode: null,
-            selectedItems: nowSelectedArr
+            selectedItems: nowSelectedArr,
+            selectedGiftListId: null,
+            selectedGiftListName: null
         })
     }
     setDeleteMode = () => {
@@ -47,6 +65,20 @@ class WishList extends Component {
             deleteMode: true,
             moveMode: null
         })
+    }
+    onGListSelected = (glistId, position) => {
+        // Get the list name from gift lists
+        const selectedList = goclone(this.props.giftLists.find((list) => {
+            return list.id == glistId
+        }));
+
+        this.setState({
+            selectedGiftListId: glistId,
+            selectedGiftListName: selectedList.name
+        });
+    }
+    confirmItemsMove = () => {
+        Alert.alert(`Moving ${this.state.selectedItems.length} to Gift List ${this.state.selectedGiftListName}`);
     }
     itemSwatchPressed = (itemId) => {
         if(this.state.moveMode == null && this.state.deleteMode == null) {
@@ -98,6 +130,15 @@ class WishList extends Component {
             </TouchableOpacity>
         ))
         : null
+        const giftLists = (this.props.giftLists.length > 0)
+        ? this.props.giftLists.map((glist) => (
+            <Picker.Item
+                key={glist.id}
+                label={glist.name}
+                value={glist.id}
+            />
+        ))
+        : null
         return (
             <Auxiliary>
                 <View style={styles.actionContainer}>
@@ -139,6 +180,18 @@ class WishList extends Component {
                             : null
                         }
                     </View>
+                    {(this.state.selectedItems.length > 0)
+                        ? <View>
+                            <Picker
+                                selectedValue={this.state.selectedGiftListId}
+                                onValueChange={this.onGListSelected}
+                                mode="dropdown"
+                                >{giftLists}
+                            </Picker>
+                            <Button title="Move" onPress={this.confirmItemsMove} />
+                        </View>
+                        : null
+                    }
                     {(this.state.deleteMode || this.state.moveMode) 
                         ? <Text style={{fontSize: 20}}>You may select multiple items...</Text> 
                         : <Text style={{fontSize: 20}}>Select an item to see more details...</Text>}
@@ -196,6 +249,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => {
     return {
         getWishList: () => dispatch(actions.setWishList()),
+        getGiftLists: () => dispatch(actions.setGiftLists()),
         setWishListActive: (key) => dispatch(actions.setWishListActive(key)),
         setWishListInactive: (key) => dispatch(actions.setWishListInactive(key))
     }
@@ -203,7 +257,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
     return {
-        wishList: state.wishListReducer.wishList
+        wishList: state.wishListReducer.wishList,
+        giftLists: state.giftListsReducer.giftLists
     }
 }
 

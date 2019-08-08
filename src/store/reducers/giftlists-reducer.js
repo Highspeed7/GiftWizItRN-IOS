@@ -9,10 +9,11 @@ const initialState = {
 const giftListsReducer = (state = initialState, action) => {
     switch(action.type) {
         case actionTypes.SET_GIFTLISTS:
-            return {
+            let glists = {
                 ...state,
                 giftLists: action.giftLists
             }
+            return glists;
         case actionTypes.SET_GLIST_ACTIVE:
             return {
                 ...state,
