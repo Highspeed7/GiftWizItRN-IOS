@@ -85,6 +85,26 @@ const apiInterceptor = store => next => async action => {
                 action.type = "SET_WISH_LIST_FAILED";
             }
             break;
+        case actionTypes.MOVE_WISH_LIST_ITEMS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                }
+                
+                let body = action.data;
+
+                let config = {
+                    headers: headerObj,
+                };
+                console.log(config);
+                console.log(body);
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/MoveItems', body, config).then((response) => {
+                    store.dispatch(actions.setWishList());
+                });
+            }catch(error) {
+                console.log(error);
+            }
         default: next(action);
     }
     next(action);

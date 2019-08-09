@@ -34,6 +34,11 @@ class WishList extends Component {
     componentDidMount = () => {
         this.props.getWishList();
     }
+    componentDidUpdate = (prevProps, prevState) => {
+        if(this.props.wishList.length )
+        console.log(prevProps);
+        console.log(prevState);
+    }
     addNewItemPressed = () => {
         this.setState({
             openStoreSelector: true
@@ -78,7 +83,45 @@ class WishList extends Component {
         });
     }
     confirmItemsMove = () => {
-        Alert.alert(`Moving ${this.state.selectedItems.length} to Gift List ${this.state.selectedGiftListName}`);
+        // Create the required object
+        let movedItemsArr = [];
+        let movedItemObj = {};
+
+        if(this.state.selectedGiftListId == null) {
+            if(this.props.giftLists.length > 0) {
+                // Set the selectedGiftListId and name to the first gift list
+                this.setState((prevState, props) => {
+                    console.log(props.giftLists[0].id);
+                    console.log(props.giftLists[0].name);
+                    return {
+                        selectedGiftListId: props.giftLists[0].id,
+                        selectedGiftListName: props.giftLists[0].name
+                    }
+                }, () => {
+                    this.state.selectedItems.forEach((item) => {
+                        movedItemObj["g_List_Id"] = this.state.selectedGiftListId;
+                        movedItemObj["item_Id"] = item
+            
+                        movedItemsArr.push(goclone(movedItemObj));
+                    })
+                    this.cancelActions();
+                    this.props.moveWishListItems(movedItemsArr);
+                });
+            }else {
+                // TODO: Move alerts to toasters.
+                Alert.alert("There are no gift lists currently; create some to move items to them.")
+                this.cancelActions();
+            }
+        }else {
+            this.state.selectedItems.forEach((item) => {
+                movedItemObj["g_List_Id"] = this.state.selectedGiftListId;
+                movedItemObj["item_Id"] = item
+    
+                movedItemsArr.push(goclone(movedItemObj));
+            })
+            this.cancelActions();
+            this.props.moveWishListItems(movedItemsArr);
+        }
     }
     itemSwatchPressed = (itemId) => {
         if(this.state.moveMode == null && this.state.deleteMode == null) {
@@ -130,7 +173,7 @@ class WishList extends Component {
             </TouchableOpacity>
         ))
         : null
-        const giftLists = (this.props.giftLists.length > 0)
+        const giftLists = (this.props.giftLists.length > 0 && this.state.moveMode)
         ? this.props.giftLists.map((glist) => (
             <Picker.Item
                 key={glist.id}
@@ -152,23 +195,27 @@ class WishList extends Component {
                             />)} 
                             onPressed = {this.addNewItemPressed}
                         />
-                        <ListAction 
-                            icon={() => (<FontAwesome5 
-                                name="dolly"
-                                color="black"
-                                size={25}
-                            />)} 
-                            onPressed = {this.setMoveMode}
-                        />
-                        <ListAction 
-                            icon={() => (<FontAwesome5 
-                                name="trash"
-                                color="black"
-                                size={25}
-                            />)} 
-                            onPressed = {this.setDeleteMode}
-                        />
-                        {(this.state.deleteMode || this.state.moveMode)
+                        {(this.props.wishList.length > 0) 
+                            ?   [<ListAction 
+                                    icon={() => (<FontAwesome5 
+                                        name="dolly"
+                                        color="black"
+                                        size={25}
+                                    />)} 
+                                    onPressed = {this.setMoveMode}
+                                />,
+                                <ListAction 
+                                    icon={() => (<FontAwesome5 
+                                        name="trash"
+                                        color="black"
+                                        size={25}
+                                    />)} 
+                                    onPressed = {this.setDeleteMode}
+                                />]
+                            : null
+                        }
+                        {
+                            (this.state.deleteMode || this.state.moveMode)
                             ? <ListAction
                                 icon={() => (<FontAwesome5
                                     name="times"
@@ -194,7 +241,10 @@ class WishList extends Component {
                     }
                     {(this.state.deleteMode || this.state.moveMode) 
                         ? <Text style={{fontSize: 20}}>You may select multiple items...</Text> 
-                        : <Text style={{fontSize: 20}}>Select an item to see more details...</Text>}
+                        : (this.props.wishList.length > 0) 
+                        ? <Text style={{fontSize: 20}}>Select an item to see more details...</Text>
+                        : <Text style={{fontSize: 20}}>There are no items to display... {'\n'}Add some above!</Text>
+                    }
                 </View>
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.listsContainer}>
@@ -251,7 +301,8 @@ const mapDispatchToProps = dispatch => {
         getWishList: () => dispatch(actions.setWishList()),
         getGiftLists: () => dispatch(actions.setGiftLists()),
         setWishListActive: (key) => dispatch(actions.setWishListActive(key)),
-        setWishListInactive: (key) => dispatch(actions.setWishListInactive(key))
+        setWishListInactive: (key) => dispatch(actions.setWishListInactive(key)),
+        moveWishListItems: (itemData) => dispatch(actions.moveWishListItems(itemData))
     }
 }
 

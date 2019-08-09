@@ -19,3 +19,10 @@ export const setWishListInactive = (key) => {
         key: key
     }
 }
+
+export const moveWishListItems = (itemData) => {
+    return {
+        type: actionTypes.MOVE_WISH_LIST_ITEMS,
+        data: itemData
+    }
+}
