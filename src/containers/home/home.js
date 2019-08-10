@@ -16,6 +16,8 @@ class Home extends Component {
         }
     }
     render() {
+        console.log(this.props.expiry);
+        console.log(this.props.token);
         return (
             <View>
                 <Text>Welcome Home!</Text>
@@ -28,6 +30,7 @@ class Home extends Component {
 const mapStateToProps = state => {
     return {
         token: state.authReducer.accessToken,
+        expiry: state.authReducer.accessTokenExpiration,
         isAuthenticated: state.authReducer.isAuthenticated
     }
 }

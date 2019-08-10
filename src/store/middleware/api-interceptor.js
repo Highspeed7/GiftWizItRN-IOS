@@ -1,9 +1,6 @@
 import * as actionTypes from "../actions/actionTypes";
 import axios from 'axios';
 import * as actions from '../actions/index';
-import { authorize } from 'react-native-app-auth';
-import AsyncStorage from "@react-native-community/async-storage";
-import { config } from '../actions/authConfig';
 
 const apiInterceptor = store => next => async action => {
     let token = null;
@@ -91,7 +88,7 @@ const apiInterceptor = store => next => async action => {
                 let headerObj = {
                     'Authorization': `bearer ${token}`
                 }
-                
+
                 let body = action.data;
 
                 let config = {
@@ -105,25 +102,29 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+            break;
+        case actionTypes.ADD_NEW_GIFT_LIST:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let body = action.data;
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/GiftLists', body, config).then((response) =>{
+                    store.dispatch(actions.setGiftLists());
+                });
+            }catch(error) {
+                console.log(error);
+            }
+            break;
         default: next(action);
     }
     next(action);
 }
-
-// const doAuth = async() => {
-//     try {
-//         let authData = await authorize(config)
-//         await storeToken(authData);
-//         return authData.accessToken
-//     }catch(error) {
-//         return authData;
-//     }
-// }
-
-// const storeToken = async(authData) => {
-//     await AsyncStorage.setItem("gw:auth:token", authData.accessToken);
-//     await AsyncStorage.setItem("gw:auth:token_expires_on", authData.tokenAdditionalParameters.expires_on);
-//     await AsyncStorage.setItem("gw:auth:refresh_token", authData.refreshToken);
-// }
-
 export default apiInterceptor;

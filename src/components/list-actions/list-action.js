@@ -10,7 +10,8 @@ class ListAction extends Component {
                 <Swatch> 
                     <View style={styles.iconContainer}>
                         {this.props.icon()}
-                    </View>                   
+                    </View>   
+                    {this.props.children}                
                 </Swatch>
             </TouchableOpacity>
         )
