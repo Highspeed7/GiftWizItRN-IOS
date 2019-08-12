@@ -32,7 +32,7 @@ export const amazonProductView1Script = `
         };
 
         let setButton = () => {
-            let pageElem = document.querySelector("div#landing-image-wrapper");
+            let pageElem = document.querySelector("div.a-carousel-viewport");
             // let pageElem = document.querySelector("#inlineButtons_feature_div");
             if(pageElem != null) {
                 let gw_btn_container = document.createElement("div")
@@ -56,6 +56,7 @@ export const amazonProductView1Script = `
                     window.ReactNativeWebView.postMessage(JSON.stringify(data));
                 });
                 gw_btn.innerText = "+GW";
+                gw_btn.id = "gw_add_btn";
                 gw_btn.style = "min-height: 50px; border-radius: 5px;"
 
                 gw_btn_container.append(gw_btn);
@@ -64,10 +65,21 @@ export const amazonProductView1Script = `
             }
         };
 
+        let setHeartBeat = () => {
+            var interval = setInterval(() => {
+                // Set a timer to check for the existence of the add button
+                var gw_add_btn = document.querySelector("button#gw_add_btn");
+                if(gw_add_btn == null ) {
+                   setButton();
+                }
+            }, 2000);
+        }
+
         return {
             init: () => {
-                window.ReactNativeWebView.postMessage(window.location.href);
+                // window.ReactNativeWebView.postMessage(window.location.href);
                 setButton()
+                setHeartBeat();
             }
         }
     }
