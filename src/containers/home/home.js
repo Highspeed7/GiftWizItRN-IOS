@@ -16,8 +16,6 @@ class Home extends Component {
         }
     }
     render() {
-        console.log(this.props.expiry);
-        console.log(this.props.token);
         return (
             <View>
                 <Text>Welcome Home!</Text>

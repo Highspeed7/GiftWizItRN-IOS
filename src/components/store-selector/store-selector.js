@@ -48,10 +48,6 @@ class StoreSelector extends Component {
     }
     onItemAdded = async(data) => {
         await this.props.onItemAdded(data);
-        // Close the web view modal.
-        // this.closeModal();
-        // Close the store selector modal.
-        // this.props.onClose();
     }
     render() {
         return (

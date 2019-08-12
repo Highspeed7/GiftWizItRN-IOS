@@ -4,7 +4,6 @@ import * as actions from '../actions/index';
 
 const apiInterceptor = store => next => async action => {
     let token = null;
-    let authPreviousSuccess = false;
     switch(action.type) {
         case actionTypes.SET_GIFTLISTS:
             try {
@@ -15,7 +14,6 @@ const apiInterceptor = store => next => async action => {
                 }
 
                 await axios.get('https://giftwizitapi.azurewebsites.net/api/GiftLists', {headers: commonHeaders}).then((response) => {
-                    console.log(response.data);
                     action.giftLists = response.data;     
                 })
             }catch(error) {
@@ -94,8 +92,6 @@ const apiInterceptor = store => next => async action => {
                 let config = {
                     headers: headerObj,
                 };
-                console.log(config);
-                console.log(body);
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/MoveItems', body, config).then((response) => {
                     store.dispatch(actions.setWishList());
                 });

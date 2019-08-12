@@ -59,7 +59,6 @@ export const authRefresh = () => {
             }catch(error) {
                 console.log(error);
             }
-            console.log("AuthData: " + authData);
             if(authData) {
                 console.log("Dispatching to authStore");
                 await dispatch(authStoreToken(authData, false));
@@ -147,14 +146,6 @@ export const getAuthToken = () => {
                     reject({message: "No token in store"});
                     return;
                 }
-
-                let authData = {};
-                authData.tokenAdditionalParameters = {};
-                authData.accessToken = token;
-                authData.tokenAdditionalParameters.expires_on = await AsyncStorage.getItem("gw:auth:token_expires_on");
-                
-                // Implement check for expired token.
-                dispatch(authSuccess(authData));
 
                 resolve(token);
                 return;

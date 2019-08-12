@@ -33,9 +33,12 @@ const authReducer = (state = initialState, action) => {
                 error: null
             }
         case actionTypes.AUTH_SUCCESS:
+            console.log("In Auth Success");
             var expiration = (action.authdata.tokenAdditionalParameters != null) 
             ? action.authdata.tokenAdditionalParameters.expires_on
             : action.authdata.additionalParameters.expires_on
+
+            console.log(`Storing expiration: ${expiration} and token ${action.authdata.accessToken}`);
 
             return {
                 ...state,
