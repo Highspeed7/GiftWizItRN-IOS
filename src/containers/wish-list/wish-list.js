@@ -34,11 +34,6 @@ class WishList extends Component {
     componentDidMount = () => {
         this.props.getWishList();
     }
-    componentDidUpdate = (prevProps, prevState) => {
-        if(this.props.wishList.length )
-        console.log(prevProps);
-        console.log(prevState);
-    }
     addNewItemPressed = () => {
         this.setState({
             openStoreSelector: true

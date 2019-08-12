@@ -26,3 +26,10 @@ export const moveWishListItems = (itemData) => {
         data: itemData
     }
 }
+
+export const addWishListItem = (itemData) => {
+    return {
+        type: actionTypes.ADD_WISH_LIST_ITEM,
+        data: itemData
+    }
+}

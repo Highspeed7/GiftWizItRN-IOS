@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { View, Button, Text, ScrollView, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 
+import * as actions from '../../store/actions/index';
 import Swatch from '../swatch/swatch';
 import AmazonView from './amazon/amazon-view';
 import WalmartView from './walmart/walmart-view';
@@ -44,6 +46,13 @@ class StoreSelector extends Component {
             walmartModalOpen: null
         })
     }
+    onItemAdded = async(data) => {
+        await this.props.onItemAdded(data);
+        // Close the web view modal.
+        // this.closeModal();
+        // Close the store selector modal.
+        // this.props.onClose();
+    }
     render() {
         return (
             <View>
@@ -59,7 +68,10 @@ class StoreSelector extends Component {
                                     visible={this.state.amazonModalOpen}
                                     onRequestClose={this.closeModal}
                                 >
-                                    <AmazonView url={{uri: 'https://www.amazon.com'}} />
+                                    <AmazonView
+                                        url={{uri: 'https://www.amazon.com'}}
+                                        onItemAdded={this.onItemAdded}
+                                    />
                                 </Modal>
                             </Swatch>
                         </TouchableOpacity>
@@ -70,7 +82,8 @@ class StoreSelector extends Component {
                                     visible={this.state.targetModalOpen}
                                     onRequestClose={this.closeModal}
                                 >
-                                    <TargetView url={{uri: 'https://www.target.com'}} />
+                                    <TargetView 
+                                        url={{uri: 'https://www.target.com'}} />
                                 </Modal>
                             </Swatch>
                         </TouchableOpacity>
@@ -103,4 +116,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default StoreSelector;
+const mapDispatchToProps = dispatch => {
+    return {
+        onItemAdded: (data) => dispatch(actions.addWishListItem(data))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(StoreSelector);

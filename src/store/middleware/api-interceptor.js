@@ -123,6 +123,26 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
             }
             break;
+        case actionTypes.ADD_WISH_LIST_ITEM:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let body = action.data;
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/Items', body, config).then((response) => {
+                    store.dispatch(actions.setWishList());
+                })
+            }catch(error) {
+                console.log(error);
+            }
+            break;
         default: next(action);
     }
     next(action);

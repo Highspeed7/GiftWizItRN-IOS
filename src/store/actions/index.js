@@ -20,5 +20,6 @@ export {
     setWishList,
     setWishListActive,
     setWishListInactive,
-    moveWishListItems
+    moveWishListItems,
+    addWishListItem
 } from './wishLists';
