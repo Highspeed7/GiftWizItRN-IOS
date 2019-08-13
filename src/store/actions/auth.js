@@ -96,6 +96,7 @@ const checkTokenExpiry = (token, storageType = "FromGlobal") => {
         const promise = new Promise(async(resolve, reject) => {
             // Get the expiry time
             let expires_on = null;
+            let didRefresh = null;
             if(storageType == "FromLocal"){
                 expires_on = getState().authReducer.accessTokenExpiration;
             }else {
@@ -115,6 +116,7 @@ const checkTokenExpiry = (token, storageType = "FromGlobal") => {
                 try {
                     // If the token is expired, try to refresh it.
                     let authdata = await dispatch(authRefresh());
+                    didRefresh = true;
                     token = authdata.accessToken;
                 }catch(error) {
                     // If refreshing fails, try to re-authenticate.
@@ -125,7 +127,7 @@ const checkTokenExpiry = (token, storageType = "FromGlobal") => {
                 }
             }
             // Expiration is ok, return with token.
-            resolve(token);
+            resolve({accessToken: token, expires_on, didRefresh});
         })
         console.log("returning from token expiry function");
         return promise;
@@ -140,18 +142,23 @@ export const getAuthToken = () => {
                 // Get token from async storage.
                 token = await AsyncStorage.getItem("gw:auth:token");
                 // Check expiration
-                await dispatch(checkTokenExpiry(token));
+                let authObj = await dispatch(checkTokenExpiry(token));
                 // If no token is found, reject and return.
                 if(!token) {
                     reject({message: "No token in store"});
                     return;
                 }
 
-                resolve(token);
+                // Don't run authsuccess if we refreshed, because it was already ran.
+                if(authObj.didRefresh == null) {
+                    await dispatch(authSuccess(authObj));
+                }
+                
+                resolve(authObj.accessToken);
                 return;
             }
-            token = await dispatch(checkTokenExpiry(token, "FromLocal"));
-            resolve(token);
+            let authObj = await dispatch(checkTokenExpiry(token, "FromLocal"));
+            resolve(authObj.accessToken);
         })
         return promise;
     }

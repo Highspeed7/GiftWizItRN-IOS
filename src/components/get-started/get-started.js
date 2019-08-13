@@ -24,7 +24,6 @@ class GetStarted extends Component {
                     ? <ActivityIndicator />
                     : null
                 }
-                <Text>{'\n' + this.props.accessToken + '\n' + this.props.accessTokenExpiration}</Text>
                 {
                     this.props.isAuthenticated === false 
                     ? <Button title="Login" onPress={this.props.onAuth} />

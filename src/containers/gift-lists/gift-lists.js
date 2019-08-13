@@ -21,6 +21,7 @@ import Auxiliary from '../../hoc/auxiliary';
 class GiftLists extends Component {
     state = {
         addListModalOpen: null,
+        shareListModalOpen: null,
         newListName: null
     }
     onSwatchPress(list) {
@@ -40,6 +41,11 @@ class GiftLists extends Component {
     closeNewListModal = () => {
         this.setState({
             addListModalOpen: null
+        });
+    }
+    closeShareListModal = () => {
+        this.setState({
+            shareListModalOpen: null
         });
     }
     newGiftListAdded = async() => {
@@ -65,6 +71,11 @@ class GiftLists extends Component {
             newListName: val
         });
     }
+    shareListPressed = () => {
+        this.setState({
+            shareListModalOpen: true
+        });
+    }
     render() {
         const giftLists = (this.props.giftLists.length > 0) 
         ? this.props.giftLists.map((list) => (
@@ -82,7 +93,6 @@ class GiftLists extends Component {
         return (
             <Auxiliary>
                 <View style={styles.actionContainer}>
-                    <Text>Your Gift Lists</Text>
                     <View style={styles.listsContainer}>
                         <ListAction 
                             icon={() => (<FontAwesome5 
@@ -103,7 +113,23 @@ class GiftLists extends Component {
                                 </View>
                             </Modal>
                         </ListAction>
+                        <ListAction
+                            icon={() => (<FontAwesome5
+                                name="share"
+                                color="black"
+                                size={25}    
+                            />)}
+                            onPressed = {this.shareListPressed}
+                        >
+                            <Modal
+                                visible={this.state.shareListModalOpen != null}
+                                onRequestClose={() => this.closeShareListModal()}
+                            >
+                                <Text>Share a list!</Text>
+                            </Modal>
+                        </ListAction>
                     </View>
+                    <Text>Your Gift Lists</Text>
                 </View>
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.listsContainer}>

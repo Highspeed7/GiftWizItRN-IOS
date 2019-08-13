@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import Swatch from '../swatch/swatch';
+import ListAction from '../list-actions/list-action';
+import Auxiliary from '../../hoc/auxiliary';
 
 class GiftListDetail extends Component {
     render(){
@@ -21,16 +24,45 @@ class GiftListDetail extends Component {
             ))
             : null
         return (
-            <View>
+            <Auxiliary>
                 <View style={{padding: 10}}>
                     <Text>{this.props.list.name}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <ListAction
+                            icon={() => (<FontAwesome5
+                                name="dolly"
+                                color="black"
+                                size={25}
+                            />)}
+                            onPressed={() => Alert.alert("Move list pressed")}
+                        >
+                        </ListAction>
+                        <ListAction
+                            icon={() => (<FontAwesome5
+                                name="edit"
+                                color="black"
+                                size={25}    
+                            />)}
+                            onPressed={() => Alert.alert("Edit list pressed")}
+                        >
+                        </ListAction>
+                        <ListAction
+                            icon={() => (<FontAwesome5
+                                name="trash"
+                                color="black"
+                                size={25}    
+                            />)}
+                            onPressed={() => Alert.alert("Delete list pressed")}
+                        >
+                        </ListAction>
+                    </View>
                 </View>
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.listsContainer}>
                         {giftItems}
                     </View>
                 </ScrollView>
-            </View>
+            </Auxiliary>
         )
     }
 }
