@@ -13,7 +13,8 @@ export {
     setGiftListActive,
     setGiftListInactive,
     setGiftListItems,
-    addNewGiftlist
+    addNewGiftlist,
+    moveGiftListItems
 } from './giftLists';
 
 export {

@@ -139,6 +139,26 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
             }
             break;
+        case actionTypes.MOVE_GLIST_ITEMS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let body = action.data;
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/MoveGiftItem', body, config).then((response) => {
+                    store.dispatch(actions.setGiftListItems(action.data[0].g_List_Id));
+                });
+            }catch(error) {
+                console.log(error);
+            }
         default: next(action);
     }
     next(action);

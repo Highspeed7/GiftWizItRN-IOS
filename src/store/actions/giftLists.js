@@ -36,3 +36,10 @@ export const addNewGiftlist = (glist_Name) => {
         }
     }
 }
+
+export const moveGiftListItems = (itemData) => {
+    return {
+        type: actionTypes.MOVE_GLIST_ITEMS,
+        data: itemData
+    }
+}
