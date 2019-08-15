@@ -90,6 +90,7 @@ class GiftLists extends Component {
             </TouchableOpacity>
         ))
         : null
+        // TODO: Make add gift list into it's own component.
         return (
             <Auxiliary>
                 <View style={styles.actionContainer}>

@@ -8,13 +8,16 @@ import {
     Image, 
     Alert, 
     Picker, 
-    Button } from 'react-native';
+    Button,
+    Modal
+} from 'react-native';
 import { connect } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import Swatch from '../swatch/swatch';
 import ListAction from '../list-actions/list-action';
 import Auxiliary from '../../hoc/auxiliary';
+import GiftListEdit from './edit-modal/gift-list-edit';
 import * as actions from '../../store/actions/index';
 import { goclone } from '../../utils/utils';
 
@@ -23,9 +26,9 @@ class GiftListDetail extends Component {
         moveMode: null,
         deleteMode: null,
         selectedItems: [],
-        currGiftListId: null,
         selectedGiftListId: null,
-        seletedGiftListName: null
+        seletedGiftListName: null,
+        editModalOpen: null
     }
     setMoveMode = () => {
         this.setState({
@@ -71,26 +74,11 @@ class GiftListDetail extends Component {
             });
         }
     }
-    getActiveGiftListId = () => {
-        let activeGiftList = this.props.giftLists.filter((list) => {
-            return list.active != null;
-        });
-
-        let promise = new Promise((resolve, reject) => {
-            this.setState({
-                currGiftListId: activeGiftList[0].id
-            }, () => resolve());
-        })
-        return promise;
-    }
     confirmItemsMove = async() => {
         if(this.state.selectedItems.length == 0) {
             Alert.alert("Please select an item to move first.");
             return;
         }
-
-        await this.getActiveGiftListId()
-        console.log(`The current active list id is: ${this.state.currGiftListId}`);
 
         // Create the required object
         let movedItemsArr = [];
@@ -106,7 +94,7 @@ class GiftListDetail extends Component {
                     }
                 }, () => {
                     this.state.selectedItems.forEach((item) => {
-                        movedItemObj["g_List_Id"] = this.state.currGiftListId;
+                        movedItemObj["g_List_Id"] = this.props.list.id;
                         movedItemObj["item_Id"] = item;
                         movedItemObj["to_Glist_Id"] = this.state.selectedGiftListId
             
@@ -123,7 +111,7 @@ class GiftListDetail extends Component {
             }
         }else {
             this.state.selectedItems.forEach((item) => {
-                movedItemObj["g_List_Id"] = this.state.currGiftListId;
+                movedItemObj["g_List_Id"] = this.props.list.id;
                 movedItemObj["item_Id"] = item;
                 movedItemObj["to_Glist_Id"] = this.state.selectedGiftListId;
     
@@ -136,6 +124,16 @@ class GiftListDetail extends Component {
     }
     isItemSelected = (itemId) => {
         return this.state.selectedItems.indexOf(itemId) != -1;
+    }
+    editActionPressed = () => {
+        this.setState({
+            editModalOpen: true
+        });
+    }
+    closeEditModal = () => {
+        this.setState({
+            editModalOpen: null
+        });
     }
     render(){
         const giftItems = (this.props.list.itemsData != null && this.props.list.itemsData.length > 0) 
@@ -187,8 +185,14 @@ class GiftListDetail extends Component {
                                 color="black"
                                 size={25}    
                             />)}
-                            onPressed={() => Alert.alert("Edit list pressed")}
+                            onPressed={() => this.editActionPressed()}
                         >
+                        <Modal
+                            visible={this.state.editModalOpen != null}
+                            onRequestClose={this.closeEditModal}
+                        >
+                            <GiftListEdit activeList={this.props.list} />                           
+                        </Modal>
                         </ListAction>
                         <ListAction
                             icon={() => (<FontAwesome5
