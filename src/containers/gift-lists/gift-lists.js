@@ -43,11 +43,6 @@ class GiftLists extends Component {
             addListModalOpen: null
         });
     }
-    closeShareListModal = () => {
-        this.setState({
-            shareListModalOpen: null
-        });
-    }
     newGiftListAdded = async() => {
         // Make sure we have updated lists
         if(this.state.newListName == null || this.state.newListName.length == 0){
@@ -71,11 +66,7 @@ class GiftLists extends Component {
             newListName: val
         });
     }
-    shareListPressed = () => {
-        this.setState({
-            shareListModalOpen: true
-        });
-    }
+
     render() {
         const giftLists = (this.props.giftLists.length > 0) 
         ? this.props.giftLists.map((list) => (
@@ -114,21 +105,7 @@ class GiftLists extends Component {
                                 </View>
                             </Modal>
                         </ListAction>
-                        <ListAction
-                            icon={() => (<FontAwesome5
-                                name="share"
-                                color="black"
-                                size={25}    
-                            />)}
-                            onPressed = {this.shareListPressed}
-                        >
-                            <Modal
-                                visible={this.state.shareListModalOpen != null}
-                                onRequestClose={() => this.closeShareListModal()}
-                            >
-                                <Text>Share a list!</Text>
-                            </Modal>
-                        </ListAction>
+                        
                     </View>
                     <Text>Your Gift Lists</Text>
                 </View>

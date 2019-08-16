@@ -9,6 +9,7 @@ export const SET_GLIST_INACTIVE = "SET_GLIST_INACTIVE";
 export const SET_GLIST_ITEMS = "SET_GLIST_ITEMS";
 export const ADD_NEW_GIFT_LIST = "ADD_NEW_GIFT_LIST";
 export const MOVE_GLIST_ITEMS = "MOVE_GLIST_ITEMS";
+export const EDIT_GIFT_LIST = "EDIT_GIFT_LIST";
 
 export const SET_CONTACTS = "SET_CONTACTS";
 

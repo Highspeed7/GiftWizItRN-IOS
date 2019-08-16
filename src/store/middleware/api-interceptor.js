@@ -159,6 +159,25 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+            break;
+        case actionTypes.EDIT_GIFT_LIST:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+                let body = action.data;
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/GiftLists/Update', body, config).then((response) => {
+                    action.data = response.data;
+                });
+            }catch(error) {
+
+            }
         default: next(action);
     }
     next(action);

@@ -29,6 +29,11 @@ const giftListsReducer = (state = initialState, action) => {
                 ...state,
                 giftLists: utils.updateObjectInArray(state.giftLists, {item: {itemsData: action.payload.giftItems}, key: action.key}, "id")
             }
+        case actionTypes.EDIT_GIFT_LIST:
+            return {
+                ...state,
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: action.data, key: action.data.id}, "id")
+            }
         default: return state;
     }
 }

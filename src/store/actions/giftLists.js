@@ -43,3 +43,10 @@ export const moveGiftListItems = (itemData) => {
         data: itemData
     }
 }
+
+export const editGiftList = (listData) => {
+    return {
+        type: actionTypes.EDIT_GIFT_LIST,
+        data: listData
+    }
+}

@@ -4,7 +4,7 @@ import {
     Text, 
     ScrollView, 
     StyleSheet, 
-    TouchableOpacity, 
+    TouchableOpacity,
     Image, 
     Alert, 
     Picker, 
@@ -28,7 +28,8 @@ class GiftListDetail extends Component {
         selectedItems: [],
         selectedGiftListId: null,
         seletedGiftListName: null,
-        editModalOpen: null
+        editModalOpen: null,
+        shareListModalOpen: null
     }
     setMoveMode = () => {
         this.setState({
@@ -135,6 +136,16 @@ class GiftListDetail extends Component {
             editModalOpen: null
         });
     }
+    shareListPressed = () => {
+        this.setState({
+            shareListModalOpen: true
+        });
+    }
+    closeShareListModal = () => {
+        this.setState({
+            shareListModalOpen: null
+        });
+    }
     render(){
         const giftItems = (this.props.list.itemsData != null && this.props.list.itemsData.length > 0) 
             ? this.props.list.itemsData.map((item) => (
@@ -169,8 +180,9 @@ class GiftListDetail extends Component {
             <Auxiliary>
                 <View style={{padding: 10}}>
                     <Text>{this.props.list.name}</Text>
-                    <View style={{flexDirection: 'row'}}>
+                    <ScrollView horizontal={true} style={{width: '100%'}}>
                         <ListAction
+                            title="Move"
                             icon={() => (<FontAwesome5
                                 name="dolly"
                                 color="black"
@@ -180,6 +192,23 @@ class GiftListDetail extends Component {
                         >
                         </ListAction>
                         <ListAction
+                            title="Share"
+                            icon={() => (<FontAwesome5
+                                name="share"
+                                color="black"
+                                size={25}    
+                            />)}
+                            onPressed = {this.shareListPressed}
+                        >
+                            <Modal
+                                visible={this.state.shareListModalOpen != null}
+                                onRequestClose={() => this.closeShareListModal()}
+                            >
+                                <Text>Share a list!</Text>
+                            </Modal>
+                        </ListAction>
+                        <ListAction
+                            title="Edit"
                             icon={() => (<FontAwesome5
                                 name="edit"
                                 color="black"
@@ -195,6 +224,7 @@ class GiftListDetail extends Component {
                         </Modal>
                         </ListAction>
                         <ListAction
+                            title="Delete"
                             icon={() => (<FontAwesome5
                                 name="trash"
                                 color="black"
@@ -205,6 +235,7 @@ class GiftListDetail extends Component {
                         </ListAction>
                         {(this.state.moveMode != null || this.state.deleteMode != null)
                             ? <ListAction
+                                    title="Cancel"
                                     icon={() => (<FontAwesome5
                                         name="times"
                                         color="black"
@@ -214,7 +245,7 @@ class GiftListDetail extends Component {
                                 ></ListAction>
                             : null
                         }
-                    </View>
+                    </ScrollView>
                     {(this.state.moveMode != null)
                         ? <View style={{padding: 10}}>
                             <Picker

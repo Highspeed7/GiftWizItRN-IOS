@@ -5,10 +5,13 @@ import {
     StyleSheet, 
     ScrollView,
     TextInput,
-    Switch
+    Switch,
+    Button
 } from 'react-native';
+import { connect } from 'react-redux';
 
 import { goclone } from '../../../utils/utils';
+import * as actions from '../../../store/actions/index';
 
 class GiftListEdit extends Component {
     state = {
@@ -30,6 +33,26 @@ class GiftListEdit extends Component {
                name: val
            } 
         });
+    }
+    setGiftListPass = (val) => {
+        this.setState((prevState, props) => {
+            return {
+                ...prevState,
+                newPass: val
+            }
+        });
+    }
+    saveListUpdates = () => {
+        // Prepare the listData object
+        let listData = {
+            giftListId: this.state.id,
+            newName: this.state.name,
+            newPass: this.state.newPass,
+            isPublic: this.state.isPublic
+        }
+
+        console.log(listData);
+        this.props.editGiftList(listData);
     }
     render() {
         return (
@@ -65,6 +88,7 @@ class GiftListEdit extends Component {
                             placeholder="Password"
                         />]
                         : null}
+                    <Button title="Save" onPress={this.saveListUpdates} />
                 </ScrollView>
             </View>
         )
@@ -88,4 +112,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default GiftListEdit;
+mapDispatchToProps = dispatch => {
+    return {
+        editGiftList: (listData) => dispatch(actions.editGiftList(listData))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(GiftListEdit);
