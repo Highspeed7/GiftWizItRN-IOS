@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import Swatch from '../swatch/swatch';
+import ShareGiftList from './share-modal/gift-list-share';
 import ListAction from '../list-actions/list-action';
 import Auxiliary from '../../hoc/auxiliary';
 import GiftListEdit from './edit-modal/gift-list-edit';
@@ -136,7 +137,7 @@ class GiftListDetail extends Component {
             editModalOpen: null
         });
     }
-    shareListPressed = () => {
+    shareListPressed = async () => {
         this.setState({
             shareListModalOpen: true
         });
@@ -204,7 +205,7 @@ class GiftListDetail extends Component {
                                 visible={this.state.shareListModalOpen != null}
                                 onRequestClose={() => this.closeShareListModal()}
                             >
-                                <Text>Share a list!</Text>
+                                <ShareGiftList />
                             </Modal>
                         </ListAction>
                         <ListAction

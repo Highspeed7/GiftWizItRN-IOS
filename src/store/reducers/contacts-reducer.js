@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-    contacts: null
+    contacts: []
 };
 
 const contactsReducer = (state = initialState, action) => {
