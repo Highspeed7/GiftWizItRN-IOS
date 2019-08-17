@@ -64,7 +64,7 @@ class ShareGiftList extends Component {
             })
         }
     }
-    onListShared = () => {
+    onListShared = async () => {
         // Construct the share data object
         let shareData = {};
         let contacts = this.props.contacts.filter((contact) => {
@@ -75,14 +75,16 @@ class ShareGiftList extends Component {
         shareData.contacts = contacts;
         shareData.g_List_Id = this.props.activeList.id
 
-        this.props.shareGiftList(shareData);
+        await this.props.shareGiftList(shareData);
+        await this.props.getSharedLists();
+        this.setShareableContacts();
     }
     isContactSelected = (contactId) => {
         return this.state.selectedContacts.indexOf(contactId);
     }
     render() {
         const contacts = (this.state.shareableContacts.length > 0)
-            ? this.props.contacts.map((contact) => {
+            ? this.state.shareableContacts.map((contact) => {
                 let doCheck = this.isContactSelected(contact.contact.contactId) != -1;
                 return <View style={{flexDirection: 'row', height: 55}}>
                             <Checkbox 
