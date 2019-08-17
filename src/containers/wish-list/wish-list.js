@@ -260,7 +260,8 @@ class WishList extends Component {
 const styles = StyleSheet.create({
     itemImage: {
         width: '100%',
-        height: '100%'
+        height: '100%',
+        resizeMode: 'contain'
     },
     actionContainer: {
         padding: 10

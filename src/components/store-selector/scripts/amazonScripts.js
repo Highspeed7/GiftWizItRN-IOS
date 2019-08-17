@@ -32,9 +32,11 @@ export const amazonProductView1Script = `
         };
 
         let setButton = () => {
-            let pageElem = document.querySelector("div.a-carousel-viewport");
-            // let pageElem = document.querySelector("#inlineButtons_feature_div");
-            if(pageElem != null) {
+            // Using two elements to verify we're on the product page.
+            let pageElem1 = document.querySelector("div.a-carousel-viewport");
+            let pageElem2 = document.querySelector("img#main-image");
+
+            if(pageElem1 != null && pageElem2 != null) {
                 let gw_btn_container = document.createElement("div")
                 gw_btn_container.style = "position: fixed; z-index: 9999; top: 2px; left: 12px;";
 
@@ -61,7 +63,7 @@ export const amazonProductView1Script = `
 
                 gw_btn_container.append(gw_btn);
 
-                pageElem.append(gw_btn_container);
+                pageElem1.append(gw_btn_container);
             }
         };
 
