@@ -178,6 +178,43 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
 
             }
+            break;
+        case actionTypes.SHARE_GIFT_LIST:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                console.log(`Using this token for share call: ${token}`);
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let body = action.data;
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/ShareGiftList', body, config).then((res) => {
+                    // Do nothing yet...
+                });
+
+            }catch(error) {
+                console.log(error);
+            }
+            break;
+        case actionTypes.GET_SHARED_LISTS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                }
+                await axios.get('http://giftwizitapi.azurewebsites.net/api/SharedList/Contacts', {headers: headerObj}).then((response) => {
+                    action.sharedLists = response.data;
+                });
+            }catch(error) {
+
+            }
         default: next(action);
     }
     next(action);

@@ -50,3 +50,10 @@ export const editGiftList = (listData) => {
         data: listData
     }
 }
+
+export const shareGiftList = (shareData) => {
+    return {
+        type: actionTypes.SHARE_GIFT_LIST,
+        data: shareData
+    }
+}

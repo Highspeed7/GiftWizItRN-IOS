@@ -205,7 +205,7 @@ class GiftListDetail extends Component {
                                 visible={this.state.shareListModalOpen != null}
                                 onRequestClose={() => this.closeShareListModal()}
                             >
-                                <ShareGiftList />
+                                <ShareGiftList activeList={this.props.list} />
                             </Modal>
                         </ListAction>
                         <ListAction

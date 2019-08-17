@@ -10,6 +10,8 @@ export const SET_GLIST_ITEMS = "SET_GLIST_ITEMS";
 export const ADD_NEW_GIFT_LIST = "ADD_NEW_GIFT_LIST";
 export const MOVE_GLIST_ITEMS = "MOVE_GLIST_ITEMS";
 export const EDIT_GIFT_LIST = "EDIT_GIFT_LIST";
+export const SHARE_GIFT_LIST = "SHARE_GIFT_LIST";
+export const GET_SHARED_LISTS = "GET_SHARED_LISTS";
 
 export const SET_CONTACTS = "SET_CONTACTS";
 

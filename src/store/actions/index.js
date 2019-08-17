@@ -15,7 +15,8 @@ export {
     setGiftListItems,
     addNewGiftlist,
     moveGiftListItems,
-    editGiftList
+    editGiftList,
+    shareGiftList
 } from './giftLists';
 
 export {
@@ -25,3 +26,7 @@ export {
     moveWishListItems,
     addWishListItem
 } from './wishLists';
+
+export {
+    getSharedLists
+} from './sharedLists';
