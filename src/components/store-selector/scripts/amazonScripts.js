@@ -43,18 +43,26 @@ export const amazonProductView1Script = `
                 let gw_btn = document.createElement("button");
                 gw_btn.addEventListener("click", (e) => {
                     e.stopImmediatePropagation();
-                    let data = getItemDetails();
+                    
+                    // Define the data object
+                    let data = {
+                        payload: {},
+                        case: null
+                    };
+
+                    data.case = "add_item";
+                    data.payload = getItemDetails();
                     try {
-                        data.name = data.name.textContent.trim();
-                        alert(data.name);
-                        data.image = data.image.src;
+                        data.payload.name = data.payload.name.textContent.trim();
+                        alert(data.payload.name);
+                        data.payload.image = data.payload.image.src;
                     }catch(error) {
                         alert(error);
                     }
                     
-                    data.url = window.location.href;
-                    data.domain = window.location.origin;
-
+                    data.payload.url = window.location.href;
+                    data.payload.domain = window.location.origin;
+                    alert(JSON.stringify(data));
                     window.ReactNativeWebView.postMessage(JSON.stringify(data));
                 });
                 gw_btn.innerText = "+GW";

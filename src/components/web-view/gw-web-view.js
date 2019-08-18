@@ -15,7 +15,7 @@ class GWWebView extends Component {
             webRef: r
         });
 
-        this.INJECTED_JAVASCRIPT = this.props.javascript
+        this.INJECTED_JAVASCRIPT = this.props.config["initial_js"];
     }
     render() {
         return (
@@ -25,9 +25,41 @@ class GWWebView extends Component {
                     ref={this.setWebRef}
                     source={this.props.url}
                     injectedJavaScript={this.INJECTED_JAVASCRIPT}
+                    onMessage={this.onMessageFromView}
                 ></WebView>
             </Auxiliary>
         )
+    }
+    onMessageFromView = (event) => {
+
+        /* Config should be defined as such
+        congif {
+            caseHandlers: [
+                {
+                    case: string,
+                    handler: func()
+                }
+            ],
+            initial_js: func()
+        }
+        */
+       
+        let config = this.props.config;
+        let caseHandlers = config.caseHandlers;
+        let eventCall = JSON.parse(event.nativeEvent.data).case;
+        let payload = JSON.parse(event.nativeEvent.data).payload;
+
+        try {
+            caseHandlers.forEach((viewCase) => {
+                if(eventCall == viewCase.case) {
+                    viewCase.handler(payload);
+                }
+            })
+        }
+        catch(e) {
+            // Do nothing
+            console.log(e);
+        }
     }
 }
 
