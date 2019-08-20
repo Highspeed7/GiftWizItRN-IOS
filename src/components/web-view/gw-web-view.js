@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { Alert, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import WebViewNav from '../web-view-nav/web-view-nav';
 import Auxiliary from '../../hoc/auxiliary';
+import * as scripts from '../store-selector/scripts/scripts';
 
 class GWWebView extends Component {
     state = {
@@ -17,6 +18,9 @@ class GWWebView extends Component {
 
         this.INJECTED_JAVASCRIPT = this.props.config["initial_js"];
     }
+    webViewError = (event) => {
+        Alert.alert("Error from view " + event.nativeEvent.description);
+    }
     render() {
         return (
             <Auxiliary>
@@ -26,6 +30,9 @@ class GWWebView extends Component {
                     source={this.props.url}
                     injectedJavaScript={this.INJECTED_JAVASCRIPT}
                     onMessage={this.onMessageFromView}
+                    startInLoadingState={true}
+                    renderLoading={() => <ActivityIndicator/>}
+                    onError={this.webViewError}
                 ></WebView>
             </Auxiliary>
         )
@@ -43,6 +50,11 @@ class GWWebView extends Component {
             initial_js: func()
         }
         */
+
+        if((JSON.parse(event.nativeEvent.data)).debug != null) {
+            alert((JSON.parse(event.nativeEvent.data)).debug);
+            return;
+        }
        
         let config = this.props.config;
         let caseHandlers = config.caseHandlers;

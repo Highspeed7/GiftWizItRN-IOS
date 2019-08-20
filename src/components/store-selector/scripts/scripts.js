@@ -3,5 +3,6 @@ export {
 } from './amazonScripts';
 
 export {
-    TargetProductViewScript
+    targetProductViewScript,
+    targetPageScript
 } from './targetScript';

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import GWWebView from '../../web-view/gw-web-view';
-import targetProductViewScript from '../scripts/targetScript';
+import * as scripts from '../scripts/scripts';
 
 class TargetView extends Component {
     render() {
@@ -12,7 +12,7 @@ class TargetView extends Component {
                     handler: this.props.onItemAdded
                 }
             ],
-            initial_js: targetProductViewScript
+            initial_js: scripts.targetProductViewScript
         }
         return (
             <GWWebView

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { amazonProductView1Script } from '../scripts/scripts';
+import * as scripts from '../scripts/scripts';
 import GWWebView from '../../web-view/gw-web-view';
 
 class AmazonView extends Component {
@@ -12,7 +12,7 @@ class AmazonView extends Component {
                     handler: this.props.onItemAdded
                 }
             ],
-            initial_js: amazonProductView1Script
+            initial_js: scripts.amazonProductView1Script
         }
         return (
             <GWWebView

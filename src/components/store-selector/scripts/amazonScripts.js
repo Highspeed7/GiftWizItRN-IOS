@@ -82,7 +82,7 @@ export const amazonProductView1Script = `
                 if(gw_add_btn == null ) {
                    setButton();
                 }
-            }, 2000);
+            }, 1000);
         }
 
         return {
@@ -90,6 +90,9 @@ export const amazonProductView1Script = `
                 // window.ReactNativeWebView.postMessage(window.location.href);
                 setButton()
                 setHeartBeat();
+                window.addEventListener('contextmenu', (event) => {
+                    alert(JSON.stringify(event.target));
+                })
             }
         }
     }
