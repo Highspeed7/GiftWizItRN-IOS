@@ -79,7 +79,9 @@ class StoreSelector extends Component {
                                     onRequestClose={this.closeModal}
                                 >
                                     <TargetView 
-                                        url={{uri: 'https://www.target.com'}} />
+                                        url={{uri: 'https://www.target.com'}}
+                                        onItemAdded={this.onItemAdded}   
+                                    />
                                 </Modal>
                             </Swatch>
                         </TouchableOpacity>

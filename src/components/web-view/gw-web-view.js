@@ -52,7 +52,8 @@ class GWWebView extends Component {
         */
 
         if((JSON.parse(event.nativeEvent.data)).debug != null) {
-            alert((JSON.parse(event.nativeEvent.data)).debug);
+            // Added for debug purposes;
+            // alert((JSON.parse(event.nativeEvent.data)).debug);
             return;
         }
        

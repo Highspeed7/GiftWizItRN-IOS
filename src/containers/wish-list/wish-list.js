@@ -13,6 +13,7 @@ import {
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 // import iconSet from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
 
 import Swatch from '../../components/swatch/swatch';
 import * as actions from '../../store/actions/index';
@@ -33,6 +34,15 @@ class WishList extends Component {
     }
     componentDidMount = () => {
         this.props.getWishList();
+    }
+    componentWillFocus = () => {
+        let openStoreSelector = this.props.navigation.getParam("storeSelectorOpen");
+
+        if(openStoreSelector) {
+            this.setState({
+                openStoreSelector: true
+            });
+        }
     }
     addNewItemPressed = () => {
         this.setState({
@@ -179,6 +189,7 @@ class WishList extends Component {
         : null
         return (
             <Auxiliary>
+                <NavigationEvents onWillFocus={this.componentWillFocus} />
                 <View style={styles.actionContainer}>
                     <Text style={{fontSize: 20, textDecorationLine:"underline"}}>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
                     <View style={styles.listsContainer}>

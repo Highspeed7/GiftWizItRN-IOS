@@ -1,7 +1,7 @@
 export const amazonProductView1Script = `
 (
     () => {
-        let itemElementsToSearch = [
+        const itemElementsToSearch = [
             { 
                 name: "span#title",
                 image: "img#main-image"
