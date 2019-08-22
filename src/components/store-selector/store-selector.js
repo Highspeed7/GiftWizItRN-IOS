@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Button, Text, ScrollView, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { View, Button, Text, Dimensions, ScrollView, TouchableOpacity, Modal, StyleSheet, ImageBackground } from 'react-native';
 
 import * as actions from '../../store/actions/index';
 import Swatch from '../swatch/swatch';
@@ -12,7 +12,24 @@ class StoreSelector extends Component {
     state = {
         amazonModalOpen: null,
         targetModalOpen: null,
-        walmartModalOpen: null
+        walmartModalOpen: null,
+        orientation: ''
+    }
+    componentDidMount = () => {
+        this.getOrientation();
+
+        Dimensions.addEventListener('change', () => {
+            this.getOrientation();
+        });
+    }
+    getOrientation = () => {
+        if(this.refs.rootView) {
+            if(Dimensions.get('window').width < Dimensions.get('window').height ) {
+                this.setState({orientation: 'portrait'});
+            }else {
+                this.setState({orientation: 'landscape'});
+            }
+        }
     }
     openStoreModal = (store) => {
         switch(store) {
@@ -51,7 +68,7 @@ class StoreSelector extends Component {
     }
     render() {
         return (
-            <View>
+            <View ref="rootView">
                 <View>
                     <Button title="Close" onPress={this.props.onClose} />
                 </View>
@@ -72,8 +89,13 @@ class StoreSelector extends Component {
                             </Swatch>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("Target")}>
-                            <Swatch>
-                                <Text>Target</Text>
+                            <Swatch style={this.state.orientation == 'landscape' ? styles.storeSwatch : null}>
+                                <View>
+                                    <Text>Target</Text>
+                                </View>
+                                <View style={[{width: 50, height: 50, flexDirection: 'column'}, this.state.orientation == 'landscape' ? {alignContent: 'center'} : null]}>
+                                    <ImageBackground style={{resizeMode: 'contain', width: '100%', height: '100%'}} source={{uri: "https://gwresourceblob.blob.core.windows.net/images/BullseyeNoR_17_200x200_rgb-min.jpg"}} />
+                                </View>
                                 <Modal
                                     visible={this.state.targetModalOpen}
                                     onRequestClose={this.closeModal}
@@ -86,8 +108,13 @@ class StoreSelector extends Component {
                             </Swatch>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("Walmart")}>
-                            <Swatch>
-                                <Text>Walmart</Text>
+                            <Swatch style={this.state.orientation == 'landscape' ? styles.storeSwatch : null}>
+                                <View>
+                                    <Text>Walmart</Text>
+                                </View>
+                                <View style={{width: 50, height: 50, flexDirection: 'column'}}>
+                                    <ImageBackground style={{resizeMode: 'contain', width: '100%', height: '100%'}} source={{uri: "https://gwresourceblob.blob.core.windows.net/images/Walmart_Logos_TheSpark_blu_rgb.png"}}/>
+                                </View>
                                 <Modal
                                     visible={this.state.walmartModalOpen}
                                     onRequestClose={this.closeModal}
@@ -111,6 +138,11 @@ const styles = StyleSheet.create({
     listsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap'
+    },
+    storeSwatch: {
+        flexDirection: 'column', 
+        alignContent: 'center',
+        alignItems: 'center'
     }
 })
 

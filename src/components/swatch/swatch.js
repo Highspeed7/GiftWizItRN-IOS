@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 class Swatch extends Component {
     render() {
         return (
-            <View style={styles.swatchContainer}>
+            <View style={[styles.swatchContainer, this.props.style]}>
                 {this.props.children}
             </View>
         )
