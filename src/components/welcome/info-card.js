@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native';
 class InfoCard extends Component {
     render() {
         return (
-            <View style={styles.cardContainer}>
+            <View style={[styles.cardContainer, this.props.style]}>
                 {this.props.children}
             </View>
         )

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, Text, Button, ScrollView, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Button, ScrollView, ImageBackground, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
@@ -7,6 +7,8 @@ import * as actions from '../../store/actions/index';
 import storeConfiguration from '../../store/storeConfig';
 import InfoCard from '../../components/welcome/info-card';
 import Auxiliary from '../../hoc/auxiliary';
+
+import getShoppingBg from '../../../assets/images/get-shopping-bg.png';
 
 const store = storeConfiguration();
 
@@ -30,24 +32,26 @@ class Home extends Component {
                     <Button onPress={() => this.props.onLogout(this.props.token)} title="Logout" />
                 </View>
                 <ScrollView style={{padding: 10}}>
+                    <InfoCard style={{backgroundColor: 'white'}}>
+                        <ImageBackground style={{width: '100%', resizeMode: 'contain'}} source={getShoppingBg}>
+                            <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
+                                <Text style={[styles.cardText]}>Get to Shopping!</Text>
+                            </TouchableOpacity>
+                        </ImageBackground>
+                    </InfoCard>
                     <InfoCard>
-                        <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
-                            <Text>Get to Shopping!</Text>
+                        <TouchableOpacity style={styles.infoCard}>
+                            <Text style={[styles.cardText, {color: "black"}]}>Gift Ideas</Text>
                         </TouchableOpacity>
                     </InfoCard>
                     <InfoCard>
                         <TouchableOpacity style={styles.infoCard}>
-                            <Text>Gift Ideas</Text>
+                            <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
                         </TouchableOpacity>
                     </InfoCard>
                     <InfoCard>
                         <TouchableOpacity style={styles.infoCard}>
-                            <Text>Search Lists</Text>
-                        </TouchableOpacity>
-                    </InfoCard>
-                    <InfoCard>
-                        <TouchableOpacity style={styles.infoCard}>
-                            <Text>Notifications</Text>
+                            <Text style={[styles.cardText, {color: "black"}]}>Notifications</Text>
                         </TouchableOpacity>
                     </InfoCard>
                 </ScrollView>
@@ -60,6 +64,16 @@ const styles = StyleSheet.create({
     infoCard: {
         width: '100%',
         height: '100%'
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(192,192,192,0.4)',
+        padding: 10
+    },
+    cardText: {
+        color: 'black',
+        fontFamily: 'Graciela-Regular',
+        fontSize: 22
     }
 });
 
