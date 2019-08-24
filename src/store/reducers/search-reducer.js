@@ -13,9 +13,13 @@ const searchListsReducer = (state = initialState, action) => {
                 ...state,
                 searchedPublicLists: action.data.results
             }
-            break;
         case actionTypes.SEARCH_PRIVATE_LISTS:
             break;
+        case actionTypes.CLEAR_SEARCH_STATE:
+            return {
+                searchedPublicLists: [],
+                searchedPrivateLists: []
+            }
         default:
             return state;
     }

@@ -203,6 +203,7 @@ class WishList extends Component {
                     <Text style={{fontSize: 20, textDecorationLine:"underline"}}>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
                     <View style={styles.listsContainer}>
                         <ListAction 
+                            title="Add"
                             icon={() => (<FontAwesome5 
                                 name="plus"
                                 color="black"
@@ -212,6 +213,7 @@ class WishList extends Component {
                         />
                         {(this.props.wishList.length > 0) 
                             ?   [<ListAction 
+                                    title="Move"
                                     icon={() => (<FontAwesome5 
                                         name="dolly"
                                         color="black"
@@ -220,6 +222,7 @@ class WishList extends Component {
                                     onPressed = {this.setMoveMode}
                                 />,
                                 <ListAction 
+                                    title="Delete"
                                     icon={() => (<FontAwesome5 
                                         name="trash"
                                         color="black"
@@ -232,6 +235,7 @@ class WishList extends Component {
                         {
                             (this.state.deleteMode || this.state.moveMode)
                             ? <ListAction
+                                title="Cancel"
                                 icon={() => (<FontAwesome5
                                     name="times"
                                     color="black"

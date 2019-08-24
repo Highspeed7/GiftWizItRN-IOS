@@ -33,5 +33,6 @@ export {
 
 export {
     searchPublicLists,
-    searchPrivateLists
+    searchPrivateLists,
+    clearSearchState
 } from './search';

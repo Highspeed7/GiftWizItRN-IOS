@@ -13,3 +13,9 @@ export const searchPrivateLists = (search) => {
         data: search
     }
 }
+
+export const clearSearchState = () => {
+    return {
+        type: actionTypes.CLEAR_SEARCH_STATE
+    }
+}

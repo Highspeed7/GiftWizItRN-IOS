@@ -87,6 +87,7 @@ class GiftLists extends Component {
                 <View style={styles.actionContainer}>
                     <View style={styles.listsContainer}>
                         <ListAction 
+                            title="Add"
                             icon={() => (<FontAwesome5 
                                 name="plus"
                                 color="black"
