@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Button, Text, Dimensions, ScrollView, TouchableOpacity, Modal, StyleSheet, ImageBackground } from 'react-native';
+import { 
+    View, 
+    Button, 
+    Text, 
+    Dimensions, 
+    ScrollView, 
+    TouchableOpacity, 
+    Modal, 
+    StyleSheet, 
+    ImageBackground
+} from 'react-native';
 
 import * as actions from '../../store/actions/index';
 import Swatch from '../swatch/swatch';

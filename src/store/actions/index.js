@@ -30,3 +30,8 @@ export {
 export {
     getSharedLists
 } from './sharedLists';
+
+export {
+    searchPublicLists,
+    searchPrivateLists
+} from './search';

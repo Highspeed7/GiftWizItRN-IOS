@@ -8,6 +8,7 @@ import wishListReducer from './reducers/wishlists-reducer';
 import sharedListsReducer from './reducers/shared-lists-reducer';
 import apiInterceptor from './middleware/api-interceptor';
 import contactsReducer from './reducers/contacts-reducer';
+import searchListsReducer from './reducers/search-reducer';
 
 const rootReducer = combineReducers({
     preAuthReducer: preAuthReducer,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     giftListsReducer: giftListsReducer,
     contactsReducer: contactsReducer,
     wishListReducer: wishListReducer,
-    sharedListsReducer: sharedListsReducer
+    sharedListsReducer: sharedListsReducer,
+    searchListsReducer: searchListsReducer
 });
 
 const storeConfiguration = () => {

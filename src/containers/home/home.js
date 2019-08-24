@@ -24,6 +24,9 @@ class Home extends Component {
             storeSelectorOpen: true
         });
     }
+    searchCardPressed = () => {
+        this.props.navigation.navigate("SearchLists");
+    }
     render() {
         return (
             <Auxiliary>
@@ -45,7 +48,7 @@ class Home extends Component {
                         </TouchableOpacity>
                     </InfoCard>
                     <InfoCard>
-                        <TouchableOpacity style={styles.infoCard}>
+                        <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
                             <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
                         </TouchableOpacity>
                     </InfoCard>

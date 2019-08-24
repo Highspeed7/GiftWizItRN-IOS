@@ -9,7 +9,9 @@ import {
     Image, 
     Picker, 
     Alert,
-    Button } from 'react-native';
+    Button,
+    BackHandler
+} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 // import iconSet from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
@@ -34,6 +36,9 @@ class WishList extends Component {
     }
     componentDidMount = () => {
         this.props.getWishList();
+        BackHandler.addEventListener("hardwareBackPress", () => {
+            console.log("back button pressed");
+        });
     }
     componentWillFocus = () => {
         let openStoreSelector = this.props.navigation.getParam("storeSelectorOpen");
@@ -151,6 +156,10 @@ class WishList extends Component {
     isItemSelected = (itemId) => {
         return this.state.selectedItems.indexOf(itemId) != -1;
     }
+    onStoreSelectorClosed = () => {
+        this.props.navigation.setParams({"storeSelectorOpen": null});
+        this.setState({openStoreSelector: null})
+    }
     render() {
         const wishList = (this.props.wishList.length > 0)
         ? this.props.wishList.map((list) => (
@@ -258,9 +267,11 @@ class WishList extends Component {
                     </View>
                     <Modal
                         visible={this.state.openStoreSelector}
-                        onRequestClose={() => this.setState({openStoreSelector: null})}
+                        onRequestClose={this.onStoreSelectorClosed}
                     >
-                        <StoreSelector onClose={() => this.setState({openStoreSelector: null})} />
+                        <StoreSelector 
+                            onClose={this.onStoreSelectorClosed} 
+                        />
                     </Modal>
                 </ScrollView>
             </Auxiliary>

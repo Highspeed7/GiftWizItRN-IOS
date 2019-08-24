@@ -215,6 +215,27 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
 
             }
+            break;
+        case actionTypes.SEARCH_PUBLIC_LISTS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                body = action.data;
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/SearchPublicLists', body, config).then((response) => {
+                   action.data = response.data; 
+                });
+            }catch(error) {
+
+            }
+            break;
         default: next(action);
     }
     next(action);

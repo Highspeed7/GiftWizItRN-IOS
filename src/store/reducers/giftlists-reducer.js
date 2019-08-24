@@ -1,6 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
 import * as utils from '../../utils/utils';
-import update from 'immutability-helper';
 
 const initialState = {
     giftLists: []
@@ -37,7 +36,5 @@ const giftListsReducer = (state = initialState, action) => {
         default: return state;
     }
 }
-
-
 
 export default giftListsReducer;
