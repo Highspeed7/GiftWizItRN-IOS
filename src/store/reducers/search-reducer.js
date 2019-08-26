@@ -20,6 +20,21 @@ const searchListsReducer = (state = initialState, action) => {
                 searchedPublicLists: [],
                 searchedPrivateLists: []
             }
+        case actionTypes.SET_LIST_ACTIVE:
+            return {
+                ...state,
+                searchedPublicLists: utils.updateObjectInArray(state.searchedPublicLists, {item: {active: true}, key: action.key}, "id")
+            }
+        case actionTypes.SET_LIST_INACTIVE:
+            return {
+                ...state,
+                searchedPublicLists: utils.updateObjectInArray(state.searchedPublicLists, {item: {active: null}, key: action.key}, "id")
+            }
+        case actionTypes.SET_PUBLIC_LIST_ITEMS:
+            return {
+                ...state,
+                searchedPublicLists: utils.updateObjectInArray(state.searchedPublicLists, {item: {itemsData: action.payload.giftItems}, key: action.key}, "id")
+            }
         default:
             return state;
     }

@@ -11,10 +11,14 @@ import {
     ScrollView, 
     TextInput, 
     Button,
-    TouchableOpacity
+    TouchableOpacity,
+    Modal,
+    Dimensions
 } from 'react-native';
 
 import Swatch from '../../components/swatch/swatch';
+import Auxiliary from '../../hoc/auxiliary';
+import PublicSearchItems from '../../components/search/public-search-items';
 
 class SearchPublicLists extends Component {
     state = {
@@ -54,14 +58,33 @@ class SearchPublicLists extends Component {
             emailFilter: val
         });
     }
+    onSearchItemPressed = (key) => {
+        // Get the list items
+        this.props.setPublicListItems(key);
+        // Set the list item active
+        this.props.setListActive(key);
+    }
+    closeItemModal = (key) => {
+        this.props.setListInactive(key);
+    } 
     render() {
         const availableLists = (this.props.searchedPublicLists.length > 0) 
             ? this.props.searchedPublicLists.map((list) => (
-                    <TouchableOpacity key={list.id} style={styles.touchableSwatch}>
+                <Auxiliary key={list.id}>
+                    <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.onSearchItemPressed(list.id)}>
                         <Swatch>
                             <Text>{list.name}</Text>
                         </Swatch>
                     </TouchableOpacity>
+                    <Modal
+                        visible={list.active != null}
+                        onRequestClose={() => this.closeItemModal(list.id)}
+                    >
+                        <PublicSearchItems
+                            activeList={list}
+                        />
+                    </Modal>
+                </Auxiliary>
             ))
             : null
         return (
@@ -99,6 +122,9 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
+        setPublicListItems: (key) => dispatch(actions.setPublicListItems(key)),
+        setListInactive: (key) => dispatch(actions.setListInactive(key)),
+        setListActive: (key) => dispatch(actions.setListActive(key)),
         clearSearchResults: () => dispatch(actions.clearSearchState()),
         searchPublicLists: (search) => dispatch(actions.searchPublicLists(search))
     }

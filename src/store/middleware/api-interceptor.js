@@ -236,6 +236,17 @@ const apiInterceptor = store => next => async action => {
 
             }
             break;
+        case actionTypes.SET_PUBLIC_LIST_ITEMS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                await axios.get(`http://giftwizitapi.azurewebsites.net/api/SearchPublicListItems?giftListId=${action.key}`).then((response) => {
+                    action.payload = {
+                        giftItems: response.data
+                    };
+                });
+            }catch(error) {
+                console.log(error);
+            }
         default: next(action);
     }
     next(action);
