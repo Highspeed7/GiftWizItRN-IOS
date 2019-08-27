@@ -28,7 +28,7 @@ class GWWebView extends Component {
                 <WebView
                     ref={this.setWebRef}
                     source={this.props.url}
-                    injectedJavaScript={this.INJECTED_JAVASCRIPT}
+                    injectedJavaScript={this.INJECTED_JAVASCRIPT != null ? this.INJECTED_JAVASCRIPT : null}
                     onMessage={this.onMessageFromView}
                     startInLoadingState={true}
                     renderLoading={() => <ActivityIndicator/>}

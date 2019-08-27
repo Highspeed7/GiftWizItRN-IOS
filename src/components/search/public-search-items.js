@@ -1,18 +1,50 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { 
+    View, 
+    Text, 
+    StyleSheet, 
+    ScrollView, 
+    TouchableOpacity, 
+    Image, 
+    Modal,
+    Alert } from 'react-native';
 
 import Auxiliary from '../../hoc/auxiliary';
 import Swatch from '../swatch/swatch';
+import GWWebView from '../web-view/gw-web-view';
+import PublicSearchItemModal from './public-search-item-modal';
 
 class PublicSearchItems extends Component {
+    state = {
+        productWebViewOpen: null,
+        selectedItem: null
+    }
+    openProducWebView = (item) => {
+        // Set the selected item
+        this.setState({
+            productWebViewOpen: true,
+            selectedItem: item
+        });
+    }
+    closeProductView = () => {
+        this.setState({
+            productWebViewOpen: null,
+            selectedItem: null
+        });
+    }
+    itemModalClosed = () => {
+        this.setState({
+            selectedItem: null
+        });
+    }
     render() {
         const giftItems = (this.props.activeList.itemsData != null && this.props.activeList.itemsData.length > 0) 
             ? this.props.activeList.itemsData.map((item) => (
-                <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => this.itemSwatchPressed(item.item_Id)}>
-                    <Swatch>
-                        <Image style={styles.itemImage} source={{uri: item.image}} />
-                    </Swatch>
-                </TouchableOpacity>
+                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => this.openProducWebView(item)}>
+                        <Swatch>
+                            <Image style={styles.itemImage} source={{uri: item.image}} />
+                        </Swatch>
+                    </TouchableOpacity>
             ))
             : null
         return (
@@ -24,6 +56,16 @@ class PublicSearchItems extends Component {
                     <View style={styles.listsContainer}>
                         {giftItems}
                     </View>
+                    <Modal
+                        visible={this.state.productWebViewOpen != null}
+                        onRequestClose={() => this.closeProductView()}
+                    >
+                        <PublicSearchItemModal onItemModalClosed={this.itemModalClosed} item={this.state.selectedItem} />
+                        {/* {this.state.selectedItem != null ? <GWWebView
+                            config={{}}
+                            url={{uri: this.state.selectedItem.afflt_Link}}
+                        />: null} */}
+                    </Modal>
                 </ScrollView>
             </Auxiliary>
         )
