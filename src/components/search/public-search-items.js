@@ -32,11 +32,6 @@ class PublicSearchItems extends Component {
             selectedItem: null
         });
     }
-    itemModalClosed = () => {
-        this.setState({
-            selectedItem: null
-        });
-    }
     render() {
         const giftItems = (this.props.activeList.itemsData != null && this.props.activeList.itemsData.length > 0) 
             ? this.props.activeList.itemsData.map((item) => (
@@ -60,11 +55,7 @@ class PublicSearchItems extends Component {
                         visible={this.state.productWebViewOpen != null}
                         onRequestClose={() => this.closeProductView()}
                     >
-                        <PublicSearchItemModal onItemModalClosed={this.itemModalClosed} item={this.state.selectedItem} />
-                        {/* {this.state.selectedItem != null ? <GWWebView
-                            config={{}}
-                            url={{uri: this.state.selectedItem.afflt_Link}}
-                        />: null} */}
+                        <PublicSearchItemModal item={this.state.selectedItem} />
                     </Modal>
                 </ScrollView>
             </Auxiliary>

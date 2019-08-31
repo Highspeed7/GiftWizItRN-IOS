@@ -247,6 +247,26 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+        case actionTypes.DELETE_WISH_LIST_ITEMS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                body = action.data;
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post("http://giftwizitapi.azurewebsites.net/api/WishList/ItemDelete", body, config).then((resposne) => {
+                    store.dispatch(actions.setWishList());
+                });
+            }catch(error) {
+                console.log(error);
+            }
         default: next(action);
     }
     next(action);

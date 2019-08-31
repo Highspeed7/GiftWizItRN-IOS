@@ -1,7 +1,8 @@
 export {
     auth,
     logOut,
-    getAuthToken
+    getAuthToken,
+    registerUser
 } from './auth';
 
 export {
@@ -24,7 +25,8 @@ export {
     setWishListActive,
     setWishListInactive,
     moveWishListItems,
-    addWishListItem
+    addWishListItem,
+    deleteWishListItems
 } from './wishLists';
 
 export {

@@ -33,3 +33,10 @@ export const addWishListItem = (itemData) => {
         data: itemData
     }
 }
+
+export const deleteWishListItems = (itemData) => {
+    return {
+        type: actionTypes.DELETE_WISH_LIST_ITEMS,
+        data: itemData
+    }
+}

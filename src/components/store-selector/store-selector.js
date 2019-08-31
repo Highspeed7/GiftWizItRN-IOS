@@ -9,7 +9,8 @@ import {
     TouchableOpacity, 
     Modal, 
     StyleSheet, 
-    ImageBackground
+    ImageBackground,
+    Linking
 } from 'react-native';
 
 import * as actions from '../../store/actions/index';
@@ -41,7 +42,7 @@ class StoreSelector extends Component {
             }
         }
     }
-    openStoreModal = (store) => {
+    openStoreModal = async(store) => {
         switch(store) {
             case "Amazon":
                 this.setState({

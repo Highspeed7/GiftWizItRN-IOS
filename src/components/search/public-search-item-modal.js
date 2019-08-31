@@ -25,7 +25,6 @@ class PublicSearchItemModal extends Component {
         this.setState({
             openProductWebView: null
         });
-        // this.props.onItemModalClosed();
     }
     render() {
         return (

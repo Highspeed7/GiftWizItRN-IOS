@@ -15,6 +15,10 @@ class GetStarted extends Component {
     componentDidUpdate = (prevProps, prevState) => {
         this.authCheck();
     }
+    registerUser = async() => {
+        await this.props.registerUser();
+        return;
+    }
     render() {
         return (
             <View>
@@ -32,9 +36,10 @@ class GetStarted extends Component {
             </View>
         )
     }
-    authCheck = () => {
+    authCheck = async() => {
         // This component should redirect to dashboard if the user is logged in
         if(this.props.isAuthenticated) {
+            await this.registerUser();
             this.props.navigation.navigate("postAuth");
         }
     }
@@ -44,7 +49,8 @@ const mapDispatchToProps = dispatch => {
     return {
         // setAuthState: (value) => dispatch(actionCreators.set_auth(value))
         onAuth: () => dispatch(actions.auth()),
-        onRevoke: (tokenToRevoke) => dispatch(actions.logOut(tokenToRevoke))
+        onRevoke: (tokenToRevoke) => dispatch(actions.logOut(tokenToRevoke)),
+        registerUser: () => dispatch(actions.registerUser())
     }
 }
 

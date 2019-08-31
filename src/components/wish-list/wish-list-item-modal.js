@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, Modal, TouchableOpacity } from 'react-native';
+import { 
+    StyleSheet, 
+    View, 
+    Text, 
+    Image, 
+    ScrollView,
+    Linking,
+    Modal, 
+    TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import Auxiliary from '../../hoc/auxiliary';
@@ -10,7 +18,8 @@ class WishListItemModal extends Component {
         openProductWebView: null
     }
     openModal = () => {
-        this.setState({openProductWebView: true});
+        Linking.openURL(this.props.wishList.afflt_Link);
+        // this.setState({openProductWebView: true});
     }
     closeModal = () => {
         this.setState({openProductWebView: null});
@@ -30,7 +39,7 @@ class WishListItemModal extends Component {
                 visible={this.state.openProductWebView != null}
                 onRequestClose={this.closeModal}
             >
-                <ProductWebView source={{uri: this.props.wishList.afflt_Link}} />
+                {/* <ProductWebView source={{uri: this.props.wishList.afflt_Link}} /> */}
             </Modal>
         </Auxiliary>
         )

@@ -25,6 +25,7 @@ class Welcome extends Component {
             this.props.navigation.navigate("postAuth");
         }
     }
+    
     render() {
         renderModal = () => {
             switch(this.props.introStep) {
@@ -59,7 +60,6 @@ class Welcome extends Component {
         )
     }
 }
-
 const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,

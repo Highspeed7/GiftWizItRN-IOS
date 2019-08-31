@@ -14,7 +14,6 @@ const store = storeConfiguration();
 
 class Home extends Component {
     componentDidUpdate() {
-        console.log("component updated");
         if(!this.props.isAuthenticated) {
             this.props.navigation.navigate("preAuth");
         }

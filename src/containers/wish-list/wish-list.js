@@ -92,6 +92,17 @@ class WishList extends Component {
             selectedGiftListName: selectedList.name
         });
     }
+    confirmItemsDelete = () => {
+        let deletedItemsArr = [];
+        let deletedItemObj = {};
+
+        this.state.selectedItems.forEach((item) => {
+            deletedItemObj["item_Id"] = item;
+            deletedItemsArr.push(goclone(deletedItemObj));
+        });
+        this.cancelActions();
+        this.props.deleteWishListItems(deletedItemsArr);
+    }
     confirmItemsMove = () => {
         // Create the required object
         let movedItemsArr = [];
@@ -246,7 +257,7 @@ class WishList extends Component {
                             : null
                         }
                     </View>
-                    {(this.state.selectedItems.length > 0)
+                    {(this.state.selectedItems.length > 0 && this.state.moveMode == true)
                         ? <View>
                             <Picker
                                 selectedValue={this.state.selectedGiftListId}
@@ -255,6 +266,14 @@ class WishList extends Component {
                                 >{giftLists}
                             </Picker>
                             <Button title="Move" onPress={this.confirmItemsMove} />
+                        </View>
+                        : null
+                    }
+                    {(this.state.selectedItems.length > 0 && this.state.deleteMode == true)
+                        ? <View>
+                            <Text>Are you sure you want to remove the selected items?</Text>
+                            <Button title="Yes" onPress={this.confirmItemsDelete} />
+                            <Button title="No" onPress={this.cancelActions} />
                         </View>
                         : null
                     }
@@ -324,7 +343,8 @@ const mapDispatchToProps = dispatch => {
         getGiftLists: () => dispatch(actions.setGiftLists()),
         setWishListActive: (key) => dispatch(actions.setWishListActive(key)),
         setWishListInactive: (key) => dispatch(actions.setWishListInactive(key)),
-        moveWishListItems: (itemData) => dispatch(actions.moveWishListItems(itemData))
+        moveWishListItems: (itemData) => dispatch(actions.moveWishListItems(itemData)),
+        deleteWishListItems: (itemData) => dispatch(actions.deleteWishListItems(itemData))
     }
 }
 

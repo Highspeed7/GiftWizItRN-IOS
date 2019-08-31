@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import {authorize, revoke, refresh} from 'react-native-app-auth';
 import * as authCfg from './authConfig';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 
 export const authStart = () => {
     return {
@@ -130,6 +131,30 @@ const checkTokenExpiry = (token, storageType = "FromGlobal") => {
             resolve({accessToken: token, expires_on, didRefresh});
         })
         console.log("returning from token expiry function");
+        return promise;
+    }
+}
+
+export const registerUser = () => {
+    return (dispatch, getState) => {
+        let promise = new Promise(async(resolve, reject) => {
+            let token = await dispatch(getAuthToken());
+    
+            let headerObj = {
+                'Authorization': `bearer ${token}`
+            };
+    
+            config = {
+                headers: headerObj
+            };
+    
+            axios.post("https://giftwizitapi.azurewebsites.net/api/Users", null, config).then(() => {
+                console.log("resolving from register user");
+                resolve();
+            }).catch((e) => {
+                reject(e);
+            })
+        })
         return promise;
     }
 }
