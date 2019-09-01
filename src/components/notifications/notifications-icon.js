@@ -1,5 +1,8 @@
 import React, {Component} from 'react'
+import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { connect } from 'react-redux';
+import { Badge } from 'react-native-elements';
 
 class NotificationsIcon extends Component {
     render() {
@@ -12,11 +15,17 @@ class NotificationsIcon extends Component {
                 />
                 <Badge
                     value={this.props.counter}
-                    containerStyle={{ position: 'absolute', top: -4, right: -4 }}
+                    containerStyle={{ position: 'absolute', top: -4, right: -10 }}
                 />
             </View>
         )
     }
 }
 
-export default NotificationsIcon;
+const mapStateToProps = state => {
+    return {
+        counter: state.notificationsReducer.notificationCount
+    }
+}
+
+export default connect(mapStateToProps)(NotificationsIcon);

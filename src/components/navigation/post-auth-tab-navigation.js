@@ -1,8 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from 'react-navigation';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import Home from '../../containers/home/home';
 import Contacts from '../../containers/contacts/contacts';
+import NotificationsIcon from '../notifications/notifications-icon';
 import Notifications from '../../components/notifications/notifications';
 import ListsTabNavigator from './lists-tab-navigation';
 
@@ -43,12 +45,10 @@ export default PostAuthTabNavigator = createBottomTabNavigator({
     },
     Notifications: {
       screen: Notifications,
-      navigationOptions: ({screenProps}) => {
+      navigationOptions: ({screenProps}) => ({
         tabBarIcon: () => (
-          <NotificationsIcon
-            counter={screenProps.notifCount}
-          />
+          <NotificationsIcon />
         )
-      }
+      })
     }
   });
