@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, ActivityIndicator } from 'react-native';
+import { Alert, ActivityIndicator, Platform, BackHandler } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import WebViewNav from '../web-view-nav/web-view-nav';
@@ -8,15 +8,38 @@ import * as scripts from '../store-selector/scripts/scripts';
 
 class GWWebView extends Component {
     state = {
-        webRef: null
+        webRef: null,
+        canGoBack: false
     }
     INJECTED_JAVASCRIPT = null;
     setWebRef = (r) => {
         this.setState({
             webRef: r
         });
-
+        this.props.setRef(r);
         this.INJECTED_JAVASCRIPT = this.props.config["initial_js"];
+    }
+    onAndroidBackPress = () => {
+        if(this.state.canGoBack && this.state.webRef) {
+            this.state.webRef.goBack();
+            return true
+        }
+        return false;
+    }
+    componentDidMount() {
+        if(Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onAndroidBackPress);
+        }
+    }
+    test = (navState) => {
+        this.setState({
+            canGoBack: navState.canGoBack
+        });
+    }
+    componentWillUnmount() {
+        if(Platform.OS === 'android'){
+            BackHandler.removeEventListener('hardwareBackPress');
+        }
     }
     webViewError = (event) => {
         Alert.alert("Error from view " + event.nativeEvent.description);
@@ -33,6 +56,7 @@ class GWWebView extends Component {
                     startInLoadingState={true}
                     renderLoading={() => <ActivityIndicator/>}
                     onError={this.webViewError}
+                    onNavigationStateChange={this.props.canGoBack}
                 ></WebView>
             </Auxiliary>
         )

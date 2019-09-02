@@ -16,6 +16,8 @@ class AmazonView extends Component {
         }
         return (
             <GWWebView
+                setRef={this.props.setRef}
+                canGoBack={this.props.canGoBack}
                 config={config}
                 url={{uri: 'https://www.amazon.com'}}
             />

@@ -5,6 +5,8 @@ class WalmartView extends Component {
     render() {
         return (
             <WebView
+                setRef={this.props.setRef}
+                canGoBack={this.props.canGoBack}
                 source={this.props.url}
             ></WebView>
         )

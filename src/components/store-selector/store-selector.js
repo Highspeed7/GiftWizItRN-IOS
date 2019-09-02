@@ -24,7 +24,9 @@ class StoreSelector extends Component {
         amazonModalOpen: null,
         targetModalOpen: null,
         walmartModalOpen: null,
-        orientation: ''
+        orientation: '',
+        canGoBack: false,
+        webViewRef: null
     }
     componentDidMount = () => {
         this.getOrientation();
@@ -68,14 +70,29 @@ class StoreSelector extends Component {
         }
     }
     closeModal = () => {
-        this.setState({
-            amazonModalOpen: null,
-            targetModalOpen: null,
-            walmartModalOpen: null
-        })
+        if(this.state.canGoBack) {
+            this.state.webViewRef.goBack();
+        }else {
+            this.setState({
+                amazonModalOpen: null,
+                targetModalOpen: null,
+                walmartModalOpen: null
+            });
+        }
     }
     onItemAdded = async(data) => {
         await this.props.onItemAdded(data);
+    }
+    setGoBackStatus = (navState) => {
+        console.log(navState.canGoBack);
+        this.setState({
+            canGoBack: navState.canGoBack
+        })
+    }
+    setWebViewRef = (input) => {
+        this.setState({
+            webViewRef: input
+        });
     }
     render() {
         return (
@@ -93,6 +110,8 @@ class StoreSelector extends Component {
                                     onRequestClose={this.closeModal}
                                 >
                                     <AmazonView
+                                        setRef={this.setWebViewRef}
+                                        canGoBack={this.setGoBackStatus}
                                         url={{uri: 'https://www.amazon.com'}}
                                         onItemAdded={this.onItemAdded}
                                     />
@@ -112,6 +131,8 @@ class StoreSelector extends Component {
                                     onRequestClose={this.closeModal}
                                 >
                                     <TargetView 
+                                        setRef={this.setWebViewRef}
+                                        canGoBack={this.setGoBackStatus}
                                         url={{uri: 'https://www.target.com'}}
                                         onItemAdded={this.onItemAdded}   
                                     />
@@ -130,7 +151,11 @@ class StoreSelector extends Component {
                                     visible={this.state.walmartModalOpen}
                                     onRequestClose={this.closeModal}
                                 >
-                                    <WalmartView url={{uri: 'https://www.walmart.com'}} />
+                                    <WalmartView 
+                                        setRef={this.setWebViewRef}
+                                        canGoBack={this.setGoBackStatus}
+                                        url={{uri: 'https://www.walmart.com'}} 
+                                    />
                                 </Modal>
                             </Swatch>
                         </TouchableOpacity>
