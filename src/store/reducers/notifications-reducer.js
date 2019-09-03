@@ -4,7 +4,7 @@ const initialState = {
 
 const notificationsReducer = (state = initialState, action) => {
     switch(action.type) {
-        case "SET_NOTIF_COUNT":
+        case "SET_NOTIFICATIONS_COUNT":
             return {
                 ...state,
                 notificationCount: action.value

@@ -20,7 +20,7 @@ export const authStoreToken = (authData, storeRefresh = true) => {
         }else {
             await AsyncStorage.setItem("gw:auth:token_expires_on", authData.additionalParameters.expires_on);
         }
-
+        console.log("Calling authsuccess");
         dispatch(authSuccess(authData));
     }
 }
@@ -160,6 +160,7 @@ export const registerUser = () => {
 }
 
 export const getAuthToken = () => {
+    console.log("retrieving token");
     return (dispatch, getState) => {
         const promise = new Promise(async(resolve, reject) => {
             let token = getState().authReducer.accessToken;

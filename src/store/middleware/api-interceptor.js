@@ -46,9 +46,6 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
 
             }
-        case actionTypes.AUTH_START:
-            console.log("Authentication Started");
-            break;
         case actionTypes.SET_CONTACTS:
             try {
                 token = await store.dispatch(actions.getAuthToken());
@@ -62,9 +59,6 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
                 action.type = "SET_CONTACTS_FAILED";
             }
-            break;
-        case actionTypes.AUTH_SUCCESS:
-            next(action)
             break;
         case actionTypes.SET_WISH_LIST:
             try {
@@ -230,10 +224,10 @@ const apiInterceptor = store => next => async action => {
                 };
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/SearchPublicLists', body, config).then((response) => {
-                   action.data = response.data; 
+                   action.data = response.data;
                 });
             }catch(error) {
-
+                console.log(error);
             }
             break;
         case actionTypes.SET_PUBLIC_LIST_ITEMS:
@@ -266,6 +260,24 @@ const apiInterceptor = store => next => async action => {
                 });
             }catch(error) {
                 console.log(error);
+            }
+        case actionTypes.SET_NOTIFICATIONS_COUNT:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.get("http://giftwizitapi.azurewebsites.net/api/NotificationsCount", config).then((response) => {
+                    action.value = response.data;
+                });
+            }catch(error) {
+                
             }
         default: next(action);
     }

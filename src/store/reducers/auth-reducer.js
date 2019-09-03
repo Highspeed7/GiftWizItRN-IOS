@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import { Alert } from 'react-native';
 
 const initialState = {
     isAuthenticated: false,
@@ -11,11 +12,6 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
     switch(action.type) {
-        // case "SET_AUTH":
-        //     return {
-        //         ...state,
-        //         isAuthenticated: action.value
-        //     }
         case actionTypes.AUTH_START:
             return {
                 ...state,
@@ -33,6 +29,7 @@ const authReducer = (state = initialState, action) => {
                 error: null
             }
         case actionTypes.AUTH_SUCCESS:
+            Alert.alert("In auth success");
             console.log("In Auth Success");
             var expiration = (action.authdata.tokenAdditionalParameters != null) 
             ? action.authdata.tokenAdditionalParameters.expires_on

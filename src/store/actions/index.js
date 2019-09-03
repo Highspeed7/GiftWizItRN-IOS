@@ -41,3 +41,7 @@ export {
     setListInactive,
     setPublicListItems
 } from './search';
+
+export {
+    setNotificationsCount
+} from './notifications';

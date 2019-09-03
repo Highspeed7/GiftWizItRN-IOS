@@ -13,6 +13,13 @@ import getShoppingBg from '../../../assets/images/get-shopping-bg.png';
 const store = storeConfiguration();
 
 class Home extends Component {
+     timer = null;
+
+    componentDidMount = () => {
+        // this.timer = setInterval(() => {
+        //     this.props.setNotificationsCount();
+        // }, 2000);        
+    }
     componentDidUpdate() {
         if(!this.props.isAuthenticated) {
             this.props.navigation.navigate("preAuth");
@@ -26,12 +33,16 @@ class Home extends Component {
     searchCardPressed = () => {
         this.props.navigation.navigate("SearchLists");
     }
+    logOut = () => {
+        clearInterval(this.timer);
+        this.props.onLogout(this.props.token);
+    }
     render() {
         return (
             <Auxiliary>
                 <View style={{padding: 10}}>
                     <Text>Welcome Home!</Text>
-                    <Button onPress={() => this.props.onLogout(this.props.token)} title="Logout" />
+                    <Button onPress={this.logOut} title="Logout" />
                 </View>
                 <ScrollView style={{padding: 10}}>
                     <InfoCard style={{backgroundColor: 'white'}}>
@@ -90,6 +101,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onLogout: (tokenToRevoke) => dispatch(actions.logOut(tokenToRevoke)),
+        setNotificationsCount: () => dispatch(actions.setNotificationsCount())
     }
 }
 

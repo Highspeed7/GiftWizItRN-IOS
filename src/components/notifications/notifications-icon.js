@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
 import { Badge } from 'react-native-elements';
 
@@ -8,8 +8,8 @@ class NotificationsIcon extends Component {
     render() {
         return (
             <View>
-                <Icon 
-                    name="md-list-box"
+                <FontAwesome5
+                    name="bell"
                     color="black"
                     size={25}
                 />

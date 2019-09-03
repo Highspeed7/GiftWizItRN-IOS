@@ -213,7 +213,7 @@ class GiftListDetail extends Component {
                             icon={() => (<FontAwesome5
                                 name="edit"
                                 color="black"
-                                size={25}    
+                                size={23}    
                             />)}
                             onPressed={() => this.editActionPressed()}
                         >
