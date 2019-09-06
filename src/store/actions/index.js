@@ -43,5 +43,6 @@ export {
 } from './search';
 
 export {
-    setNotificationsCount
+    setNotificationsCount,
+    beginNotifications
 } from './notifications';

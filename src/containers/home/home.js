@@ -16,6 +16,8 @@ class Home extends Component {
      timer = null;
 
     componentDidMount = () => {
+        this.props.setNotificationsCount();
+        this.props.beginNotifications();
         // this.timer = setInterval(() => {
         //     this.props.setNotificationsCount();
         // }, 2000);        
@@ -100,6 +102,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        beginNotifications: () => dispatch(actions.beginNotifications()),
         onLogout: (tokenToRevoke) => dispatch(actions.logOut(tokenToRevoke)),
         setNotificationsCount: () => dispatch(actions.setNotificationsCount())
     }

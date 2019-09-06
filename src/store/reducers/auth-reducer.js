@@ -29,7 +29,6 @@ const authReducer = (state = initialState, action) => {
                 error: null
             }
         case actionTypes.AUTH_SUCCESS:
-            Alert.alert("In auth success");
             console.log("In Auth Success");
             var expiration = (action.authdata.tokenAdditionalParameters != null) 
             ? action.authdata.tokenAdditionalParameters.expires_on
