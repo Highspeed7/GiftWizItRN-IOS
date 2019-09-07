@@ -279,6 +279,24 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 
             }
+        case actionTypes.GET_USER_SHARED_FROM_LISTS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.get("http://giftwizitapi.azurewebsites.net/api/AllSharedLists", config).then((response) => {
+                    action.data = response.data;
+                })
+            }catch(error) {
+
+            }
         default: next(action);
     }
     next(action);

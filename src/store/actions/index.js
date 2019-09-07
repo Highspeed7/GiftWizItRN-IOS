@@ -30,7 +30,10 @@ export {
 } from './wishLists';
 
 export {
-    getSharedLists
+    getSharedLists,
+    getUserSharedByLists,
+    setUserSharedListActive,
+    setUserSharedListInactive
 } from './sharedLists';
 
 export {
