@@ -33,7 +33,8 @@ export {
     getSharedLists,
     getUserSharedByLists,
     setUserSharedListActive,
-    setUserSharedListInactive
+    setUserSharedListInactive,
+    setUserSharedListItems
 } from './sharedLists';
 
 export {

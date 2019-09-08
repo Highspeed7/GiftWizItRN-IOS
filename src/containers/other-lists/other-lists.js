@@ -16,6 +16,7 @@ class OtherLists extends Component {
         });
     }
     onListPressed = (listId) => {
+        this.props.setListItems(listId);
         this.props.setUserSharedListActive(listId);
     }
     onListModalClosed = (listId) => {
@@ -44,7 +45,7 @@ class OtherLists extends Component {
                 <View>
                     <Text style={{fontSize: 24, fontWeight: 'bold'}}>Lists Shared with you...</Text>
                 </View>
-                <ScrollView>
+                <ScrollView style={styles.scrollView}>
                     {lists}
                 </ScrollView>
             </View>
@@ -55,6 +56,9 @@ class OtherLists extends Component {
 const styles = StyleSheet.create({
     viewContainer: {
         padding: 10
+    },
+    scrollView: {
+        marginBottom: 40
     }
 });
 
@@ -62,7 +66,8 @@ const mapDispatchToProps = dispatch => {
     return {
         getUserSharedByLists: () => dispatch(actions.getUserSharedByLists()),
         setUserSharedListActive: (key) => dispatch(actions.setUserSharedListActive(key)),
-        setUserSharedListInactive: (key) => dispatch(actions.setUserSharedListInactive(key))
+        setUserSharedListInactive: (key) => dispatch(actions.setUserSharedListInactive(key)),
+        setListItems: (key) => dispatch(actions.setUserSharedListItems(key))
     }
 }
 

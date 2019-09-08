@@ -28,6 +28,11 @@ const sharedListsReducer = (state = initialState, action) => {
                 ...state,
                 sharedByLists: utils.updateObjectInArray(state.sharedByLists, {item: {active: null}, key: action.key}, "giftListId")
             }
+        case actionTypes.SET_USER_SHARED_LIST_ITEMS:
+            return {
+                ...state,
+                sharedByLists: utils.updateObjectInArray(state.sharedByLists, {item: {listItems: action.data}, key: action.key}, "giftListId")
+            }
     }
     return state;
 }

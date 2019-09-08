@@ -241,6 +241,7 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+            break;
         case actionTypes.DELETE_WISH_LIST_ITEMS:
             try {
                 token = await store.dispatch(actions.getAuthToken());
@@ -261,6 +262,7 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+            break;
         case actionTypes.SET_NOTIFICATIONS_COUNT:
             try {
                 token = await store.dispatch(actions.getAuthToken());
@@ -279,6 +281,7 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 
             }
+            break;
         case actionTypes.GET_USER_SHARED_FROM_LISTS:
             try {
                 token = await store.dispatch(actions.getAuthToken());
@@ -297,6 +300,27 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
 
             }
+            break;
+        case actionTypes.SET_USER_SHARED_LIST_ITEMS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post(`https://giftwizitapi.azurewebsites.net/api/GetUserSharedListItems?listId=${action.key}`, null, config).then((response) => {
+                    action.data = response.data;
+                });
+
+            }catch(error) {
+                console.log("Error: ", error);
+            }
+            break;
         default: next(action);
     }
     next(action);
