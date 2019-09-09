@@ -32,3 +32,19 @@ export const setUserSharedListItems = (key) => {
         key: key
     }
 }
+
+export const setUserSharedListItemActive = (key, itemId) => {
+    return {
+        type: actionTypes.SET_USER_SHARED_ITEM_ACTIVE,
+        key: key,
+        itemId: itemId
+    }
+}
+
+export const setUserSharedListItemInactive = (key, itemId) => {
+    return {
+        type: actionTypes.SET_USER_SHARED_ITEM_INACTIVE,
+        key: key,
+        itemId: itemId
+    }
+}

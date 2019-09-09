@@ -1,28 +1,29 @@
 import React, { Component } from 'react';
 import { 
-    StyleSheet, 
     View, 
     Text, 
+    TouchableOpacity, 
+    ScrollView, 
     Image, 
-    ScrollView,
-    Linking,
-    TouchableOpacity } from 'react-native';
+    StyleSheet, 
+    Linking } from 'react-native';
 
 import Auxiliary from '../../hoc/auxiliary';
 
-class WishListItemModal extends Component {
+
+class SharedListItem extends Component {
     openModal = () => {
-        Linking.openURL(this.props.wishList.afflt_Link);
+        Linking.openURL(this.props.item.afflt_Link);
     }
     render() {
         return (
-        <Auxiliary>
+            <Auxiliary>
             <ScrollView style={styles.scrollView}>
                 <TouchableOpacity onPress={this.openModal}>
                     <View style={styles.listImageContainer}>
-                        <Image style={styles.listImage} source={{uri: this.props.wishList.image}} />
+                        <Image style={styles.listImage} source={{uri: this.props.item.image}} />
                     </View>
-                    <Text style={styles.itemText}>{this.props.wishList.itm_Name}</Text> 
+                    <Text style={styles.itemText}>{this.props.item.itm_Name}</Text> 
                 </TouchableOpacity>
             </ScrollView>
         </Auxiliary>
@@ -49,4 +50,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default WishListItemModal;
+export default SharedListItem;

@@ -7,6 +7,7 @@ import * as actions from '../../store/actions/index';
 import SharedListView from '../../components/shared-list-view/shared-list-view';
 
 class OtherLists extends Component {
+    activeList = null;
     componentDidMount() {
         const { navigation } = this.props;
         this.focusListener = navigation.addListener('didFocus', () => {
@@ -19,10 +20,21 @@ class OtherLists extends Component {
         this.props.setListItems(listId);
         this.props.setUserSharedListActive(listId);
     }
+    onListItemPressed = (itemId) => {
+        let key = activeList.giftListId;
+        this.props.setUserSharedListItemActive(key, itemId);
+    }
+    onListItemClosed = (itemId) => {
+        let key = activeList.giftListId;
+        this.props.setUserSharedListItemInactive(key, itemId);
+    }
     onListModalClosed = (listId) => {
         this.props.setUserSharedListInactive(listId);
     }
     render() {
+        activeList = (this.props.sharedByLists.filter((list) => {
+            return list.active != null
+        }))[0]
         const lists = (this.props.sharedByLists.length > 0) 
             ? this.props.sharedByLists.map((list) => (
                 <TouchableOpacity key={list.giftListId} onPress={() => this.onListPressed(list.giftListId)}>
@@ -35,6 +47,8 @@ class OtherLists extends Component {
                     >
                         <SharedListView 
                             list={list}
+                            itemSelected={this.onListItemPressed}
+                            itemClosed={this.onListItemClosed}
                         />
                     </Modal>
                 </TouchableOpacity>
@@ -67,6 +81,8 @@ const mapDispatchToProps = dispatch => {
         getUserSharedByLists: () => dispatch(actions.getUserSharedByLists()),
         setUserSharedListActive: (key) => dispatch(actions.setUserSharedListActive(key)),
         setUserSharedListInactive: (key) => dispatch(actions.setUserSharedListInactive(key)),
+        setUserSharedListItemActive: (key, itemId) => dispatch(actions.setUserSharedListItemActive(key, itemId)),
+        setUserSharedListItemInactive: (key, itemId) => dispatch(actions.setUserSharedListItemInactive(key, itemId)),
         setListItems: (key) => dispatch(actions.setUserSharedListItems(key))
     }
 }

@@ -34,7 +34,9 @@ export {
     getUserSharedByLists,
     setUserSharedListActive,
     setUserSharedListInactive,
-    setUserSharedListItems
+    setUserSharedListItems,
+    setUserSharedListItemActive,
+    setUserSharedListItemInactive
 } from './sharedLists';
 
 export {

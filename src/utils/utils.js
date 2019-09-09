@@ -1,4 +1,4 @@
-export const updateObjectInArray = (lists, data, idFilter) => {
+export const updateObjectInArray = (lists, data, idFilter, nested = null) => {
     var result = lists.map((item) => {
         if(item[idFilter] != data.key) {
             return item;
