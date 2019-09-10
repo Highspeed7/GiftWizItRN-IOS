@@ -9,26 +9,73 @@ import {
     StyleSheet,
     TextInput, 
     TouchableOpacity } from 'react-native';
+import { Card } from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-import Swatch from '../../components/swatch/swatch';
 import ListAction from '../../components/list-actions/list-action';
 import GiftListDetail from '../../components/gift-list/gift-list-detail';
 import Auxiliary from '../../hoc/auxiliary';
+import { goclone } from '../../utils/utils';
+import Checkbox from '../../components/checkbox/checkbox';
 
 class GiftLists extends Component {
     state = {
         addListModalOpen: null,
         shareListModalOpen: null,
-        newListName: null
+        selectedLists: [],
+        newListName: null,
+        deleteMode: null
     }
     onSwatchPress(list) {
-        // Call to get the selected list's items.
-        // TODO: Implement a timer, so that items are refreshed based on interval
-        this.props.setListItems(list.id);
-        this.props.setListActive(list.id)
+        var listId = list.id;
+        if(this.state.deleteMode == null) {
+            // Call to get the selected list's items.
+            this.props.setListItems(listId);
+            this.props.setListActive(listId)
+            return;
+        }
+        if(this.isListSelected(listId)) {
+            this.setState((prevState, props) => {
+                const nowSelectedArr = prevState.selectedLists.filter((list) => list != listId);
+                return {
+                    selectedLists: nowSelectedArr
+                }
+            })
+        }else {
+            this.setState((prevState, props) => {
+                return {
+                    selectedLists: prevState.selectedLists.concat(listId)
+                }
+            });
+        }
+    }
+    confirmListsDelete = () => {
+        if(this.state.selectedLists.length == 0) {
+            Alert.alert("You did not select any items to delete.")
+            return;
+        }
+        let deletedListsArr = [];
+        let deletedListObj = {};
+
+        this.state.selectedLists.forEach((list) => {
+            deletedListObj["id"] = list;
+            deletedListsArr.push(goclone(deletedListObj));
+        });
+        this.cancelActions();
+        this.props.deleteGiftLists(deletedListsArr);
+    }
+    setDeleteMode = () => {
+        this.setState({
+            deleteMode: true
+        });
+    }
+    cancelActions = () => {
+        this.setState({
+            deleteMode: null,
+            selectedLists: []
+        });
     }
     componentDidMount() {
         this.props.getLists();
@@ -66,19 +113,34 @@ class GiftLists extends Component {
             newListName: val
         });
     }
-
+    isListSelected = (listId) => {
+        return this.state.selectedLists.indexOf(listId) != -1;
+    }
     render() {
         const giftLists = (this.props.giftLists.length > 0) 
         ? this.props.giftLists.map((list) => (
-            <TouchableOpacity key={list.id} onPress={() => this.onSwatchPress(list)} style={styles.touchableSwatch}>
-                <Swatch>
-                    <Text>{list.name}</Text>
+            <Card>
+                <TouchableOpacity key={list.id} onPress={() => this.onSwatchPress(list)} style={styles.touchableSwatch}>
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{marginRight: 10}}>
+                            {(this.state.deleteMode)
+                                ? <Checkbox
+                                    onSelected={()=>this.onSwatchPress(list)}
+                                    isSelected={this.isListSelected(list.id)}
+                                />
+                                : null
+                            }
+                        </View>
+                        <View style={{marginTop: 5}}>
+                            <Text>{list.name}</Text>
+                        </View>
+                    </View>
                     <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
                         {/* <Button title="Close" onPress={() => this.props.setListInactive(list.id)}/> */}
                         <GiftListDetail list={list} />
                     </Modal>
-                </Swatch>
-            </TouchableOpacity>
+                </TouchableOpacity>
+            </Card>
         ))
         : null
         // TODO: Make add gift list into it's own component.
@@ -106,14 +168,43 @@ class GiftLists extends Component {
                                 </View>
                             </Modal>
                         </ListAction>
-                        
+                        <ListAction 
+                            title="Delete"
+                            icon={() => (<FontAwesome5 
+                                name="trash"
+                                color="black"
+                                size={25}
+                            />)} 
+                            onPressed = {this.setDeleteMode}
+                        >
+                        </ListAction>
+                        {
+                            (this.state.deleteMode)
+                            ? <ListAction
+                                title="Cancel"
+                                icon={() => (<FontAwesome5
+                                    name="times"
+                                    color="black"
+                                    size={25}
+                                />)}
+                                onPressed = {this.cancelActions}
+                            />
+                            : null
+                        }
                     </View>
-                    <Text>Your Gift Lists</Text>
+                    {/* <Text>Your Gift Lists</Text> */}
+                    {(this.state.deleteMode == true)
+                        ? <View>
+                            <Text>Are you sure you want to remove the selected lists?</Text>
+                            <Button title="Yes" onPress={this.confirmListsDelete} />
+                            <Button title="No" onPress={this.cancelActions} />
+                        </View>
+                        : null
+                    }
                 </View>
                 <ScrollView style={styles.scrollView}>
-                    <View style={styles.listsContainer}>
-                        {giftLists}
-                    </View>
+                    {giftLists}
+                    <View style={styles.spacer}></View>
                 </ScrollView>
             </Auxiliary>
         )
@@ -125,7 +216,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     touchableSwatch: {
-        width: '24%',
+        width: '100%',
         margin: 1
     },
     listsContainer: {
@@ -134,6 +225,9 @@ const styles = StyleSheet.create({
     },
     actionContainer: {
         padding: 10
+    },
+    spacer: {
+        height: 25
     }
 })
 
@@ -143,7 +237,8 @@ const mapDispatchToProps = dispatch => {
         addNewGiftList: (name) => dispatch(actions.addNewGiftlist(name)),
         setListActive: (key) => dispatch(actions.setGiftListActive(key)),
         setListInactive: (key) => dispatch(actions.setGiftListInactive(key)),
-        setListItems: (key) => dispatch(actions.setGiftListItems(key))
+        setListItems: (key) => dispatch(actions.setGiftListItems(key)),
+        deleteGiftLists: (listData) => dispatch(actions.deleteGiftLists(listData))
     }
 }
 

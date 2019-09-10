@@ -57,3 +57,10 @@ export const shareGiftList = (shareData) => {
         data: shareData
     }
 }
+
+export const deleteGiftLists = (listData) => {
+    return {
+        type: actionTypes.DELETE_GIFT_LISTS,
+        data: listData
+    }
+}
