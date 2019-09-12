@@ -3,6 +3,7 @@ import {authorize, revoke} from 'react-native-app-auth';
 import { connect } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { View, Text, Alert, Button, ActivityIndicator } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 
 import * as actions from '../../store/actions/index';
 
@@ -15,6 +16,9 @@ class GetStarted extends Component {
     componentDidUpdate = (prevProps, prevState) => {
         this.authCheck();
     }
+    componentWillFocus = () => {
+        console.log(this.props.navigation.getParam());
+    }
     registerUser = async() => {
         await this.props.registerUser();
         return;
@@ -22,6 +26,7 @@ class GetStarted extends Component {
     render() {
         return (
             <View>
+                <NavigationEvents onWillFocus={this.componentWillFocus} />
                 <Text>Get Started!</Text>
                 {
                     this.props.authInProgress === true 

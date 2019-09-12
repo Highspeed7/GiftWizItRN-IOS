@@ -6,7 +6,8 @@ export {
 } from './auth';
 
 export {
-    setContacts
+    setContacts,
+    addContact
 } from './contacts';
 
 export {

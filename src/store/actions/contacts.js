@@ -6,3 +6,10 @@ export const setContacts = (contacts) => {
         contacts: contacts
     }
 }
+
+export const addContact = (contact) => {
+    return {
+        type: actionTypes.ADD_CONTACT,
+        contact: contact
+    }
+}

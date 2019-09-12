@@ -1,8 +1,13 @@
 import * as actionTypes from './actionTypes';
-import {authorize, revoke, refresh} from 'react-native-app-auth';
+import {authorize, revoke, refresh, } from 'react-native-app-auth';
+import { Linking } from 'react-native';
 import * as authCfg from './authConfig';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+
+import { NativeModules } from 'react-native';
+
+const {RNAppAuth} = NativeModules;
 
 export const authStart = () => {
     return {
@@ -40,12 +45,12 @@ export const authSuccess = (authData) => {
     }
 }
 
-export const authFail = (error) => {
-    return {
-        type: actionTypes.AUTH_FAIL,
-        error: error
-    }
-}
+// export const authFail = (error) => {
+//     return {
+//         type: actionTypes.AUTH_FAIL,
+//         error: error
+//     }
+// }
 
 export const authRefresh = () => {
     return async (dispatch) => {
@@ -190,16 +195,57 @@ export const getAuthToken = () => {
     }
 }
 
+export const authFail = (error) => {
+    return (dispatch) => {
+        const promise = new Promise(async (resolve, reject) => {
+            var resetEndpoint = "https://login.microsoftonline.com/giftwizit.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_secretreset1";
+            var newTokenEndpoint = "https://login.microsoftonline.com/giftwizit.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1_secretreset1";
+            if(error.message.indexOf("AADB2C90118") !== -1){
+                await authorize({
+                    ...authCfg.config,
+                    serviceConfiguration:{
+                        ...authCfg.config.serviceConfiguration,
+                        authorizationEndpoint: resetEndpoint,
+                        tokenEndpoint: newTokenEndpoint
+                    }
+                }).then((result) => {
+                    console.log(result);
+                    resolve(result);
+                }).catch((e) => {
+                    console.log(e);
+                    reject();
+                });
+                console.log("Password reset complete");
+            }else {
+                reject();
+            }
+        })
+        return promise;
+    }
+} 
+
 export const auth = () => {
     return async(dispatch) => {
         dispatch(authStart())
         try {
             console.log("in auth function");
-            const authState = await authorize(authCfg.config);
+            let authState = null;
+            await authorize(authCfg.config).then((authData) => {
+                authState = authData;
+                dispatch(authStoreToken(authState));
+            }).catch(async(err) => {
+                authState = await dispatch(authFail(err));
+                console.log("Testing");
+                if(authState != null) {
+                    dispatch(authStoreToken(authState));
+                }else {
+                    throw err;
+                }
+                console.log("after auth fail");
+            });
             // Store token info in asyncStorage
-            dispatch(authStoreToken(authState));
         }catch(error) {
-            dispatch(authFail(error));
+            console.log(error);
         }
     }
 }

@@ -341,6 +341,27 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+            break;
+        case actionTypes.ADD_CONTACT:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let body = action.contact;
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.post("https://giftwizitapi.azurewebsites.net/api/Contacts/Add", body, config).then((response) => {
+                    store.dispatch(actions.setContacts());
+                })
+            }catch(error) {
+                console.log(error);
+            }
         default: next(action);
     }
     next(action);

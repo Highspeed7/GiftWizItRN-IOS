@@ -15,6 +15,7 @@ import Welcome from './src/containers/welcome/welcome';
 import GetStarted from './src/components/get-started/get-started';
 import Facts from './src/components/info-content/introduction-card/facts';
 import storeConfiguration from './src/store/storeConfig';
+import PasswordReset from './src/containers/auth/pass-reset';
 
 import PostAuthTabNavigator from './src/components/navigation/post-auth-tab-navigation';
 import SearchTabNavigation from './src/components/navigation/search-tab-navigation';
