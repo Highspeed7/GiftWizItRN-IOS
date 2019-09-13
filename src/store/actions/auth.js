@@ -1,13 +1,8 @@
 import * as actionTypes from './actionTypes';
 import {authorize, revoke, refresh, } from 'react-native-app-auth';
-import { Linking } from 'react-native';
 import * as authCfg from './authConfig';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
-
-import { NativeModules } from 'react-native';
-
-const {RNAppAuth} = NativeModules;
 
 export const authStart = () => {
     return {
@@ -83,6 +78,12 @@ export const authRevoke = () => {
     }
 }
 
+export const userLogout = () => {
+    return {
+        type: actionTypes.USER_LOGOUT
+    }
+}
+
 export const logOut = (tokenToRevoke) => {
     return async(dispatch) => {
         try {
@@ -91,6 +92,7 @@ export const logOut = (tokenToRevoke) => {
             });
             await dispatch(authClearStorage());
             dispatch(authRevoke());
+            dispatch(userLogout());
         }catch(error) {
             // Do nothing yet...
         }

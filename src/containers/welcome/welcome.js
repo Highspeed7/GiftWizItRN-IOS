@@ -14,18 +14,6 @@ import ListsViewed from '../../components/info-content/lists-viewed-card';
 import * as actions from '../../store/actions/index';
 
 class Welcome extends Component {
-    async componentDidMount() {
-        try {
-            await this.props.getToken();
-        }catch(error) {
-            console.log(error.message);
-        }
-
-        if(this.props.isAuthenticated) {
-            this.props.navigation.navigate("postAuth");
-        }
-    }
-    
     render() {
         renderModal = () => {
             switch(this.props.introStep) {
@@ -69,7 +57,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.authReducer.isAuthenticated,
         introStep: state.preAuthReducer.introStep,
         introComplete: state.preAuthReducer.introComplete
     }
@@ -77,8 +64,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onModalClosed: () => dispatch({type: "MODAL_CLOSED"}),
-        getToken: () => dispatch(actions.getAuthToken())
+        onModalClosed: () => dispatch({type: "MODAL_CLOSED"})
     }
 }
 

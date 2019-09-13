@@ -1,5 +1,6 @@
 const initialState = {
-    notificationCount: 0
+    notificationCount: 0,
+    notificationToast: []
 };
 
 const notificationsReducer = (state = initialState, action) => {
@@ -8,6 +9,13 @@ const notificationsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 notificationCount: action.value
+            }
+        case "NOTIFICATION_RECIEVED":
+            {
+                switch(action.data.type) {
+                    case "ListShared":
+                        console.log("******NOTIFICATION*****", action.data.notificationTitle)
+                }
             }
         default: return state
     }

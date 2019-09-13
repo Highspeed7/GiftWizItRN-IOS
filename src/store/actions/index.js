@@ -52,5 +52,11 @@ export {
 
 export {
     setNotificationsCount,
-    beginNotifications
+    beginNotifications,
+    notificationRecieved
 } from './notifications';
+
+export {
+    uiStartLoading,
+    uiStopLoading
+} from './ui';
