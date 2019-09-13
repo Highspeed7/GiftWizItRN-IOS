@@ -11,3 +11,10 @@ export const beginNotifications = () => {
         type: actionTypes.BEGIN_NOTIFICATIONS
     }
 }
+
+export const notificationRecieved = (notification) => {
+    return {
+        type: actionTypes.NOTIFICATION_RECIEVED,
+        data: notification
+    }
+}

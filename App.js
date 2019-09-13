@@ -1,8 +1,4 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Image
-} from 'react-native';
 import { Provider } from 'react-redux';
 
 import {
@@ -11,15 +7,13 @@ import {
   createAppContainer, 
   createBottomTabNavigator
  } from 'react-navigation';
-import Welcome from './src/containers/welcome/welcome';
 import GetStarted from './src/components/get-started/get-started';
-import Facts from './src/components/info-content/introduction-card/facts';
 import storeConfiguration from './src/store/storeConfig';
-import PasswordReset from './src/containers/auth/pass-reset';
 
 import PostAuthTabNavigator from './src/components/navigation/post-auth-tab-navigation';
 import SearchTabNavigation from './src/components/navigation/search-tab-navigation';
 import WelcomeStackNavigator from './src/components/navigation/welcome-stack-navigation';
+import Splash from './src/containers/splash/splash';
 
 const store = storeConfiguration();
 
@@ -38,6 +32,12 @@ const PostAuthStackNavigator = createStackNavigator({
   }
 });
 
+const startStackNavigator = createStackNavigator({
+  Splash
+}, {
+  headerMode: "none"
+});
+
 const PreAuthStackNavigator = createBottomTabNavigator({
   "Welcome": {
     screen: WelcomeStackNavigator
@@ -51,6 +51,7 @@ const PreAuthStackNavigator = createBottomTabNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
+  start: startStackNavigator,
   preAuth: PreAuthStackNavigator,
   postAuth: PostAuthStackNavigator
 });

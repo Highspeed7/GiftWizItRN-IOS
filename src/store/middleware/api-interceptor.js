@@ -4,6 +4,7 @@ import * as actions from '../actions/index';
 
 const apiInterceptor = store => next => async action => {
     let token = null;
+    // Start ui loader
     switch(action.type) {
         case actionTypes.SET_GIFTLISTS:
             try {
@@ -362,7 +363,7 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
-        default: next(action);
+            break;
     }
     next(action);
 }

@@ -4,11 +4,6 @@ import { JsonHubProtocol, HttpTransportType, HubConnectionBuilder } from "@aspne
 import axios from 'axios';
 import { Alert } from 'react-native';
 
-const onNotification = res => {
-    Alert.alert("******NOTIFICATION*******", res);
-    console.log('******NOTIFICATION********', res);
-}
-
 // const startSignalRConnection = (connection) => {
 //     connection.start()
 //     .then(() => {
@@ -70,8 +65,8 @@ const signalRInterceptor = store => next => async (action) => {
 
                 // connection.on('Notification', store.dispatch({type: "POP_NOTIFICATION", message: res}));
                 connection.on('Notification', (res) => {
-                    store.dispatch(actions.setNotificationsCount());
-                    onNotification(res)
+                    // store.dispatch(actions.setNotificationsCount());
+                    store.dispatch(actions.notificationRecieved(res));
                 });
 
                 connection.onclose(() => {
