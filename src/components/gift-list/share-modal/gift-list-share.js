@@ -78,6 +78,7 @@ class ShareGiftList extends Component {
         await this.props.shareGiftList(shareData);
         await this.props.getSharedLists();
         this.setShareableContacts();
+        this.props.stopUiLoading();
     }
     isContactSelected = (contactId) => {
         return this.state.selectedContacts.indexOf(contactId);
@@ -119,7 +120,8 @@ const mapDispatchToProps = dispatch => {
     return {
         getContacts: () => dispatch(actions.setContacts()),
         getSharedLists: () => dispatch(actions.getSharedLists()),
-        shareGiftList: (shareData) => dispatch(actions.shareGiftList(shareData))
+        shareGiftList: (shareData) => dispatch(actions.shareGiftList(shareData)),
+        stopUiLoading: () => dispatch(actions.uiStopLoading())
     }
 }
 
