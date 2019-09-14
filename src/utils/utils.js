@@ -11,6 +11,10 @@ export const updateObjectInArray = (lists, data, idFilter, nested = null) => {
     return result;
 }
 
+export const sleep = (time, callback = null) => {
+    setTimeout(() => callback !== null ? callback() : null, time);
+}
+
 export const goclone = (source) => {
     if (Object.prototype.toString.call(source) === '[object Array]') {
         var clone = [];

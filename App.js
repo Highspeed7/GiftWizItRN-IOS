@@ -14,6 +14,8 @@ import PostAuthTabNavigator from './src/components/navigation/post-auth-tab-navi
 import SearchTabNavigation from './src/components/navigation/search-tab-navigation';
 import WelcomeStackNavigator from './src/components/navigation/welcome-stack-navigation';
 import Splash from './src/containers/splash/splash';
+import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const store = storeConfiguration();
 
@@ -61,11 +63,26 @@ const AppContainer = createAppContainer(AppSwitchNavigator);
 class App extends Component {
   render() {
     return (
-      <Provider store={store}>
+      [
+        <Spinner visible={this.props.loading} />,
         <AppContainer />
-      </Provider>
+      ]
     )
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    loading: state.uiReducer.isLoading
+  }
+}
+
+const ConnectedRootContainer = connect(mapStateToProps)(App);
+
+export default function Root() {
+  return (
+    <Provider store={store}>
+      <ConnectedRootContainer />
+    </Provider>
+  )
+};
