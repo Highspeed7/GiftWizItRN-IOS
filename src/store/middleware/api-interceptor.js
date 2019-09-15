@@ -54,14 +54,17 @@ const apiInterceptor = store => next => async action => {
             }
         case actionTypes.SET_CONTACTS:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
                 }
                 await axios.get('http://giftwizitapi.azurewebsites.net/api/Contacts/Get', {headers: headerObj}).then((response) => {
                     action.contacts = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
+                store.dispatch(actions.uiStopLoading());
                 console.log(error);
                 action.type = "SET_CONTACTS_FAILED";
             }
@@ -163,6 +166,7 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.EDIT_GIFT_LIST:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
@@ -175,9 +179,10 @@ const apiInterceptor = store => next => async action => {
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/GiftLists/Update', body, config).then((response) => {
                     action.data = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
-
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.SHARE_GIFT_LIST:
@@ -198,6 +203,7 @@ const apiInterceptor = store => next => async action => {
                 };
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/ShareGiftList', body, config).then((res) => {
+                    console.log(res);
                 });
 
             }catch(error) {

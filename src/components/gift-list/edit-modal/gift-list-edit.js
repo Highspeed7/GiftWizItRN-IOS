@@ -51,8 +51,9 @@ class GiftListEdit extends Component {
             isPublic: this.state.isPublic
         }
 
-        console.log(listData);
         this.props.editGiftList(listData);
+        // this.props.uiStopLoading();
+        this.props.onListChanged();
     }
     render() {
         return (
@@ -114,7 +115,8 @@ const styles = StyleSheet.create({
 
 mapDispatchToProps = dispatch => {
     return {
-        editGiftList: (listData) => dispatch(actions.editGiftList(listData))
+        editGiftList: (listData) => dispatch(actions.editGiftList(listData)),
+        uiStopLoading: () => dispatch(actions.uiStopLoading())
     }
 }
 
