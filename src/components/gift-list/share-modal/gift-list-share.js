@@ -36,13 +36,6 @@ class ShareGiftList extends Component {
         let filteredListContacts = this.props.contacts.slice(0);
 
         if(listSharedContacts.length > 0) {
-            // for(var i = 0; i < filteredListContacts.length; i++) {
-            //     listSharedContacts.forEach((listContact) => {
-            //         if(listContact.email == filteredListContacts[i].contact.email) {
-            //             filteredListContacts.splice(i, 1);
-            //         }
-            //     })
-            // }
             listSharedContacts.forEach((listContact) => {
                 for(var i = 0; i < filteredListContacts.length; i++) {
                     if(listContact.email == filteredListContacts[i].contact.email) {
