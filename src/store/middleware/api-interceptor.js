@@ -358,6 +358,7 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.ADD_CONTACT:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
 
                 let headerObj = {
@@ -372,6 +373,7 @@ const apiInterceptor = store => next => async action => {
 
                 await axios.post("https://giftwizitapi.azurewebsites.net/api/Contacts/Add", body, config).then((response) => {
                     store.dispatch(actions.setContacts());
+                    store.dispatch(actions.uiStopLoading());
                 })
             }catch(error) {
                 console.log(error);

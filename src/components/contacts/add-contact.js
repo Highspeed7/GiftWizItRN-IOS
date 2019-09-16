@@ -26,13 +26,14 @@ class AddContactModal extends Component {
             email: val
         });
     }
-    confirmContactAdd = () => {
+    confirmContactAdd = async () => {
         if(this.state.name == null || this.state.email == null) {
             Alert.alert("Please complete all fields before submitting.")
             return;
         }
         let contactObj = {...this.state}
-        this.props.addContact(contactObj);
+        await this.props.addContact(contactObj);
+        this.props.onContactAdded();
     }
     render() {
         return (
