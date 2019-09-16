@@ -31,6 +31,7 @@
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
+    "shopify-buy": "^2.7.1",
     "watchman": "^1.0.0"
   },
   "devDependencies": {
