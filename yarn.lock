@@ -5582,11 +5582,6 @@ react-native-safe-area-view@^0.14.1:
   dependencies:
     debounce "^1.2.0"
 
-react-native-shopify@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/react-native-shopify/-/react-native-shopify-0.2.7.tgz#3188331f994de499c73db48a19570c8820fb1ced"
-  integrity sha512-x9C0kriem5LBBqIYFy+4JEeyPnkcl6AIZrpDtId7JKKHNBYkEpzmar7qlzazpgXhviIXCrDIP15HHJclUMEOVQ==
-
 react-native-status-bar-height@^2.2.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/react-native-status-bar-height/-/react-native-status-bar-height-2.4.0.tgz#de8cee4bb733a196167210d2d0bc1fa10acba3e3"
@@ -6228,6 +6223,11 @@ shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
+
+shopify-buy@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/shopify-buy/-/shopify-buy-2.7.1.tgz#38134dbb06f69c4e3cf57dbbc3a7d23c35406c34"
+  integrity sha512-MZQrKAcHpZhH4YAgYwna4qI5KrveBcafEvpINF36mx6TcPh/hVZCaI8ahHRr/wn3O0NX5Pp9NaWgqiGDz282Rg==
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
