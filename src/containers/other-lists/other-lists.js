@@ -11,7 +11,7 @@ class OtherLists extends Component {
     componentDidMount() {
         const { navigation } = this.props;
         this.focusListener = navigation.addListener('didFocus', () => {
-            if(this.props.sharedByLists.length == 0) {
+            if(this.props.sharedByLists != null && this.props.sharedByLists.length == 0) {
                 this.props.getUserSharedByLists();
             }
         });
@@ -32,10 +32,14 @@ class OtherLists extends Component {
         this.props.setUserSharedListInactive(listId);
     }
     render() {
-        activeList = (this.props.sharedByLists.filter((list) => {
+
+        activeList = (this.props.sharedByLists != null && this.props.sharedByLists.length > 0) 
+        ? this.props.sharedByLists.filter((list) => {
             return list.active != null
-        }))[0]
-        const lists = (this.props.sharedByLists.length > 0) 
+        })[0]
+        : null;
+
+        const lists = (this.props.sharedByLists != null && this.props.sharedByLists.length > 0) 
             ? this.props.sharedByLists.map((list) => (
                 <TouchableOpacity key={list.giftListId} onPress={() => this.onListPressed(list.giftListId)}>
                     <Card>
