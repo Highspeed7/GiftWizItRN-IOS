@@ -1,5 +1,3 @@
 rootProject.name = 'giftwizitmobile'
-include ':react-native-shopify'
-project(':react-native-shopify').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-shopify/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
