@@ -131,8 +131,8 @@ android {
         applicationId "com.giftwizitmobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "0.1.0"
+        versionCode 2
+        versionName "0.1.1"
 		manifestPlaceholders = [
 			appAuthRedirectScheme: 'giftwi'
 		]
@@ -202,7 +202,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-shopify')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
