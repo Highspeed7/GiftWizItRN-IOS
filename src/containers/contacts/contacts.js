@@ -68,7 +68,7 @@ class Contacts extends Component {
                     visible={this.state.addContactModalOpen != null}
                     onRequestClose={this.closeAddContactModal}
                 >
-                    <AddContactModal />
+                    <AddContactModal onContactAdded={this.closeAddContactModal} />
                 </Modal>
             </View>
         )
