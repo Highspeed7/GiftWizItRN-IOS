@@ -1,29 +1,33 @@
 import * as actionTypes from "../actions/actionTypes";
 import axios from 'axios';
 import * as actions from '../actions/index';
+import { sleep } from '../../utils/utils';
 
 const apiInterceptor = store => next => async action => {
     let token = null;
-    // Start ui loader
     switch(action.type) {
         case actionTypes.SET_GIFTLISTS:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
 
                 let commonHeaders = {
                     'Authorization': `bearer ${token}`
                 }
-
                 await axios.get('https://giftwizitapi.azurewebsites.net/api/GiftLists', {headers: commonHeaders}).then((response) => {
-                    action.giftLists = response.data;     
+                    action.giftLists = response.data;
+                    store.dispatch(actions.uiStopLoading());
+                    sleep(100);
                 })
             }catch(error) {
                 console.log(error);
                 action.type = "LIST_FAIL";
+                store.dispatch(actions.uiStopLoading()); 
             }
             break;
         case actionTypes.SET_GLIST_ITEMS:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
@@ -37,26 +41,30 @@ const apiInterceptor = store => next => async action => {
                     headers: headerObj,
                     params: body
                 }
-
+                    
                 await axios.get('https://giftwizitapi.azurewebsites.net/api/GiftListItems', config).then((response) => {
                     action.payload = {
                         giftItems: response.data
                     }
+                    store.dispatch(actions.uiStopLoading()); 
                 });
                 break;
             }catch(error) {
-
+                store.dispatch(actions.uiStopLoading()); 
             }
         case actionTypes.SET_CONTACTS:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
                 }
                 await axios.get('http://giftwizitapi.azurewebsites.net/api/Contacts/Get', {headers: headerObj}).then((response) => {
                     action.contacts = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
+                store.dispatch(actions.uiStopLoading());
                 console.log(error);
                 action.type = "SET_CONTACTS_FAILED";
             }
@@ -108,7 +116,8 @@ const apiInterceptor = store => next => async action => {
                 };
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/GiftLists', body, config).then((response) =>{
-                    store.dispatch(actions.setGiftLists());
+                    // store.dispatch(actions.setGiftLists());
+                    // Notification will update lists.
                 });
             }catch(error) {
                 console.log(error);
@@ -157,6 +166,7 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.EDIT_GIFT_LIST:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
@@ -169,13 +179,15 @@ const apiInterceptor = store => next => async action => {
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/GiftLists/Update', body, config).then((response) => {
                     action.data = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
-
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.SHARE_GIFT_LIST:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
 
                 console.log(`Using this token for share call: ${token}`);
@@ -191,11 +203,12 @@ const apiInterceptor = store => next => async action => {
                 };
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/ShareGiftList', body, config).then((res) => {
-                    // Do nothing yet...
+                    console.log(res);
                 });
 
             }catch(error) {
                 console.log(error);
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.GET_SHARED_LISTS:

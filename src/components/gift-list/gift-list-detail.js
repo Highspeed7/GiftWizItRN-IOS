@@ -221,7 +221,7 @@ class GiftListDetail extends Component {
                             visible={this.state.editModalOpen != null}
                             onRequestClose={this.closeEditModal}
                         >
-                            <GiftListEdit activeList={this.props.list} />                           
+                            <GiftListEdit activeList={this.props.list} onListChanged={() => this.setState({editModalOpen: null})} />                           
                         </Modal>
                         </ListAction>
                         <ListAction

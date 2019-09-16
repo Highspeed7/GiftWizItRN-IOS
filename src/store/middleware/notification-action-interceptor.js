@@ -13,6 +13,12 @@ const notificationActionInterceptor = store => next => async action => {
                     store.dispatch(actions.setNotificationsCount());
                     break;
                 }
+                case "ListCreated":
+                {
+                    store.dispatch(actions.setGiftLists());
+                    store.dispatch(actions.setNotificationsCount());
+                    break;
+                }
             }
             break;
         }

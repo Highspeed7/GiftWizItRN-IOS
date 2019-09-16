@@ -17,15 +17,15 @@ class ShareGiftList extends Component {
         shareableContacts: []
     }
     componentDidMount = async () => {
-        this.props.getContacts();
+        await this.props.getContacts();
         await this.props.getSharedLists();
         this.setShareableContacts();
+        this.props.stopUiLoading();
     }
     setShareableContacts = () => {
         console.log(this.props);
-
+        const activeListId = this.props.activeList.id
         let listSharedContacts = this.props.sharedLists.map((sharedList) => {
-            const activeListId = this.props.activeList.id
             if(sharedList.giftListId == activeListId) {
                 return sharedList.contact
             }
@@ -36,13 +36,13 @@ class ShareGiftList extends Component {
         let filteredListContacts = this.props.contacts.slice(0);
 
         if(listSharedContacts.length > 0) {
-            for(var i = 0; i < filteredListContacts.length; i++) {
-                listSharedContacts.forEach((listContact) => {
+            listSharedContacts.forEach((listContact) => {
+                for(var i = 0; i < filteredListContacts.length; i++) {
                     if(listContact.email == filteredListContacts[i].contact.email) {
                         filteredListContacts.splice(i, 1);
                     }
-                })
-            }
+                }
+            });
         }
 
         this.setState({
@@ -50,6 +50,7 @@ class ShareGiftList extends Component {
         });
     }
     onContactSelected = (contact) => {
+        console.log(this.state.selectedContacts);
         let contactId = contact.contact.contactId;
         let contactIndex = this.isContactSelected(contactId);
         if(contactIndex != -1) {
@@ -78,6 +79,12 @@ class ShareGiftList extends Component {
         await this.props.shareGiftList(shareData);
         await this.props.getSharedLists();
         this.setShareableContacts();
+        this.props.stopUiLoading();
+
+        // After we've shared the gift list clear the selected contacts.
+        this.setState({
+            selectedContacts: []
+        });
     }
     isContactSelected = (contactId) => {
         return this.state.selectedContacts.indexOf(contactId);
@@ -119,7 +126,8 @@ const mapDispatchToProps = dispatch => {
     return {
         getContacts: () => dispatch(actions.setContacts()),
         getSharedLists: () => dispatch(actions.getSharedLists()),
-        shareGiftList: (shareData) => dispatch(actions.shareGiftList(shareData))
+        shareGiftList: (shareData) => dispatch(actions.shareGiftList(shareData)),
+        stopUiLoading: () => dispatch(actions.uiStopLoading())
     }
 }
 
