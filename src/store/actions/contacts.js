@@ -13,3 +13,10 @@ export const addContact = (contact) => {
         contact: contact
     }
 }
+
+export const deleteContacts = (contacts) => {
+    return {
+        type: actionTypes.DELETE_CONTACTS,
+        data: contacts
+    }
+}
