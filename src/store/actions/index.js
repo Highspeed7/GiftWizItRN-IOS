@@ -7,7 +7,8 @@ export {
 
 export {
     setContacts,
-    addContact
+    addContact,
+    deleteContacts
 } from './contacts';
 
 export {

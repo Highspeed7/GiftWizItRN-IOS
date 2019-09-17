@@ -19,6 +19,12 @@ const notificationActionInterceptor = store => next => async action => {
                     store.dispatch(actions.setNotificationsCount());
                     break;
                 }
+                case "ContactDeleted":
+                {
+                    store.dispatch(actions.setContacts());
+                    store.dispatch(actions.setNotificationsCount());
+                    break;
+                }
             }
             break;
         }

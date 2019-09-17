@@ -379,6 +379,27 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
             }
             break;
+        case actionTypes.DELETE_CONTACTS:
+            try {
+                store.dispatch(actions.uiStartLoading());
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let body = action.data;
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.post("https://giftwizitapi.azurewebsites.net/api/Contacts/Delete", body, config).then((response) => {
+                    store.dispatch(actions.uiStopLoading());
+                });
+            }catch(error) {
+                store.dispatch(actions.uiStopLoading());
+            }
     }
     next(action);
 }
