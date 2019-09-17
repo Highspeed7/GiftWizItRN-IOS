@@ -40,7 +40,7 @@ class Contacts extends Component {
                     data={this.props.contacts}
                     renderItem={(contact) => (
                         <Card>
-                            <Text style={{fontWeight: 'bold'}}>{contact.item.contact.name}</Text>
+                            <Text style={{fontWeight: 'bold'}}>{contact.item.contact.contactUsers[0].contactAlias}</Text>
                             <Text>{contact.item.contact.email}</Text>
                         </Card>
                     )}
