@@ -7,7 +7,8 @@ export {
 
 export {
     setContacts,
-    addContact
+    addContact,
+    deleteContacts
 } from './contacts';
 
 export {
@@ -60,3 +61,10 @@ export {
     uiStartLoading,
     uiStopLoading
 } from './ui';
+
+export {
+    initializeStore,
+    setCategoryActive,
+    fetchCategoryProducts,
+    clearCategoryProducts
+} from './storefront';

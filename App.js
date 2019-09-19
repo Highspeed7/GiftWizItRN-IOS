@@ -2,11 +2,13 @@ import React, {Component} from 'react';
 import { Provider } from 'react-redux';
 
 import {
-  createStackNavigator, 
   createSwitchNavigator, 
   createAppContainer, 
-  createBottomTabNavigator
  } from 'react-navigation';
+
+import { createStackNavigator } from 'react-navigation-stack';
+
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import GetStarted from './src/components/get-started/get-started';
 import storeConfiguration from './src/store/storeConfig';
 
@@ -16,6 +18,8 @@ import WelcomeStackNavigator from './src/components/navigation/welcome-stack-nav
 import Splash from './src/containers/splash/splash';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import StoreDrawerNavigator from './src/components/navigation/store-drawer-navigation';
+import StoreFront from './src/components/store-selector/giftwizit-shopify/store-front';
 
 const store = storeConfiguration();
 
@@ -31,6 +35,9 @@ const PostAuthStackNavigator = createStackNavigator({
   },
   SearchLists: {
     screen: SearchTabNavigation
+  },
+  Store: {
+    screen: StoreDrawerNavigator
   }
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import Welcome from '../../containers/welcome/welcome';
 import Facts from '../info-content/introduction-card/facts';
