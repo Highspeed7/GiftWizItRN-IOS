@@ -61,3 +61,10 @@ export {
     uiStartLoading,
     uiStopLoading
 } from './ui';
+
+export {
+    initializeStore,
+    setCategoryActive,
+    fetchCategoryProducts,
+    clearCategoryProducts
+} from './storefront';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMaterialTopTabNavigator } from 'react-navigation';
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
 import WishList from '../../containers/wish-list/wish-list';
 import GiftLists from '../../containers/gift-lists/gift-lists';

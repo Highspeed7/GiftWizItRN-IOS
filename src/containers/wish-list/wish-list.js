@@ -171,6 +171,14 @@ class WishList extends Component {
         this.props.navigation.setParams({"storeSelectorOpen": null});
         this.setState({openStoreSelector: null})
     }
+    openStoreFront = () => {
+        // Close the store selector modal
+        this.setState({
+            openStoreSelector: null
+        }, () => {
+            this.props.navigation.navigate("Store");
+        });
+    }
     render() {
         const wishList = (this.props.wishList.length > 0)
         ? this.props.wishList.map((list) => (
@@ -294,6 +302,7 @@ class WishList extends Component {
                     >
                         <StoreSelector 
                             onClose={this.onStoreSelectorClosed} 
+                            openStoreFront={this.openStoreFront}
                         />
                     </Modal>
                 </ScrollView>

@@ -18,6 +18,8 @@ import Swatch from '../swatch/swatch';
 import AmazonView from './amazon/amazon-view';
 import WalmartView from './walmart/walmart-view';
 import TargetView from './target/target-view';
+import { Card } from 'react-native-elements';
+import Auxiliary from '../../hoc/auxiliary';
 
 class StoreSelector extends Component {
     state = {
@@ -94,74 +96,87 @@ class StoreSelector extends Component {
             webViewRef: input
         });
     }
+    openStoreFront = () => {
+        this.props.openStoreFront();
+    }
     render() {
         return (
-            <View ref="rootView">
+            <Auxiliary>
                 <View>
                     <Button title="Close" onPress={this.props.onClose} />
                 </View>
-                <ScrollView style={{marginTop: 10, paddingLeft: 10}}>
-                    <View style={styles.listsContainer}>
-                        <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("Amazon")}>
-                            <Swatch>
-                                <Text>Amazon</Text>
-                                <Modal
-                                    visible={this.state.amazonModalOpen}
-                                    onRequestClose={this.closeModal}
-                                >
-                                    <AmazonView
-                                        setRef={this.setWebViewRef}
-                                        canGoBack={this.setGoBackStatus}
-                                        url={{uri: 'https://www.amazon.com'}}
-                                        onItemAdded={this.onItemAdded}
-                                    />
-                                </Modal>
-                            </Swatch>
+                <View>
+                    <Card>
+                        <TouchableOpacity onPress={this.openStoreFront}>
+                            <Text>Visit Our Store</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("Target")}>
-                            <Swatch style={this.state.orientation == 'landscape' ? styles.storeSwatch : null}>
-                                <View>
-                                    <Text>Target</Text>
-                                </View>
-                                <View style={[{width: 50, height: 50, flexDirection: 'column'}, this.state.orientation == 'landscape' ? {alignContent: 'center'} : null]}>
-                                    <ImageBackground style={{resizeMode: 'contain', width: '100%', height: '100%'}} source={{uri: "https://gwresourceblob.blob.core.windows.net/images/BullseyeNoR_17_200x200_rgb-min.jpg"}} />
-                                </View>
-                                <Modal
-                                    visible={this.state.targetModalOpen}
-                                    onRequestClose={this.closeModal}
-                                >
-                                    <TargetView 
-                                        setRef={this.setWebViewRef}
-                                        canGoBack={this.setGoBackStatus}
-                                        url={{uri: 'https://www.target.com'}}
-                                        onItemAdded={this.onItemAdded}   
-                                    />
-                                </Modal>
-                            </Swatch>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("Walmart")}>
-                            <Swatch style={this.state.orientation == 'landscape' ? styles.storeSwatch : null}>
-                                <View>
-                                    <Text>Walmart</Text>
-                                </View>
-                                <View style={{width: 50, height: 50, flexDirection: 'column'}}>
-                                    <ImageBackground style={{resizeMode: 'contain', width: '100%', height: '100%'}} source={{uri: "https://gwresourceblob.blob.core.windows.net/images/Walmart_Logos_TheSpark_blu_rgb.png"}}/>
-                                </View>
-                                <Modal
-                                    visible={this.state.walmartModalOpen}
-                                    onRequestClose={this.closeModal}
-                                >
-                                    <WalmartView 
-                                        setRef={this.setWebViewRef}
-                                        canGoBack={this.setGoBackStatus}
-                                        url={{uri: 'https://www.walmart.com'}} 
-                                    />
-                                </Modal>
-                            </Swatch>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView>
-            </View>
+                    </Card>
+                </View>
+                <View ref="rootView">
+                    <ScrollView style={{marginTop: 10, paddingLeft: 10}}>
+                        
+                        <View style={styles.listsContainer}>
+                            <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("Amazon")}>
+                                <Swatch>
+                                    <Text>Amazon</Text>
+                                    <Modal
+                                        visible={this.state.amazonModalOpen}
+                                        onRequestClose={this.closeModal}
+                                    >
+                                        <AmazonView
+                                            setRef={this.setWebViewRef}
+                                            canGoBack={this.setGoBackStatus}
+                                            url={{uri: 'https://www.amazon.com'}}
+                                            onItemAdded={this.onItemAdded}
+                                        />
+                                    </Modal>
+                                </Swatch>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("Target")}>
+                                <Swatch style={this.state.orientation == 'landscape' ? styles.storeSwatch : null}>
+                                    <View>
+                                        <Text>Target</Text>
+                                    </View>
+                                    <View style={[{width: 50, height: 50, flexDirection: 'column'}, this.state.orientation == 'landscape' ? {alignContent: 'center'} : null]}>
+                                        <ImageBackground style={{resizeMode: 'contain', width: '100%', height: '100%'}} source={{uri: "https://gwresourceblob.blob.core.windows.net/images/BullseyeNoR_17_200x200_rgb-min.jpg"}} />
+                                    </View>
+                                    <Modal
+                                        visible={this.state.targetModalOpen}
+                                        onRequestClose={this.closeModal}
+                                    >
+                                        <TargetView 
+                                            setRef={this.setWebViewRef}
+                                            canGoBack={this.setGoBackStatus}
+                                            url={{uri: 'https://www.target.com'}}
+                                            onItemAdded={this.onItemAdded}   
+                                        />
+                                    </Modal>
+                                </Swatch>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("Walmart")}>
+                                <Swatch style={this.state.orientation == 'landscape' ? styles.storeSwatch : null}>
+                                    <View>
+                                        <Text>Walmart</Text>
+                                    </View>
+                                    <View style={{width: 50, height: 50, flexDirection: 'column'}}>
+                                        <ImageBackground style={{resizeMode: 'contain', width: '100%', height: '100%'}} source={{uri: "https://gwresourceblob.blob.core.windows.net/images/Walmart_Logos_TheSpark_blu_rgb.png"}}/>
+                                    </View>
+                                    <Modal
+                                        visible={this.state.walmartModalOpen}
+                                        onRequestClose={this.closeModal}
+                                    >
+                                        <WalmartView 
+                                            setRef={this.setWebViewRef}
+                                            canGoBack={this.setGoBackStatus}
+                                            url={{uri: 'https://www.walmart.com'}} 
+                                        />
+                                    </Modal>
+                                </Swatch>
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
+                </View>
+            </Auxiliary>
         )
     }
 }
