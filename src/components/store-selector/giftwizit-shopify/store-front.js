@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
-import { Card } from 'react-native-elements';
+import { Card, Button, ButtonGroup } from 'react-native-elements';
 
 import Auxiliary from '../../../hoc/auxiliary';
 import * as actions from '../../../store/actions/index';
@@ -13,6 +14,17 @@ class StoreFront extends Component {
     fetchCategoryProducts = async () => {
         await this.props.fetchCategoryProducts();
     }
+    addLineItemToCart = (productId) => {
+        let itemsToAdd = [];
+        let lineItem = {
+            variantId: productId,
+            quantity: 1
+        };
+
+        itemsToAdd.push(lineItem);
+
+        this.props.addItemToCart(itemsToAdd);
+    }
     render() {
         if(this.props.activeCategory != null && this.props.products.length == 0) {
             this.fetchCategoryProducts();
@@ -23,16 +35,46 @@ class StoreFront extends Component {
                 data={this.props.products}
                 renderItem={(product) => {
                     const images = product.item.images;
-                    return <Card>
-                        <TouchableOpacity style={{flexDirection: 'row'}}>
-                            <View style={styles.productImageContainer}>
-                                <Image style={styles.productImage} source={{uri: images[0].src}} />
-                            </View>
-                            <View>
-                                <Text>{product.item.title}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </Card>
+                    return <Card containerStyle={{minHeight: 100}}>
+                                <TouchableOpacity>
+                                    <View style={{flexDirection: 'row', flex: 2, maxHeight: 55}}>
+                                        <View style={{flex: 1}}>
+                                            <Image style={styles.productImage} source={{uri: images[0].src}} />
+                                        </View>
+                                        <View style={{flex: 4, paddingTop: 3}}>
+                                            <Text style={{fontSize: 18, fontWeight: 'bold'}} numberOfLines={2} ellipsizeMode='tail' >{product.item.title}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                                <View style={{flexDirection: 'row', flex: 4, paddingTop: 10}}>
+                                    <View style={{flex: 2, flexDirection: 'row'}}>
+                                        <Button 
+                                            icon={
+                                                <FontAwesome5
+                                                    name="star"
+                                                    color="black"
+                                                    size={20}
+                                                />
+                                            }
+                                            type="clear"
+                                        />
+                                        <Button 
+                                            icon={
+                                                <FontAwesome5
+                                                    name="cart-plus"
+                                                    color="black"
+                                                    size={20}
+                                                />
+                                            }
+                                            onPress={() => this.addLineItemToCart(product.item.variants[0].id)}
+                                            type="clear"
+                                        />
+                                    </View>
+                                    <View style={{flex: 2, alignItems: 'flex-end'}}>
+                                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>${product.item.variants[0].price}</Text>
+                                    </View>
+                                </View>
+                            </Card>
                 }}
             />
             : null;
@@ -49,19 +91,20 @@ class StoreFront extends Component {
 
 const styles = StyleSheet.create({
     productImage: {
-        height: 50,
-        width: 50
+        height: 60,
+        width: 60
     },
     productImageContainer: {
-        marginRight: 5,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        flex: 1
     }
 })
 
 mapDispatchToProps = dispatch => {
     return {
         initializeStore: () => dispatch(actions.initializeStore()),
-        fetchCategoryProducts: () => dispatch(actions.fetchCategoryProducts())
+        fetchCategoryProducts: () => dispatch(actions.fetchCategoryProducts()),
+        addItemToCart: (lineItems) => dispatch(actions.addItemToCart(lineItems))
     }
 }
 

@@ -24,3 +24,17 @@ export const clearCategoryProducts = () => {
         type: actionTypes.CLEAR_CTGRY_PRODUCTS
     }
 }
+
+export const addItemToCart = (item) => {
+    return {
+        type: actionTypes.ADD_ITEM_TO_CART,
+        data: item
+    }
+}
+
+export const itemAddedToCart = (checkout) => {
+    return {
+        type: actionTypes.ITEM_ADDED_TO_CART,
+        data: checkout
+    };
+};
