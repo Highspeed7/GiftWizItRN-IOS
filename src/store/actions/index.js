@@ -66,5 +66,7 @@ export {
     initializeStore,
     setCategoryActive,
     fetchCategoryProducts,
-    clearCategoryProducts
+    clearCategoryProducts,
+    addItemToCart,
+    itemAddedToCart
 } from './storefront';
