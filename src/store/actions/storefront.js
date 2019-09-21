@@ -38,3 +38,10 @@ export const itemAddedToCart = (checkout) => {
         data: checkout
     };
 };
+
+export const setCheckout = (checkout) => {
+    return {
+        type: actionTypes.SET_CHECKOUT,
+        data: checkout
+    };
+};
