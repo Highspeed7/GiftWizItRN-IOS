@@ -3,36 +3,84 @@ import Client from 'shopify-buy/index.unoptimized.umd';
 import * as actionTypes from "../actions/actionTypes";
 import * as actions from '../actions/index';
 import * as storefrontConfig from '../../resources/storefront-store';
+import axios from 'axios';
 
 const storeFrontInterceptor = store => next => async (action) => {
     const state = store.getState();
     let client = state.storeFrontReducer.client;
+    const getCheckout = async () => {
+        return promise = new Promise(async (resolve, reject) => {
+            try {
+                store.dispatch(actions.uiStartLoading());
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.get("https://giftwizitapi.azurewebsites.net/api/getCheckout", config).then((r) => {
+                    store.dispatch(actions.uiStopLoading());
+                    if(r.data.length > 0) {
+                        resolve(r.data[0]);
+                        return;
+                    }
+                    resolve(null);
+                });
+            }catch(err) {
+                console.log(err);
+                reject();
+            }
+        })
+    }
     switch(action.type) {
         case actionTypes.INITIALIZE_STOREFRONT:
-            action.payload = {
-                client: null,
-                collections: null,
-                checkout: null
-            };
-            client = Client.buildClient({
-                domain: 'giftwizit.myshopify.com',
-                storefrontAccessToken: storefrontConfig.storefrontToken
-            });
+            try {
+                action.payload = {
+                    client: null,
+                    collections: null,
+                    checkout: null
+                };
+                client = Client.buildClient({
+                    domain: 'giftwizit.myshopify.com',
+                    storefrontAccessToken: storefrontConfig.storefrontToken
+                });
+    
+                action.payload.client = client;
+    
+                await client.collection.fetchAllWithProducts().then((collections) => {
+                    console.log(collections);
+                    store.dispatch()
+                    action.payload.collections = collections;
+                });
+    
+                // Call to see if there is an existing checkout already
+                var existingCheckout = await getCheckout();
 
-            action.payload.client = client;
-
-            await client.collection.fetchAllWithProducts().then((collections) => {
-                console.log(collections);
-                action.payload.collections = collections;
-            });
-
-            // Call to see if there is an existing checkout already
-            // If not create a new checkout
-            await client.checkout.create().then((checkout) => {
-                console.log(checkout.id)
-                action.payload.checkout = checkout;
-            });
-
+                // If not create a new checkout
+                console.log(existingCheckout);
+                if(existingCheckout == null) {
+                    await client.checkout.create().then((checkout) => {
+                        console.log(checkout.id)
+                        
+                        var checkoutToStore = {
+                            id: checkout.id,
+                            webUrl: checkout.webUrl
+                        };
+                        store.dispatch(actions.setCheckout(checkoutToStore));
+                        action.payload.checkout = checkout;
+                    });
+                }else {
+                    await client.checkout.fetch(existingCheckout.checkoutId).then((checkout) => {
+                        action.payload.checkout = checkout;
+                    })
+                }
+            }catch(err) {
+                console.log(err);
+            }
             break;
         case actionTypes.FETCH_CTGRY_PRODUCTS:
             const activeCategory = state.storeFrontReducer.activeCategory;
@@ -48,6 +96,27 @@ const storeFrontInterceptor = store => next => async (action) => {
             }).catch((err) => {
                 console.log(err);
             })
+            break;
+        case actionTypes.SET_CHECKOUT:
+            store.dispatch(actions.uiStartLoading());
+            token = await store.dispatch(actions.getAuthToken());
+
+            let headerObj = {
+                'Authorization': `bearer ${token}`
+            };
+
+            let body = action.data;
+
+            config = {
+                headers: headerObj
+            };
+            await axios.post("https://giftwizitapi.azurewebsites.net/api/storeCheckout", body, config).then((response) => {
+                store.dispatch(actions.uiStopLoading());
+            });
+            break;
+        case actionTypes.GET_CHECKOUT:
+            
+            break;
     }
     next(action);
 };

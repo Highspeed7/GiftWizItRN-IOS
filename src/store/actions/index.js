@@ -68,5 +68,6 @@ export {
     fetchCategoryProducts,
     clearCategoryProducts,
     addItemToCart,
-    itemAddedToCart
+    itemAddedToCart,
+    setCheckout
 } from './storefront';
