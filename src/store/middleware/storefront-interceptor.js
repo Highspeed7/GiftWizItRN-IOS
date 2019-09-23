@@ -8,34 +8,6 @@ import axios from 'axios';
 const storeFrontInterceptor = store => next => async (action) => {
     const state = store.getState();
     let client = state.storeFrontReducer.client;
-    const getCheckout = async () => {
-        return promise = new Promise(async (resolve, reject) => {
-            try {
-                store.dispatch(actions.uiStartLoading());
-                token = await store.dispatch(actions.getAuthToken());
-
-                let headerObj = {
-                    'Authorization': `bearer ${token}`
-                };
-
-                config = {
-                    headers: headerObj
-                };
-
-                await axios.get("https://giftwizitapi.azurewebsites.net/api/getCheckout", config).then((r) => {
-                    store.dispatch(actions.uiStopLoading());
-                    if(r.data.length > 0) {
-                        resolve(r.data[0]);
-                        return;
-                    }
-                    resolve(null);
-                });
-            }catch(err) {
-                console.log(err);
-                reject();
-            }
-        })
-    }
     switch(action.type) {
         case actionTypes.INITIALIZE_STOREFRONT:
             try {
@@ -58,7 +30,7 @@ const storeFrontInterceptor = store => next => async (action) => {
                 });
     
                 // Call to see if there is an existing checkout already
-                var existingCheckout = await getCheckout();
+                var existingCheckout = await store.dispatch(actions.getCheckout());
 
                 // If not create a new checkout
                 console.log(existingCheckout);

@@ -9,6 +9,7 @@ import {
     Image, 
     Picker, 
     Alert,
+    Linking,
     Button,
     BackHandler
 } from 'react-native';

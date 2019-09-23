@@ -1,4 +1,7 @@
 import * as actionTypes from './actionTypes';
+import * as actions from './index';
+
+import axios from 'axios';
 
 export const initializeStore = () => {
     return {
@@ -45,3 +48,34 @@ export const setCheckout = (checkout) => {
         data: checkout
     };
 };
+
+export const getCheckout = () => {
+    return async(dispatch) => {
+        return promise = new Promise(async (resolve, reject) => {
+            try {
+                dispatch(actions.uiStartLoading());
+                token = await dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.get("https://giftwizitapi.azurewebsites.net/api/getCheckout", config).then((r) => {
+                    dispatch(actions.uiStopLoading());
+                    if(r.data.length > 0) {
+                        resolve(r.data[0]);
+                        return;
+                    }
+                    resolve(null);
+                });
+            }catch(err) {
+                console.log(err);
+                reject();
+            }
+        })
+    }
+}

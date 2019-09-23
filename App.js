@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
+import { Linking } from 'react-native';
 import { Provider } from 'react-redux';
 
 import {
   createSwitchNavigator, 
   createAppContainer, 
+  NavigationActions
  } from 'react-navigation';
 
 import { createStackNavigator } from 'react-navigation-stack';
-
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import GetStarted from './src/components/get-started/get-started';
 import storeConfiguration from './src/store/storeConfig';
@@ -20,11 +21,23 @@ import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import StoreDrawerNavigator from './src/components/navigation/store-drawer-navigation';
 import StoreFront from './src/components/store-selector/giftwizit-shopify/store-front';
+import ProductDetail from './src/components/store/product-detail';
 
 const store = storeConfiguration();
 
 // TODO: Move routing info to a seperate file.
 // TODO: Maybe move the header image to a seperate file
+
+const StoreStackNavigator = createStackNavigator({
+  Product: {
+      screen: ProductDetail,
+      path: "product/:id"
+  }
+},
+{
+  mode: 'modal',
+  headerMode: 'none'
+});
 
 const PostAuthStackNavigator = createStackNavigator({
   Home: {
@@ -37,13 +50,21 @@ const PostAuthStackNavigator = createStackNavigator({
     screen: SearchTabNavigation
   },
   Store: {
-    screen: StoreDrawerNavigator
+    screen: StoreDrawerNavigator,
+    path: 'test'
+  },
+  Products: {
+    screen: StoreStackNavigator,
+    path: "products"
   }
 });
+
+
 
 const startStackNavigator = createStackNavigator({
   Splash
 }, {
+  initialRouteName: "Splash",
   headerMode: "none"
 });
 
@@ -62,7 +83,10 @@ const PreAuthStackNavigator = createBottomTabNavigator({
 const AppSwitchNavigator = createSwitchNavigator({
   start: startStackNavigator,
   preAuth: PreAuthStackNavigator,
-  postAuth: PostAuthStackNavigator
+  postAuth: {
+    screen: PostAuthStackNavigator,
+    path: ''
+  }
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);

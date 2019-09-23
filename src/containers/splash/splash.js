@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Linking } from 'react-native';
 
 import * as actions from '../../store/actions/index';
 import { connect } from 'react-redux';
@@ -11,16 +11,30 @@ class Splash extends Component {
         }catch(error) {
             console.log(error.message);
         }
-    
-        // Wait 5 seconds for intro splash
-        setTimeout(() => {
-            if(this.props.isAuthenticated) {
-                this.props.navigation.navigate("postAuth");
+        
+        await Linking.getInitialURL().then((url) => {
+            if(url != null) {
+                this.handleOpenURL(url);
             }else {
-                this.props.navigation.navigate("preAuth");
+                // Wait 5 seconds for intro splash
+                setTimeout(() => {
+                    if(this.props.isAuthenticated) {
+                        this.props.navigation.navigate("postAuth");
+                        // this.props.navigation.navigate("product-detail");
+                    }else {
+                        this.props.navigation.navigate("preAuth");
+                    }
+                }, 2000);
             }
-        }, 2000);
+        })
     }
+
+    handleOpenURL(url) {
+        let path = url.split('://')[1];
+        path = path.replace("/", "");
+        
+        this.props.navigation.navigate(path);
+      }
 
     render() {
         return (
