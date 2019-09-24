@@ -146,11 +146,12 @@ class WishList extends Component {
         }
     }
     itemSwatchPressed = (item) => {
-        const itemId = item.item_id;
+        const itemId = item.item_Id;
         if(this.state.moveMode == null && this.state.deleteMode == null) {
             if(item.afflt_Link == null) {
                 const productId = JSON.parse(item.product_Id).product_Id;
                 this.props.navigation.navigate("Products", {productId});
+                return;
             }
             this.props.setWishListActive(itemId);
             return;
