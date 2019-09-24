@@ -70,5 +70,8 @@ export {
     addItemToCart,
     itemAddedToCart,
     setCheckout,
-    getCheckout
+    getCheckout,
+    getProduct,
+    setProductInactive,
+    getClient
 } from './storefront';

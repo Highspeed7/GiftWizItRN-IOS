@@ -37,19 +37,37 @@ class StoreFront extends Component {
         this.props.addItemToCart(itemsToAdd);
     }
     addItemToWishList = (product) => {
-        if(this.isFavorited(product.variants[0].id)) {
-            Alert.alert("This item has already been added to your wish list... go check it out!");
+        const favorited = this.getFavorited(product.variants[0].id);
+        if(favorited.length > 0) {
+            // Alert.alert("This item has already been added to your wish list... go check it out!");
+            this.removeItemFromWishList(favorited[0]);
+            return;
         }
+
+        productData = {
+            variant_Id: product.variants[0].id,
+            product_Id: product.id
+        };
+        
         // Construct the item to add
         var itemToAdd = {
             name: product.title,
             image: product.images[0].src,
-            productId: product.variants[0].id,
+            productId: JSON.stringify(productData),
             domain: storeConstants.storeDomain,
             url: null
         }
 
         this.props.addItemToWList(itemToAdd);
+    }
+    removeItemFromWishList = (item) => {
+        let deletedItemsArr = [];
+        let deletedItemObj = {};
+
+        deletedItemObj["item_Id"] = item.item_Id;
+        deletedItemsArr.push(deletedItemObj);
+
+        this.props.removeItemFromWList(deletedItemsArr);
     }
     testButtonClicked = () => {
         const url = "giftwi://product-detail";
@@ -63,17 +81,29 @@ class StoreFront extends Component {
             })
         })
     }
-    isFavorited = (productId) => {
+    getFavorited = (productId) => {
         const wishList = this.props.wishList
 
-        let favorited = wishList.filter((list) => {
-            return list.product_Id == productId;
+        let favorited = [];
+
+        favorited = wishList.filter((item) => {
+            let itemProductData = {
+                variant_Id: null
+            };
+
+            if(item.product_Id != null) {
+                itemProductData = JSON.parse(item.product_Id);
+            }
+
+            if(itemProductData.variant_Id == productId){
+                return item;
+            }
         });
 
-        if(favorited.length > 0) {
-            return true;
-        }
-        return false;
+        return favorited;
+    }
+    productSelected = (product) => {
+        this.props.navigation.navigate("Products", {productId: product.id});
     }
     render() {
         if(this.props.activeCategory != null && this.props.products.length == 0) {
@@ -83,10 +113,11 @@ class StoreFront extends Component {
             ? <FlatList
                 horizontal={false}
                 data={this.props.products}
+                extraData={this.props.wishList}
                 renderItem={(product) => {
                     const images = product.item.images;
                     return <Card containerStyle={{minHeight: 100}}>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.productSelected(product.item)}>
                                     <View style={{flexDirection: 'row', flex: 2, maxHeight: 55}}>
                                         <View style={{flex: 1}}>
                                             <Image style={styles.productImage} source={{uri: images[0].src}} />
@@ -101,8 +132,8 @@ class StoreFront extends Component {
                                         <Button 
                                             icon={
                                                 <FontAweomse
-                                                    name={(this.isFavorited(product.item.variants[0].id)) ? "star" : "star-o"}
-                                                    color={(this.isFavorited(product.item.variants[0].id)) ? "orange" : "black"}
+                                                    name={(this.getFavorited(product.item.variants[0].id).length > 0) ? "star" : "star-o"}
+                                                    color={(this.getFavorited(product.item.variants[0].id).length > 0) ? "orange" : "black"}
                                                     size={20}
                                                 />
                                             }
@@ -156,7 +187,8 @@ mapDispatchToProps = dispatch => {
         initializeStore: () => dispatch(actions.initializeStore()),
         fetchCategoryProducts: () => dispatch(actions.fetchCategoryProducts()),
         addItemToCart: (lineItems) => dispatch(actions.addItemToCart(lineItems)),
-        addItemToWList: (item) => dispatch(actions.addWishListItem(item))
+        addItemToWList: (item) => dispatch(actions.addWishListItem(item)),
+        removeItemFromWList: (item) => dispatch(actions.deleteWishListItems(item))
     }
 }
 

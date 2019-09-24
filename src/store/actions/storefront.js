@@ -1,4 +1,8 @@
 import * as actionTypes from './actionTypes';
+import Client from 'shopify-buy/index.unoptimized.umd';
+
+import * as storefrontConfig from '../../resources/storefront-store';
+
 import * as actions from './index';
 
 import axios from 'axios';
@@ -49,6 +53,22 @@ export const setCheckout = (checkout) => {
     };
 };
 
+export const getClient = () => {
+    return async(dispatch) => {
+        return promise = new Promise((resolve, reject) => {
+            try {
+                let client = Client.buildClient({
+                    domain: 'giftwizit.myshopify.com',
+                    storefrontAccessToken: storefrontConfig.storefrontToken
+                });
+                resolve(client);
+            }catch(err) {
+                reject(err);
+            }
+        });
+    };
+};
+
 export const getCheckout = () => {
     return async(dispatch) => {
         return promise = new Promise(async (resolve, reject) => {
@@ -79,3 +99,16 @@ export const getCheckout = () => {
         })
     }
 }
+
+export const getProduct = (productId) => {
+    return {
+        type: actionTypes.GET_PRODUCT,
+        data: productId
+    };
+};
+
+export const setProductInactive = () => {
+    return {
+        type: actionTypes.SET_PRODUCT_INACTIVE
+    };
+};

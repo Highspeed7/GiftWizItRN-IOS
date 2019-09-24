@@ -2,7 +2,6 @@ import Client from 'shopify-buy/index.unoptimized.umd';
 
 import * as actionTypes from "../actions/actionTypes";
 import * as actions from '../actions/index';
-import * as storefrontConfig from '../../resources/storefront-store';
 import axios from 'axios';
 
 const storeFrontInterceptor = store => next => async (action) => {
@@ -16,10 +15,10 @@ const storeFrontInterceptor = store => next => async (action) => {
                     collections: null,
                     checkout: null
                 };
-                client = Client.buildClient({
-                    domain: 'giftwizit.myshopify.com',
-                    storefrontAccessToken: storefrontConfig.storefrontToken
-                });
+    
+                if(client == null) {
+                    client = await store.dispatch(actions.getClient());
+                }
     
                 action.payload.client = client;
     
@@ -57,12 +56,21 @@ const storeFrontInterceptor = store => next => async (action) => {
         case actionTypes.FETCH_CTGRY_PRODUCTS:
             const activeCategory = state.storeFrontReducer.activeCategory;
 
+            if(client == null) {
+                client = await store.dispatch(actions.getClient());
+            }
+
             await client.collection.fetchWithProducts(activeCategory.id).then((collection) => {
                 action.payload = collection.products;
             })
             break;
         case actionTypes.ADD_ITEM_TO_CART:
             const checkoutId = state.storeFrontReducer.checkout.id;
+
+            if(client == null) {
+                client = await store.dispatch(actions.getClient());
+            }
+
             client.checkout.addLineItems(checkoutId, action.data).then((checkout) => {
                 store.dispatch(actions.itemAddedToCart(checkout));
             }).catch((err) => {
@@ -86,8 +94,18 @@ const storeFrontInterceptor = store => next => async (action) => {
                 store.dispatch(actions.uiStopLoading());
             });
             break;
-        case actionTypes.GET_CHECKOUT:
-            
+        case actionTypes.GET_PRODUCT:
+            store.dispatch(actions.uiStartLoading());
+            const productId = action.data;
+
+            // Check that the client is initialized
+            if(client == null) {
+                client = await store.dispatch(actions.getClient());
+            }
+
+            await client.product.fetch(productId).then((product) => {
+                action.payload = product;
+            });
             break;
     }
     next(action);

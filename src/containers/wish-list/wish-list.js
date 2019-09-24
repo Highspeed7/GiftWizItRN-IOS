@@ -145,8 +145,13 @@ class WishList extends Component {
             this.props.moveWishListItems(movedItemsArr);
         }
     }
-    itemSwatchPressed = (itemId) => {
+    itemSwatchPressed = (item) => {
+        const itemId = item.item_id;
         if(this.state.moveMode == null && this.state.deleteMode == null) {
+            if(item.afflt_Link == null) {
+                const productId = JSON.parse(item.product_Id).product_Id;
+                this.props.navigation.navigate("Products", {productId});
+            }
             this.props.setWishListActive(itemId);
             return;
         }
@@ -183,7 +188,7 @@ class WishList extends Component {
     render() {
         const wishList = (this.props.wishList.length > 0)
         ? this.props.wishList.map((list) => (
-            <TouchableOpacity key={list.item_Id} style={styles.touchableSwatch} onPress={() => {this.itemSwatchPressed(list.item_Id)}}>
+            <TouchableOpacity key={list.item_Id} style={styles.touchableSwatch} onPress={() => {this.itemSwatchPressed(list)}}>
                 <Swatch style={{justfiyContent: 'center'}}>
                     <Image style={styles.itemImage} source={{uri: list.image}} />
                     {(this.isItemSelected(list.item_Id)) 
