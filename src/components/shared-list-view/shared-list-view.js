@@ -13,7 +13,7 @@ class SharedListView extends Component {
         listItems = (listItems != null && listItems.length > 0)
             ? this.props.list.listItems.map((item) => 
                 (
-                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item.item_Id)}}>
+                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item)}}>
                         <Swatch style={{justfiyContent: 'center'}}>
                             <Image style={styles.itemImage} source={{uri: item.image}} />
                         </Swatch>

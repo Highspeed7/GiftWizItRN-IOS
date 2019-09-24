@@ -29,7 +29,9 @@ class ProductDetail extends Component {
                 {
                     this.props.activeProduct != null 
                         ? 
-                        <Text>{this.props.activeProduct.title}</Text>
+                        [<Text>{this.props.activeProduct.title}</Text>,
+                        <ProductImgr product={this.props.activeProduct} />
+                        ]
                         : null
                 }
             </View>

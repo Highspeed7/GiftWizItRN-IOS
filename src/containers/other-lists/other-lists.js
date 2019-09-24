@@ -20,7 +20,16 @@ class OtherLists extends Component {
         this.props.setListItems(listId);
         this.props.setUserSharedListActive(listId);
     }
-    onListItemPressed = (itemId) => {
+    onListItemPressed = (item) => {
+        let itemId = item.item_Id;
+
+        if(item.afflt_Link == null) {
+            const productId = JSON.parse(item.product_Id).product_Id;
+            this.props.setUserSharedListInactive(activeList.giftListId);
+            this.props.navigation.navigate("Products", {productId});
+            return;
+        }
+
         let key = activeList.giftListId;
         this.props.setUserSharedListItemActive(key, itemId);
     }

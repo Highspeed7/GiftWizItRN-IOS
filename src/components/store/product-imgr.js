@@ -5,7 +5,7 @@ class ProductImgr extends Component {
     render() {
         const product = this.props.product
         return (
-            <Text>product.title</Text>
+            <Text>{product.title}</Text>
         )
     }
 }
