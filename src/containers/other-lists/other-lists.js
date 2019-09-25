@@ -39,6 +39,7 @@ class OtherLists extends Component {
     }
     onListModalClosed = (listId) => {
         this.props.setUserSharedListInactive(listId);
+        
     }
     render() {
 
