@@ -53,7 +53,6 @@ class ProductDetail extends Component {
         const product = this.props.activeProduct;
         const favorited = this.getFavorited(product.variants[0].id);
         if(favorited.length > 0) {
-            // Alert.alert("This item has already been added to your wish list... go check it out!");
             this.removeItemFromWishList(favorited[0]);
             return;
         }
@@ -140,7 +139,7 @@ class ProductDetail extends Component {
                                 ellipsizeMode="tail"
                                 numberOfLines={2}
                             >
-                                {`${this.props.activeProduct.title} is perfect, you'll not find a better product EVER! Just check it out, cmon! you know you want to!`}
+                                {`${this.props.activeProduct.title}`}
                             </Text>
                         </View>
                         <ScrollView 
@@ -157,7 +156,7 @@ class ProductDetail extends Component {
                         >
                             {this.props.activeProduct.description.length > 0
                                 ? <Text>{this.props.activeProduct.description}</Text>
-                                : <Text>I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... I did this to take up space because there's No description... </Text>
+                                : <Text>No description... </Text>
                             }
                         </ScrollView>
                         <View style={{marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee', justifyContent: 'center', alignItems: 'center', minHeight: 100}}>
