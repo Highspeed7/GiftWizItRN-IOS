@@ -39,7 +39,6 @@ class StoreFront extends Component {
     addItemToWishList = (product) => {
         const favorited = this.getFavorited(product.variants[0].id);
         if(favorited.length > 0) {
-            // Alert.alert("This item has already been added to your wish list... go check it out!");
             this.removeItemFromWishList(favorited[0]);
             return;
         }
