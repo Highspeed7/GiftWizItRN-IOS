@@ -73,7 +73,7 @@ export const getCheckout = () => {
     return async(dispatch) => {
         return promise = new Promise(async (resolve, reject) => {
             try {
-                dispatch(actions.uiStartLoading());
+                // dispatch(actions.uiStartLoading());
                 token = await dispatch(actions.getAuthToken());
 
                 let headerObj = {
@@ -85,7 +85,6 @@ export const getCheckout = () => {
                 };
 
                 await axios.get("https://giftwizitapi.azurewebsites.net/api/getCheckout", config).then((r) => {
-                    dispatch(actions.uiStopLoading());
                     if(r.data.length > 0) {
                         resolve(r.data[0]);
                         return;

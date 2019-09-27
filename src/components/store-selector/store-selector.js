@@ -97,6 +97,7 @@ class StoreSelector extends Component {
         });
     }
     openStoreFront = () => {
+        this.props.uiStartSpinner();
         this.props.openStoreFront();
     }
     render() {
@@ -199,7 +200,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
-        onItemAdded: (data) => dispatch(actions.addWishListItem(data))
+        onItemAdded: (data) => dispatch(actions.addWishListItem(data)),
+        uiStartSpinner: () => dispatch(actions.uiStartLoading())
     }
 }
 

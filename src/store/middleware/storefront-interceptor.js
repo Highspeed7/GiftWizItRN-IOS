@@ -32,7 +32,6 @@ const storeFrontInterceptor = store => next => async (action) => {
                 var existingCheckout = await store.dispatch(actions.getCheckout());
 
                 // If not create a new checkout
-                console.log(existingCheckout);
                 if(existingCheckout == null) {
                     await client.checkout.create().then((checkout) => {
                         console.log(checkout.id)
@@ -43,10 +42,12 @@ const storeFrontInterceptor = store => next => async (action) => {
                         };
                         store.dispatch(actions.setCheckout(checkoutToStore));
                         action.payload.checkout = checkout;
+                        store.dispatch(actions.uiStopLoading());
                     });
                 }else {
                     await client.checkout.fetch(existingCheckout.checkoutId).then((checkout) => {
                         action.payload.checkout = checkout;
+                        store.dispatch(actions.uiStopLoading());
                     })
                 }
             }catch(err) {
