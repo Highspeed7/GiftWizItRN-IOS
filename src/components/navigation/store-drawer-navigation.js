@@ -8,7 +8,6 @@ import HeaderButton from '../store/header/header-button';
 import CartButton from '../store/header/cart-button';
 import StoreFront from '../../components/store-selector/giftwizit-shopify/store-front';
 import CategoryDrawerContent from '../../components/store/drawer/category-drawer-content';
-import ProductDetail from '../store/product-detail';
 
 export default StoreDrawerNavigator = createDrawerNavigator(
     {
@@ -25,6 +24,10 @@ export default StoreDrawerNavigator = createDrawerNavigator(
     }
 );
 
+const test = () => {
+    Alert.alert("Testing")
+}
+
 StoreDrawerNavigator.navigationOptions = navData => {
     return {
         headerTitle: "Choose a category",
@@ -32,13 +35,18 @@ StoreDrawerNavigator.navigationOptions = navData => {
                         <Item 
                             title='Categories'
                             iconName='list'
-                            onPress={() => {navData.navigation.toggleDrawer();}}
+                            onPress={() => {
+                                navData.navigation.toggleDrawer();
+                            }}
                         />
                     </HeaderButtons>,
         headerRight: <HeaderButtons HeaderButtonComponent={CartButton}>
                         <Item
                             title='Cart'
                             iconName='shopping-cart'
+                            onPress={() => {
+                                navData.navigation.navigate("StoreCart")
+                            }}
                         />
                     </HeaderButtons>
     }

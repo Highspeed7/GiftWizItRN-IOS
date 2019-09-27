@@ -4,7 +4,7 @@ import { HeaderButton } from 'react-navigation-header-buttons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import CartIcon from '../../notifications/cart-icon';
 
-class CustomHeaderButton extends Component {
+class CartButton extends Component {
     render() {
         return <HeaderButton {...this.props} 
                     IconComponent={CartIcon} 
@@ -13,4 +13,4 @@ class CustomHeaderButton extends Component {
     }
 }
 
-export default CustomHeaderButton;
+export default CartButton;

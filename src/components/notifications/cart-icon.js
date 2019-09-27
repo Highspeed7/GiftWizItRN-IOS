@@ -8,18 +8,16 @@ class CartIcon extends Component {
     render() {
         return (
             <View>
-                <TouchableOpacity>
-                    <FontAwesome5
-                        name="shopping-cart"
-                        color="black"
-                        size={25}
-                        style={{marginRight: 10}}
-                    />
-                    <Badge
-                        value={this.props.cartCount}
-                        containerStyle={{position: 'absolute', bottom: -4, left: -5 }}
-                    />
-                </TouchableOpacity>
+                <FontAwesome5
+                    name="shopping-cart"
+                    color="black"
+                    size={25}
+                    style={{marginRight: 10}}
+                />
+                <Badge
+                    value={this.props.cartCount}
+                    containerStyle={{position: 'absolute', bottom: -4, left: -5 }}
+                />
             </View>
         )
     }

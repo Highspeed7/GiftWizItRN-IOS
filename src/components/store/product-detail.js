@@ -17,6 +17,7 @@ class ProductDetail extends Component {
     }
     touchableRef = null;
     didFocus = () => {
+        this.props.initializeStore();
         const productId = this.props.navigation.getParam("productId", null);
 
         if(productId != null) {
@@ -220,7 +221,8 @@ mapDispatchToProps = dispatch => {
         stopSpinner: () => dispatch(actions.uiStopLoading()),
         addItemToCart: (items) => dispatch(actions.addItemToCart(items)),
         addItemToWList: (item) => dispatch(actions.addWishListItem(item)),
-        removeItemFromWList: (item) => dispatch(actions.deleteWishListItems(item))
+        removeItemFromWList: (item) => dispatch(actions.deleteWishListItems(item)),
+        initializeStore: () => dispatch(actions.initializeStore())
     };
 };
 
