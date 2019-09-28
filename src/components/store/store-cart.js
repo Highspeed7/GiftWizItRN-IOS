@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Text, FlatList, View } from 'react-native';
 import { connect } from 'react-redux';
 
+import CartItem from './cart-item/cart-item';
+
 class StoreCart extends Component {
     render() {
         // const { likneItems } = this.props.checkout;
@@ -10,7 +12,7 @@ class StoreCart extends Component {
                 style={{borderWidth: 1}}
                 data={this.props.checkout.lineItems}
                 renderItem={({item}) => (
-                    <Text>{item.title}</Text>
+                    <CartItem product={item} />
                 )}
             />
         )
