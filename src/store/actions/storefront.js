@@ -39,6 +39,20 @@ export const addItemToCart = (item) => {
     }
 }
 
+export const removeItemFromCart = (item) => {
+    return {
+        type: actionTypes.REMOVE_ITEM_FROM_CART,
+        data: item
+    }
+}
+
+export const updateItemInCart = (item) => {
+    return {
+        type: actionTypes.UPDATE_ITEM_IN_CART,
+        data: item
+    };
+};
+
 export const itemAddedToCart = (checkout) => {
     return {
         type: actionTypes.ITEM_ADDED_TO_CART,

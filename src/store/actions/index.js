@@ -68,6 +68,8 @@ export {
     fetchCategoryProducts,
     clearCategoryProducts,
     addItemToCart,
+    removeItemFromCart,
+    updateItemInCart,
     itemAddedToCart,
     setCheckout,
     getCheckout,
