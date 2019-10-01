@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, FlatList, View, StyleSheet, Linking } from 'react-native';
 import { Button, Card } from 'react-native-elements';
+import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
 
@@ -68,6 +69,9 @@ class StoreCart extends Component {
         this.props.removeItemFromCart(itemsToRemove);
     }
     render() {
+        if(this.props.cartCount == 0) {
+            this.props.navigation.navigate("Store");
+        }
         // const { likneItems } = this.props.checkout;
         return (
             [
@@ -78,7 +82,8 @@ class StoreCart extends Component {
                         <CartItem 
                             product={item} 
                             onItemAdd={() => this.addLineItemToCart(item)} 
-                            onItemRemove={() => this.updateLineItem(item)} 
+                            onItemUpdate={() => this.updateLineItem(item)}
+                            onItemRemove={() => this.removeLineItemFromCart(item)}
                         />
                     ])}
                 />,
@@ -157,7 +162,8 @@ mapDispatchToProps = dispatch => {
 
 mapStateToProps = state => {
     return {
-        checkout: state.storeFrontReducer.checkout
+        checkout: state.storeFrontReducer.checkout,
+        cartCount: state.storeFrontReducer.cartCount
     }
 }
 
