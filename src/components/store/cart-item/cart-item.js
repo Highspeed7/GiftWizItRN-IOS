@@ -7,7 +7,6 @@ class CartItem extends Component {
     render() {
         const product = this.props.product;
         const image = product.variant.image.src;
-        const BadgedIcon = withBadge(1)(Icon);
         return (
             <Card>
                 <View style={styles.itemCardTop}>
@@ -44,28 +43,21 @@ class CartItem extends Component {
                             />}
                             onPress={this.props.onItemUpdate}
                         />
+                        <Button
+                            buttonStyle={styles.cartActionButton}
+                            type='outline'
+                            icon={<OtherIcon
+                                name="times"
+                                size={15}
+                                color="red"
+                            />}
+                            onPress={this.props.onItemRemove}
+                        />
                     </View>
                     <View style={{flex: 3, alignItems: 'flex-end'}}>
                         <Text style={{fontSize: 20}}>{`$${product.variant.price} x ${product.quantity} = $${(product.variant.price * product.quantity)}`}</Text>
                     </View>
                 </View>
-                <TouchableOpacity style={{width: 40, position: 'absolute', right: 0}} onPress={this.props.onItemRemove}>
-                    <Badge
-                        value={<OtherIcon
-                                    name="times"
-                                    size={15}
-                                    color="red"
-                                />
-                        }
-                        badgeStyle={{
-                            borderWidth: 1, 
-                            borderColor: 'black', 
-                            backgroundColor: 'white',
-                            width: 40,
-                            height: 40
-                        }}
-                    />
-                </TouchableOpacity>
             </Card>
         )
     }

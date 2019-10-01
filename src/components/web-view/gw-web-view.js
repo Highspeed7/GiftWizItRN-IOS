@@ -47,7 +47,7 @@ class GWWebView extends Component {
     render() {
         return (
             <Auxiliary>
-                {(this.state.webRef != null) ? <WebViewNav onBack={this.state.webRef.goBack} onForward={this.state.webRef.goForward } /> : null}
+                {(this.state.webRef != null) ? <WebViewNav onWebClose={this.props.onWebClose} onBack={this.state.webRef.goBack} onForward={this.state.webRef.goForward } /> : null}
                 <WebView
                     ref={this.setWebRef}
                     source={this.props.url}
@@ -77,7 +77,7 @@ class GWWebView extends Component {
 
         if((JSON.parse(event.nativeEvent.data)).debug != null) {
             // Added for debug purposes;
-            // alert((JSON.parse(event.nativeEvent.data)).debug);
+            alert((JSON.parse(event.nativeEvent.data)).debug);
             return;
         }
        

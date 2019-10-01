@@ -149,7 +149,8 @@ class StoreSelector extends Component {
                                             setRef={this.setWebViewRef}
                                             canGoBack={this.setGoBackStatus}
                                             url={{uri: 'https://www.target.com'}}
-                                            onItemAdded={this.onItemAdded}   
+                                            onItemAdded={this.onItemAdded}
+                                            onWebClose={() => this.setState({targetModalOpen: null})}
                                         />
                                     </Modal>
                                 </Swatch>
