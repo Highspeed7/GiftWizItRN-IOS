@@ -129,6 +129,7 @@ class StoreSelector extends Component {
                                             canGoBack={this.setGoBackStatus}
                                             url={{uri: 'https://www.amazon.com'}}
                                             onItemAdded={this.onItemAdded}
+                                            onWebClose={() => this.setState({amazonModalOpen: null})}
                                         />
                                     </Modal>
                                 </Swatch>

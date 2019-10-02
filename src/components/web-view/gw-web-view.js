@@ -77,7 +77,9 @@ class GWWebView extends Component {
 
         if((JSON.parse(event.nativeEvent.data)).debug != null) {
             // Added for debug purposes;
+            var data = JSON.parse(event.nativeEvent.data).debug;
             alert((JSON.parse(event.nativeEvent.data)).debug);
+            console.log(data);
             return;
         }
        
@@ -85,6 +87,8 @@ class GWWebView extends Component {
         let caseHandlers = config.caseHandlers;
         let eventCall = JSON.parse(event.nativeEvent.data).case;
         let payload = JSON.parse(event.nativeEvent.data).payload;
+
+        console.log(JSON.parse(event.nativeEvent.data));
 
         try {
             caseHandlers.forEach((viewCase) => {

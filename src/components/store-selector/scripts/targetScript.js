@@ -143,7 +143,6 @@ export const targetProductViewScript = `(
         }
         let getPageType = () => {
             try {
-                alert("getting page type");
                 pageType = undefined;
                 let elements;
                 elementsToSearch.forEach((elem) => {
