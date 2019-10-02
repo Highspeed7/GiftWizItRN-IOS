@@ -198,26 +198,6 @@ export const amazonProductView1Script = `
                             alert(err);
                         }
                 }
-                // // Define the data object
-                // let data = {
-                //     payload: {},
-                //     case: null
-                // };
-
-                // data.case = "add_item";
-                // data.payload = getItemDetails();
-                // try {
-                //     data.payload.name = data.payload.name.textContent.trim();
-                //     alert(data.payload.name);
-                //     data.payload.image = data.payload.image.src;
-                // }catch(error) {
-                //     alert(error);
-                // }
-                
-                // data.payload.url = window.location.href;
-                // data.payload.domain = window.location.origin;
-                // alert(JSON.stringify(data));
-                // window.ReactNativeWebView.postMessage(JSON.stringify(data));
             });
 
             gw_btn.id = "gw_add_btn";
@@ -227,49 +207,6 @@ export const amazonProductView1Script = `
 
             return gw_btn_container;
         };
-
-
-        // const itemElementsToSearch = [
-        //     { 
-        //         name: "span#title",
-        //         image: "img#main-image"
-        //     },
-        //     {
-        //         name: "h1#title",
-        //         image: null
-        //     }
-        // ];
-
-        // let getItemDetails = () => {
-        //     var itemDetails = {
-        //         name: null,
-        //         image: null
-        //     };
-
-        //     itemElementsToSearch.forEach((elem, i) => {
-        //         (Object.keys(elem)).forEach((key) => {
-        //             // Should all be ids; and therefore not repeated on the page.
-        //             var elementOnPage = document.querySelector(itemElementsToSearch[i][key]);
-
-        //             if(elementOnPage != null) {
-        //                 itemDetails[key] = elementOnPage;
-        //             }
-        //         })
-        //     });
-        //     return itemDetails;
-        // };
-
-        
-
-        // let setHeartBeat = () => {
-        //     var interval = setInterval(() => {
-        //         // Set a timer to check for the existence of the add button
-        //         var gw_add_btn = document.querySelector("button#gw_add_btn");
-        //         if(gw_add_btn == null ) {
-        //            setButton();
-        //         }
-        //     }, 1000);
-        // }
 
         return {
             init: () => {
