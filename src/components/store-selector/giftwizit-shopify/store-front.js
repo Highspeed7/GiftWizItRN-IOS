@@ -115,7 +115,9 @@ class StoreFront extends Component {
                 extraData={this.props.wishList}
                 renderItem={(product) => {
                     const images = product.item.images;
-                    return <Card containerStyle={{minHeight: 100}}>
+                    return product.item.availableForSale == true 
+                        ?
+                            <Card containerStyle={{minHeight: 100}}>
                                 <TouchableOpacity onPress={() => this.productSelected(product.item)}>
                                     <View style={{flexDirection: 'row', flex: 2, maxHeight: 55}}>
                                         <View style={{flex: 1}}>
@@ -156,6 +158,7 @@ class StoreFront extends Component {
                                     </View>
                                 </View>
                             </Card>
+                        : null
                 }}
             />
             : null;

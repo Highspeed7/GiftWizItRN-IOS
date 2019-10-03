@@ -18,7 +18,7 @@ const storeFrontReducer = (state = initialState, action) => {
                 client: action.payload.client,
                 collections: action.payload.collections,
                 checkout: action.payload.checkout,
-                cartCount: action.payload.checkout.lineItems.length
+                cartCount: setCartCount(action.payload.checkout.lineItems)
             }
         case actionTypes.SET_CATEGORY_ACTIVE:
             return {
@@ -39,7 +39,7 @@ const storeFrontReducer = (state = initialState, action) => {
             return {
                 ...state,
                 checkout: action.data,
-                cartCount: action.data.lineItems.length
+                cartCount: setCartCount(action.data.lineItems)
             }
         case actionTypes.GET_PRODUCT:
             return {
@@ -53,6 +53,15 @@ const storeFrontReducer = (state = initialState, action) => {
             }
         default: return state;
     }
+}
+
+const setCartCount = (lineItems) => {
+    let count = 0;
+    lineItems.forEach(item => {
+        count = count + item.quantity;
+    });
+
+    return count;
 }
 
 export default storeFrontReducer;

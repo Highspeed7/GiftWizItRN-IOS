@@ -97,6 +97,7 @@ class StoreSelector extends Component {
         });
     }
     openStoreFront = () => {
+        this.props.uiStartSpinner();
         this.props.openStoreFront();
     }
     render() {
@@ -128,6 +129,7 @@ class StoreSelector extends Component {
                                             canGoBack={this.setGoBackStatus}
                                             url={{uri: 'https://www.amazon.com'}}
                                             onItemAdded={this.onItemAdded}
+                                            onWebClose={() => this.setState({amazonModalOpen: null})}
                                         />
                                     </Modal>
                                 </Swatch>
@@ -148,7 +150,8 @@ class StoreSelector extends Component {
                                             setRef={this.setWebViewRef}
                                             canGoBack={this.setGoBackStatus}
                                             url={{uri: 'https://www.target.com'}}
-                                            onItemAdded={this.onItemAdded}   
+                                            onItemAdded={this.onItemAdded}
+                                            onWebClose={() => this.setState({targetModalOpen: null})}
                                         />
                                     </Modal>
                                 </Swatch>
@@ -199,7 +202,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
-        onItemAdded: (data) => dispatch(actions.addWishListItem(data))
+        onItemAdded: (data) => dispatch(actions.addWishListItem(data)),
+        uiStartSpinner: () => dispatch(actions.uiStartLoading())
     }
 }
 

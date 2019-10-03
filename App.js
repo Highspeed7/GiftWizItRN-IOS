@@ -20,24 +20,15 @@ import Splash from './src/containers/splash/splash';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import StoreDrawerNavigator from './src/components/navigation/store-drawer-navigation';
+import StoreProductNavigator from './src/components/navigation/store-product-navigation';
 import StoreFront from './src/components/store-selector/giftwizit-shopify/store-front';
 import ProductDetail from './src/components/store/product-detail';
+import StoreCart from './src/components/store/store-cart';
 
 const store = storeConfiguration();
 
 // TODO: Move routing info to a seperate file.
 // TODO: Maybe move the header image to a seperate file
-
-const StoreStackNavigator = createStackNavigator({
-  Product: {
-      screen: ProductDetail,
-      path: "product/:id"
-  }
-},
-{
-  mode: 'modal',
-  headerMode: 'none'
-});
 
 const PostAuthStackNavigator = createStackNavigator({
   Home: {
@@ -54,8 +45,11 @@ const PostAuthStackNavigator = createStackNavigator({
     path: 'test'
   },
   Products: {
-    screen: StoreStackNavigator,
-    path: "products"
+    screen: StoreProductNavigator
+  },
+  StoreCart: {
+    screen: StoreCart,
+    path: "cart"
   }
 });
 

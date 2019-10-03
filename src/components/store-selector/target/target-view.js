@@ -16,6 +16,7 @@ class TargetView extends Component {
         }
         return (
             <GWWebView
+                onWebClose={this.props.onWebClose}
                 setRef={this.props.setRef}
                 canGoBack={this.props.canGoBack}
                 config={config}

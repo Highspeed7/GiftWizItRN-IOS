@@ -7,6 +7,7 @@ import axios from 'axios';
 const storeFrontInterceptor = store => next => async (action) => {
     const state = store.getState();
     let client = state.storeFrontReducer.client;
+    let checkoutId = null;
     switch(action.type) {
         case actionTypes.INITIALIZE_STOREFRONT:
             try {
@@ -32,7 +33,6 @@ const storeFrontInterceptor = store => next => async (action) => {
                 var existingCheckout = await store.dispatch(actions.getCheckout());
 
                 // If not create a new checkout
-                console.log(existingCheckout);
                 if(existingCheckout == null) {
                     await client.checkout.create().then((checkout) => {
                         console.log(checkout.id)
@@ -43,10 +43,12 @@ const storeFrontInterceptor = store => next => async (action) => {
                         };
                         store.dispatch(actions.setCheckout(checkoutToStore));
                         action.payload.checkout = checkout;
+                        store.dispatch(actions.uiStopLoading());
                     });
                 }else {
                     await client.checkout.fetch(existingCheckout.checkoutId).then((checkout) => {
                         action.payload.checkout = checkout;
+                        store.dispatch(actions.uiStopLoading());
                     })
                 }
             }catch(err) {
@@ -65,13 +67,39 @@ const storeFrontInterceptor = store => next => async (action) => {
             })
             break;
         case actionTypes.ADD_ITEM_TO_CART:
-            const checkoutId = state.storeFrontReducer.checkout.id;
+            checkoutId = state.storeFrontReducer.checkout.id;
 
             if(client == null) {
                 client = await store.dispatch(actions.getClient());
             }
 
             client.checkout.addLineItems(checkoutId, action.data).then((checkout) => {
+                store.dispatch(actions.itemAddedToCart(checkout));
+            }).catch((err) => {
+                console.log(err);
+            })
+            break;
+        case actionTypes.REMOVE_ITEM_FROM_CART:
+            checkoutId = state.storeFrontReducer.checkout.id;
+
+            if(client == null) {
+                client = await store.dispatch(actions.getClient());
+            }
+
+            client.checkout.removeLineItems(checkoutId, action.data).then((checkout) => {
+                store.dispatch(actions.itemAddedToCart(checkout));
+            }).catch((err) => {
+                console.log(err);
+            })
+            break;
+        case actionTypes.UPDATE_ITEM_IN_CART:
+            checkoutId = state.storeFrontReducer.checkout.id;
+
+            if(client == null) {
+                client = await store.dispatch(actions.getClient());
+            }
+
+            client.checkout.updateLineItems(checkoutId, action.data).then((checkout) => {
                 store.dispatch(actions.itemAddedToCart(checkout));
             }).catch((err) => {
                 console.log(err);
