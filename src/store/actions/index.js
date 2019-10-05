@@ -75,6 +75,5 @@ export {
     getCheckout,
     getProduct,
     setProductInactive,
-    getClient,
-    fetchNextPageOfProducts
+    getClient
 } from './storefront';
