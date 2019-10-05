@@ -51,6 +51,11 @@ const storeFrontReducer = (state = initialState, action) => {
                 ...state,
                 activeProduct: null
             }
+        case actionTypes.GET_PRODUCTS_NEXT_PAGE:
+            return {
+                ...state,
+                displayedProducts: state.displayedProducts.concat(action.payload)
+            }
         default: return state;
     }
 }

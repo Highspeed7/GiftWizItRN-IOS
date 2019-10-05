@@ -104,6 +104,12 @@ class StoreFront extends Component {
     productSelected = (product) => {
         this.props.navigation.navigate("Products", {productId: product.id});
     }
+    fetchNextPageOfProducts = () => {
+        let lastProductIndex = this.props.products.length - 1;
+        if(this.props.products[lastProductIndex].hasNextPage) {
+            this.props.fetchNextPage();
+        }
+    }
     render() {
         if(this.props.activeCategory != null && this.props.products.length == 0) {
             this.fetchCategoryProducts();
@@ -113,11 +119,13 @@ class StoreFront extends Component {
                 horizontal={false}
                 data={this.props.products}
                 extraData={this.props.wishList}
+                onEndReached={this.fetchNextPageOfProducts}
+                onEndReachedThreshold={1}
                 renderItem={(product) => {
                     const images = product.item.images;
                     return product.item.availableForSale == true 
                         ?
-                            <Card containerStyle={{minHeight: 100}}>
+                            <Card key={product.item.id} containerStyle={{minHeight: 100}}>
                                 <TouchableOpacity onPress={() => this.productSelected(product.item)}>
                                     <View style={{flexDirection: 'row', flex: 2, maxHeight: 55}}>
                                         <View style={{flex: 1}}>
@@ -190,7 +198,8 @@ mapDispatchToProps = dispatch => {
         fetchCategoryProducts: () => dispatch(actions.fetchCategoryProducts()),
         addItemToCart: (lineItems) => dispatch(actions.addItemToCart(lineItems)),
         addItemToWList: (item) => dispatch(actions.addWishListItem(item)),
-        removeItemFromWList: (item) => dispatch(actions.deleteWishListItems(item))
+        removeItemFromWList: (item) => dispatch(actions.deleteWishListItems(item)),
+        fetchNextPage: () => dispatch(actions.fetchNextPageOfProducts())
     }
 }
 
