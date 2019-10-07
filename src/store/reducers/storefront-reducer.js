@@ -6,6 +6,7 @@ const initialState = {
     activeCategory: null,
     displayedProducts: [],
     activeProduct: null,
+    activeVariant: null,
     checkout: null,
     cartCount: 0
 }
@@ -44,12 +45,14 @@ const storeFrontReducer = (state = initialState, action) => {
         case actionTypes.GET_PRODUCT:
             return {
                 ...state,
-                activeProduct: action.payload
+                activeProduct: action.payload,
+                activeVariant: action.payload.variants != null  ? action.payload.variants[0]: null
             }
         case actionTypes.SET_PRODUCT_INACTIVE:
             return {
                 ...state,
-                activeProduct: null
+                activeProduct: null,
+                activeVariant: null
             }
         case actionTypes.GET_PRODUCTS_NEXT_PAGE:
             return {

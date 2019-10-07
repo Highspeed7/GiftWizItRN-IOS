@@ -102,7 +102,11 @@ class StoreFront extends Component {
         return favorited;
     }
     productSelected = (product) => {
-        this.props.navigation.navigate("Products", {productId: product.id});
+        let productData = {
+            product_Id: product.id
+        }
+        // Send the productId as well as the first variantId, because 'Products will be expecting it.
+        this.props.navigation.navigate("Products", productData);
     }
     fetchNextPageOfProducts = () => {
         let lastProductIndex = this.props.products.length - 1;
