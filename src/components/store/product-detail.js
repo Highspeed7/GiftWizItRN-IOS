@@ -23,9 +23,14 @@ import { SliderBox } from 'react-native-image-slider-box';
 import Auxiliary from '../../hoc/auxiliary';
 
 class ProductDetail extends Component {
+    // Gives access to variants selected
+    variantRef = null;
+    selectedVariant = null;
     state = {
         activeImage: null,
-        viewDesc: null
+        viewDesc: null,
+        activeVariant: null,
+        cartActionEnabled: true
     }
     touchableRef = null;
     didFocus = () => {
@@ -39,6 +44,12 @@ class ProductDetail extends Component {
     }
     willBlur = () => {
         this.props.setProductInactive();
+    }
+    componentDidUpdate = () => {
+        if(this.props.activeProduct != null && this.selectedVariant == null) {
+            this.setActiveVariant()
+            this.props.stopSpinner();
+        }
     }
     shouldComponentUpdate = (nextProps, nextState) => {
         return shallowCompare(this, nextProps, nextState);
@@ -54,7 +65,7 @@ class ProductDetail extends Component {
         this.productImageSelected(productImages[imageIndex]);
     }
     addLineItemToCart = () => {
-        let productId = this.props.activeProduct.variants[0].id
+        let productId = this.selectedVariant.id
         let itemsToAdd = [];
         let lineItem = {
             variantId: productId,
@@ -74,7 +85,7 @@ class ProductDetail extends Component {
         }
 
         productData = {
-            variant_Id: product.variants[0].id,
+            variant_Id: this.selectedVariant.id,
             product_Id: product.id
         };
         
@@ -99,7 +110,14 @@ class ProductDetail extends Component {
         this.props.removeItemFromWList(deletedItemsArr);
     }
     getFavorited = () => {
-        let productId = this.props.activeProduct.variants[0].id
+        let productId;
+
+        if(this.selectedVariant == null) {
+            productId = this.props.activeProduct.variants[0].id;
+        }else {
+            productId = this.selectedVariant.id;
+        }
+
         const wishList = this.props.wishList
 
         let favorited = [];
@@ -120,25 +138,40 @@ class ProductDetail extends Component {
 
         return favorited;
     }
-    onVariantChanged = (itemValue, option) => {
-        Alert.alert(`Option: ${option} with value: ${itemValue}`);
-    }
     openDescription = () => {
         this.setState({
             viewDesc: true
         });
     };
-    render() {
-        let productImages;
-        // Set the active variant
-        
-        // Stop loading spinner
-        if(this.props.activeProduct != null) {
-            this.props.stopSpinner();
+    setActiveVariant = () => {
+        let {variant_Id} = this.props.navigation.state.params;
 
-            // Get the current variant image set.
+        // If we aren't provided a variant_Id... assign the first one (This should never happen)
+        if(variant_Id == null) {
+            variant_Id = this.props.activeProduct.variants[0].id
+        }
+
+        this.props.activeProduct.variants.filter((variant) => {
+            if(variant.id == variant_Id) {
+                this.setState({
+                    activeVariant: variant
+                });
+                this.selectedVariant = variant;
+            }    
+        })
+    }
+    variantChanged = (available, chosenVariant) => {
+        this.setState({cartActionEnabled: available})
+
+        if(available) {
+            this.selectedVariant = chosenVariant;
+        }
+    }
+    render() {
+        let productImages = null;
+        if(this.props.activeProduct != null) {
             productImages = this.props.activeProduct.images.map(i => i.src);
-       }
+        }
         return (
             <Auxiliary>
                 <NavigationEvents onDidFocus={this.didFocus} onWillBlur={this.props.setProductInactive} />
@@ -193,9 +226,11 @@ class ProductDetail extends Component {
                         </View>
                         {this.props.activeProduct.variants.length > 1 
                             ? <View style={{marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee', paddingBottom: 15}}>
-                                    <ProductVariants 
+                                    <ProductVariants
+                                        ref={r => this.variantRef = r} 
                                         activeProduct={this.props.activeProduct}
-                                        onVariantChanged={this.onVariantChanged}
+                                        activeVariant={this.state.activeVariant}
+                                        onVariantChanged={this.variantChanged}
                                     />
                                 </View>
                             : null
@@ -228,6 +263,7 @@ class ProductDetail extends Component {
                                 onPress={() => Alert.alert("Coming Soon!")}
                             />
                             <Button
+                                disabled={!this.state.cartActionEnabled}
                                 containerStyle={{marginBottom: 5}}
                                 title="Add to Cart"
                                 type="solid"
