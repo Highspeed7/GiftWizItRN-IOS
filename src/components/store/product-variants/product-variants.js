@@ -15,9 +15,6 @@ class ProductVariants extends Component {
     state = {
         pickerConfig: {}
     }
-    // shouldComponentUpdate = (nextProps, nextState) => {
-    //     return shallowCompare(this, nextProps, nextState);
-    // }
     setSelectedOptions = (option) => {
         this.props.activeVariant.selectedOptions.forEach((opt) => {
             if(opt.name == option) {

@@ -165,6 +165,7 @@ class ProductDetail extends Component {
 
         if(available) {
             this.selectedVariant = chosenVariant;
+            this.forceUpdate();
         }
     }
     render() {
