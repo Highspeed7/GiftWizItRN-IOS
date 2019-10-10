@@ -12,6 +12,7 @@ import Checkbox from '../../checkbox/checkbox';
 import * as actions from '../../../store/actions/index';
 
 class ShareGiftList extends Component {
+    shouldReloadContacts = true;
     state = {
         selectedContacts: [],
         shareableContacts: []
@@ -19,11 +20,18 @@ class ShareGiftList extends Component {
     componentDidMount = async () => {
         await this.props.getContacts();
         await this.props.getSharedLists();
-        this.setShareableContacts();
-        this.props.stopUiLoading();
+    }
+    componentDidUpdate = () => {
+        if(this.props.contacts.length > 0 && this.shouldReloadContacts) {
+            this.setShareableContacts();
+            this.shouldReloadContacts = false;
+            this.props.stopUiLoading();
+        }
+    }
+    componentWillUnmount = () => {
+        this.shouldReloadContacts = true;
     }
     setShareableContacts = () => {
-        console.log(this.props);
         const activeListId = this.props.activeList.id
         let listSharedContacts = this.props.sharedLists.map((sharedList) => {
             if(sharedList.giftListId == activeListId) {

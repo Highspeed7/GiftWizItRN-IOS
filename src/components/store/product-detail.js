@@ -30,12 +30,19 @@ class ProductDetail extends Component {
         activeImage: null,
         viewDesc: null,
         activeVariant: null,
-        cartActionEnabled: true
+        cartActionEnabled: true,
+        enableDiscussion: false,
     }
     touchableRef = null;
     didFocus = () => {
         this.props.initializeStore();
-        const {product_Id, variant_Id} = this.props.navigation.state.params;
+        const {product_Id, variant_Id, startDiscussion} = this.props.navigation.state.params;
+
+        if(startDiscussion) {
+            this.setState({
+                enableDiscussion: true
+            });
+        }
 
         if(product_Id != null) {
             this.props.getProduct(product_Id);
@@ -44,6 +51,9 @@ class ProductDetail extends Component {
     }
     willBlur = () => {
         this.props.setProductInactive();
+        this.setState({
+            enableDiscussion: false
+        });
     }
     componentDidUpdate = () => {
         if(this.props.activeProduct != null && this.selectedVariant == null) {
@@ -256,13 +266,16 @@ class ProductDetail extends Component {
                                         onPress={this.addItemToWishList}
                                     />
                             }
-                            
-                            <Button 
-                                containerStyle={{marginBottom: 5}}
-                                title="Join Discussion"
-                                type="outline"
-                                onPress={() => Alert.alert("Coming Soon!")}
-                            />
+                            {
+                                (this.state.enableDiscussion)
+                                ? <Button 
+                                    containerStyle={{marginBottom: 5}}
+                                    title="Join Discussion"
+                                    type="outline"
+                                    onPress={() => Alert.alert("Coming Soon!")}
+                                />
+                                : null
+                            }
                             <Button
                                 disabled={!this.state.cartActionEnabled}
                                 containerStyle={{marginBottom: 5}}
