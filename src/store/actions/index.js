@@ -54,7 +54,9 @@ export {
 export {
     setNotificationsCount,
     beginNotifications,
-    notificationRecieved
+    notificationRecieved,
+    getNotifications,
+    fetchNextNotificationsPage
 } from './notifications';
 
 export {

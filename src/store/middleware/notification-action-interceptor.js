@@ -6,6 +6,7 @@ const notificationActionInterceptor = store => next => async action => {
     switch(action.type) {
         case "NOTIFICATION_RECIEVED":
         {
+            await store.dispatch(actions.getNotifications());
             switch(action.data.type) {
                 case "ListShared":
                 {

@@ -68,4 +68,12 @@ export const shallowCompare = (instance, nextProps, nextState) => {
       !objShallowEqual(instance.props, nextProps) ||
       !objShallowEqual(instance.state, nextState)
     );
-  }
+}
+
+export const timestampUTCToLocalReadable = (dateTime) => {
+    let newDate = new Date(dateTime);
+    newDate = newDate - newDate.getTimezoneOffset()*60*1000;
+    newDate = new Date(newDate);
+    return newDate.toDateString();
+}
+

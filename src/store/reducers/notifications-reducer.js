@@ -1,5 +1,6 @@
 const initialState = {
     notificationCount: 0,
+    notifications: null,
     notificationToast: []
 };
 
@@ -17,8 +18,22 @@ const notificationsReducer = (state = initialState, action) => {
                         console.log("******NOTIFICATION*****", action.data.notificationTitle)
                 }
             }
-        default: return state
+            break;
+        case "GET_NOTIFICATIONS":
+            return {
+                ...state,
+                notifications: action.payload
+            }
+        case "FETCH_NEXT_NOTIF_PAGE":
+            return {
+                ...state,
+                notifications: {
+                    ...action.payload,
+                    results: state.notifications.results.concat(action.payload.results)
+                }
+            }
     }
+    return state;
 }
 
 export default notificationsReducer;
