@@ -296,6 +296,47 @@ const apiInterceptor = store => next => async action => {
                 
             }
             break;
+        case actionTypes.GET_NOTIFICATIONS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.get("http://giftwizitapi.azurewebsites.net/api/UserNotifications", config).then((res) => {
+                    action.payload = res.data;
+                });
+            }catch(error) {
+                console.log("Error: ", error);
+            }
+            break;
+        case actionTypes.FETCH_NEXT_NOTIF_PAGE:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+                const state = store.getState();
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.get(`http://giftwizitapi.azurewebsites.net/api/UserNotifications?pageCount=${state.notificationsReducer.notifications.currentPage + 1}`, config)
+                    .then((response) => {
+                        action.payload = response.data;
+                    });
+
+            }catch(error) {
+                console.log("Error: ", error);
+            }
+            break;
         case actionTypes.GET_USER_SHARED_FROM_LISTS:
             try {
                 token = await store.dispatch(actions.getAuthToken());

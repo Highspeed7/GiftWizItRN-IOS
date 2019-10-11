@@ -135,6 +135,19 @@ const storeFrontInterceptor = store => next => async (action) => {
                 action.payload = product;
             });
             break;
+        case actionTypes.GET_PRODUCTS_NEXT_PAGE:
+            store.dispatch(actions.uiStartLoading());
+
+            if(client == null) {
+                client = await store.dispatch(actions.getClient());
+            }
+
+            await client.fetchNextPage(state.storeFrontReducer.displayedProducts).then((res) => {
+                action.payload = res.model
+                store.dispatch(actions.uiStopLoading());
+            }).catch((err) => {
+                console.log("Error: ", err);
+            });
     }
     next(action);
 };

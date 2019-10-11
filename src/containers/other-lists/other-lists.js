@@ -24,9 +24,9 @@ class OtherLists extends Component {
         let itemId = item.item_Id;
 
         if(item.afflt_Link == null) {
-            const productId = JSON.parse(item.product_Id).product_Id;
+            const productData = JSON.parse(item.product_Id);
             this.props.setUserSharedListInactive(activeList.giftListId);
-            this.props.navigation.navigate("Products", {productId});
+            this.props.navigation.navigate("Products", {...productData, startDiscussion: true});
             return;
         }
 

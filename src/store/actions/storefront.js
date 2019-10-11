@@ -125,3 +125,16 @@ export const setProductInactive = () => {
         type: actionTypes.SET_PRODUCT_INACTIVE
     };
 };
+
+export const setProductActive = (product) => {
+    return {
+        type: actionTypes.SET_PRODUCT_ACTIVE,
+        data: product
+    };
+};
+
+export const fetchNextPageOfProducts = () => {
+    return {
+        type: actionTypes.GET_PRODUCTS_NEXT_PAGE
+    };
+};

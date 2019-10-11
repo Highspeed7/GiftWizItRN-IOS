@@ -18,3 +18,15 @@ export const notificationRecieved = (notification) => {
         data: notification
     }
 }
+
+export const getNotifications = () => {
+    return {
+        type: actionTypes.GET_NOTIFICATIONS
+    }
+}
+
+export const fetchNextNotificationsPage = () => {
+    return {
+        type: actionTypes.FETCH_NEXT_NOTIF_PAGE
+    };
+};

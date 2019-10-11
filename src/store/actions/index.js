@@ -54,7 +54,9 @@ export {
 export {
     setNotificationsCount,
     beginNotifications,
-    notificationRecieved
+    notificationRecieved,
+    getNotifications,
+    fetchNextNotificationsPage
 } from './notifications';
 
 export {
@@ -75,5 +77,6 @@ export {
     getCheckout,
     getProduct,
     setProductInactive,
-    getClient
+    getClient,
+    fetchNextPageOfProducts
 } from './storefront';

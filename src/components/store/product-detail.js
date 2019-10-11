@@ -1,32 +1,68 @@
 import React, { Component } from 'react';
-import { Alert, ScrollView, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { 
+    Alert, 
+    ScrollView, 
+    Text, 
+    View, 
+    Image, 
+    TouchableOpacity, 
+    Dimensions
+} from 'react-native';
 import { Overlay, Button } from 'react-native-elements';
 import { NavigationEvents } from 'react-navigation';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
+import HTML from 'react-native-render-html';
+import { WebView } from 'react-native-webview';
 
+import ProductVariants from './product-variants/product-variants';
+import {shallowCompare} from '../../utils/utils';
 import * as storeConstants from '../../resources/storefront-store';
 import * as actions from '../../store/actions/index';
 import { SliderBox } from 'react-native-image-slider-box';
 import Auxiliary from '../../hoc/auxiliary';
 
 class ProductDetail extends Component {
+    // Gives access to variants selected
+    variantRef = null;
+    selectedVariant = null;
     state = {
         activeImage: null,
-        outerScrollEnabled: true
+        viewDesc: null,
+        activeVariant: null,
+        cartActionEnabled: true,
+        enableDiscussion: false,
     }
     touchableRef = null;
     didFocus = () => {
         this.props.initializeStore();
-        const productId = this.props.navigation.getParam("productId", null);
+        const {product_Id, variant_Id, startDiscussion} = this.props.navigation.state.params;
 
-        if(productId != null) {
-            this.props.getProduct(productId);
+        if(startDiscussion) {
+            this.setState({
+                enableDiscussion: true
+            });
+        }
+
+        if(product_Id != null) {
+            this.props.getProduct(product_Id);
         }
         else return;
     }
     willBlur = () => {
         this.props.setProductInactive();
+        this.setState({
+            enableDiscussion: false
+        });
+    }
+    componentDidUpdate = () => {
+        if(this.props.activeProduct != null && this.selectedVariant == null) {
+            this.setActiveVariant()
+            this.props.stopSpinner();
+        }
+    }
+    shouldComponentUpdate = (nextProps, nextState) => {
+        return shallowCompare(this, nextProps, nextState);
     }
     productImageSelected = (imageSrc) => {
         this.setState({
@@ -39,7 +75,7 @@ class ProductDetail extends Component {
         this.productImageSelected(productImages[imageIndex]);
     }
     addLineItemToCart = () => {
-        let productId = this.props.activeProduct.variants[0].id
+        let productId = this.selectedVariant.id
         let itemsToAdd = [];
         let lineItem = {
             variantId: productId,
@@ -59,14 +95,14 @@ class ProductDetail extends Component {
         }
 
         productData = {
-            variant_Id: product.variants[0].id,
+            variant_Id: this.selectedVariant.id,
             product_Id: product.id
         };
         
         // Construct the item to add
         var itemToAdd = {
             name: product.title,
-            image: product.images[0].src,
+            image: this.props.activeVariant.image.src,
             productId: JSON.stringify(productData),
             domain: storeConstants.storeDomain,
             url: null
@@ -84,7 +120,14 @@ class ProductDetail extends Component {
         this.props.removeItemFromWList(deletedItemsArr);
     }
     getFavorited = () => {
-        let productId = this.props.activeProduct.variants[0].id
+        let productId;
+
+        if(this.selectedVariant == null) {
+            productId = this.props.activeProduct.variants[0].id;
+        }else {
+            productId = this.selectedVariant.id;
+        }
+
         const wishList = this.props.wishList
 
         let favorited = [];
@@ -105,13 +148,41 @@ class ProductDetail extends Component {
 
         return favorited;
     }
+    openDescription = () => {
+        this.setState({
+            viewDesc: true
+        });
+    };
+    setActiveVariant = () => {
+        let {variant_Id} = this.props.navigation.state.params;
+
+        // If we aren't provided a variant_Id... assign the first one (This should never happen)
+        if(variant_Id == null) {
+            variant_Id = this.props.activeProduct.variants[0].id
+        }
+
+        this.props.activeProduct.variants.filter((variant) => {
+            if(variant.id == variant_Id) {
+                this.setState({
+                    activeVariant: variant
+                });
+                this.selectedVariant = variant;
+            }    
+        })
+    }
+    variantChanged = (available, chosenVariant) => {
+        this.setState({cartActionEnabled: available})
+
+        if(available) {
+            this.selectedVariant = chosenVariant;
+            this.forceUpdate();
+        }
+    }
     render() {
-        let productImages;
-        // Stop loading spinner
+        let productImages = null;
         if(this.props.activeProduct != null) {
-            this.props.stopSpinner();
             productImages = this.props.activeProduct.images.map(i => i.src);
-       }
+        }
         return (
             <Auxiliary>
                 <NavigationEvents onDidFocus={this.didFocus} onWillBlur={this.props.setProductInactive} />
@@ -130,9 +201,20 @@ class ProductDetail extends Component {
                             size={20}
                         />
                     </TouchableOpacity>,
+                    <Overlay
+                        fullScreen={true}
+                        isVisible={this.state.viewDesc != null}
+                        onBackdropPress={() => this.setState({viewDesc: null})}
+                    >
+                        {this.props.activeProduct.descriptionHtml.length > 0
+                            ? <ScrollView>
+                                <HTML html={this.props.activeProduct.descriptionHtml} imagesMaxWidth={Dimensions.get('window').width} />
+                            </ScrollView>
+                            : null
+                        }
+                    </Overlay>,
                     <ScrollView 
                         style={{padding: 10}}
-                        scrollEnabled={this.state.outerScrollEnabled}
                     >
                         <View style={{paddingBottom: 10, marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee'}}>
                             <Text 
@@ -143,23 +225,28 @@ class ProductDetail extends Component {
                                 {`${this.props.activeProduct.title}`}
                             </Text>
                         </View>
-                        <ScrollView 
-                            style={{paddingBottom: 10, marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee', height: 100, maxHeight: 150}}
-                            onTouchStart={(ev) => {
-                                this.setState({outerScrollEnabled: false});
-                            }}
-                            onMomentumScrollEnd={(e) => {
-                                this.setState({outerScrollEnabled: true});
-                            }}
-                            onScrollEndDrag={(e) => {
-                                this.setState({outerScrollEnabled: true})
-                            }}
+                        <View 
+                            style={{flex: 1, flexDirection: 'column', paddingBottom: 10, marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee'}}
                         >
                             {this.props.activeProduct.description.length > 0
-                                ? <Text>{this.props.activeProduct.description}</Text>
+                                ? <TouchableOpacity onPress={this.openDescription}>
+                                    <Text style={{textDecorationLine: 'underline', fontFamily: 'Avenir Next LT Pro Light', fontSize: 20, color: 'gray'}} >Description</Text>
+                                </TouchableOpacity>
                                 : <Text>No description... </Text>
                             }
-                        </ScrollView>
+                        </View>
+                        {this.props.activeProduct.variants.length > 1 
+                            ? <View style={{marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee', paddingBottom: 15}}>
+                                    <ProductVariants
+                                        ref={r => this.variantRef = r} 
+                                        activeProduct={this.props.activeProduct}
+                                        activeVariant={this.state.activeVariant}
+                                        onVariantChanged={this.variantChanged}
+                                    />
+                                </View>
+                            : null
+                        }
+                        
                         <View style={{marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee', justifyContent: 'center', alignItems: 'center', minHeight: 100}}>
                             <Text style={{fontSize: 48, fontWeight: 'bold'}}>${this.props.activeProduct.variants[0].price}</Text>
                         </View>
@@ -179,14 +266,18 @@ class ProductDetail extends Component {
                                         onPress={this.addItemToWishList}
                                     />
                             }
-                            
-                            <Button 
-                                containerStyle={{marginBottom: 5}}
-                                title="Join Discussion"
-                                type="outline"
-                                onPress={() => Alert.alert("Coming Soon!")}
-                            />
+                            {
+                                (this.state.enableDiscussion)
+                                ? <Button 
+                                    containerStyle={{marginBottom: 5}}
+                                    title="Join Discussion"
+                                    type="outline"
+                                    onPress={() => Alert.alert("Coming Soon!")}
+                                />
+                                : null
+                            }
                             <Button
+                                disabled={!this.state.cartActionEnabled}
                                 containerStyle={{marginBottom: 5}}
                                 title="Add to Cart"
                                 type="solid"
@@ -210,6 +301,7 @@ class ProductDetail extends Component {
 mapStateToProps = state => {
     return {
         activeProduct: state.storeFrontReducer.activeProduct,
+        activeVariant: state.storeFrontReducer.activeVariant,
         wishList: state.wishListReducer.wishList
     };
 };
