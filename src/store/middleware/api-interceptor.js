@@ -17,7 +17,6 @@ const apiInterceptor = store => next => async action => {
                 await axios.get('https://giftwizitapi.azurewebsites.net/api/GiftLists', {headers: commonHeaders}).then((response) => {
                     action.giftLists = response.data;
                     store.dispatch(actions.uiStopLoading());
-                    sleep(100);
                 })
             }catch(error) {
                 console.log(error);

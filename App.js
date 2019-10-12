@@ -89,8 +89,8 @@ class App extends Component {
   render() {
     return (
       [
-        <Spinner visible={this.props.loading} />,
-        <AppContainer />
+        <Spinner key="0" visible={this.props.loading} />,
+        <AppContainer key="1" />
       ]
     )
   }
@@ -105,9 +105,13 @@ const mapStateToProps = state => {
 const ConnectedRootContainer = connect(mapStateToProps)(App);
 
 export default function Root() {
-  return (
-    <Provider store={store}>
-      <ConnectedRootContainer />
-    </Provider>
-  )
+  try {
+    return (
+      <Provider store={store}>
+        <ConnectedRootContainer />
+      </Provider>
+    )
+  }catch(error) {
+    console.log(error);
+  }
 };

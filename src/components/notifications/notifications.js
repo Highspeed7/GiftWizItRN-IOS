@@ -46,10 +46,11 @@ class Notifications extends Component {
                         extraData={this.props.notifications}
                         onEndReached={this.fetchNextPage}
                         onEndReachedThreshold={1}
+                        keyExtractor = {(item, index) => index.toString() }
                         renderItem={({item}) => {
                             const cardColor = this.getCardColor(item)
                             return (
-                            <Card containerStyle={{backgroundColor: cardColor}} key={item.id}>
+                            <Card containerStyle={{backgroundColor: cardColor}}>
                                 <TouchableOpacity>
                                     <View>
                                         <Text>{timestampUTCToLocalReadable(item.createdOn)}</Text>

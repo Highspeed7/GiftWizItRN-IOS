@@ -5,6 +5,10 @@ import * as actions from '../../store/actions/index';
 import { connect } from 'react-redux';
 
 class Splash extends Component {
+    timer;
+    componentWillUnmount = () => {
+        clearTimeout(this.timer);
+    }
     async componentDidMount() {
         try {
             await this.props.getToken();
@@ -17,7 +21,7 @@ class Splash extends Component {
                 this.handleOpenURL(url);
             }else {
                 // Wait 5 seconds for intro splash
-                setTimeout(() => {
+                this.timer = setTimeout(() => {
                     if(this.props.isAuthenticated) {
                         this.props.navigation.navigate("postAuth");
                         // this.props.navigation.navigate("product-detail");

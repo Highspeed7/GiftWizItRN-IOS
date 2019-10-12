@@ -13,7 +13,7 @@ import { Alert } from 'react-native';
 //         console.error('SignalR Connection Error: ', err)
 //     });
 // }
-
+// gw: {app: {timer: null}};
 const startSignalRConnection = async (connection) => {
     let promise = new Promise((resolve, reject) => {
         connection.start().then(() => {
@@ -52,17 +52,17 @@ const makeChannelConnection = async (store, connectionId) => {
 }
 
 const signalRInterceptor = store => next => async (action) => {
+    const connectionHub = "http://giftwizitapi.azurewebsites.net/notifHub";
+    const protocol = new JsonHubProtocol();
+
+    const connection = new HubConnectionBuilder()
+        .withUrl(connectionHub)
+        .withHubProtocol(protocol)
+        .build();
+
     switch(action.type) {
         case actionTypes.BEGIN_NOTIFICATIONS:
             {
-                const connectionHub = "http://giftwizitapi.azurewebsites.net/notifHub";
-                const protocol = new JsonHubProtocol();
-
-                const connection = new HubConnectionBuilder()
-                    .withUrl(connectionHub)
-                    .withHubProtocol(protocol)
-                    .build();
-
                 // connection.on('Notification', store.dispatch({type: "POP_NOTIFICATION", message: res}));
                 connection.on('Notification', (res) => {
                     // store.dispatch(actions.setNotificationsCount());
@@ -70,7 +70,8 @@ const signalRInterceptor = store => next => async (action) => {
                 });
 
                 connection.onclose(() => {
-                    setTimeout(startSignalRConnection(connection).then(async (connId) => {
+                    let timer = setTimeout(startSignalRConnection(connection).then(async (connId) => {
+                        clearTimeout(timer);
                         await makeChannelConnection(store, connId);
                     }), 5000)
                 });
@@ -78,6 +79,11 @@ const signalRInterceptor = store => next => async (action) => {
                 startSignalRConnection(connection).then(async (connId) => {
                     await makeChannelConnection(store, connId);
                 })
+                break;
+            }
+        case actionTypes.CONNECT_TO_LIST_CHAT:
+            {
+
                 break;
             }
     }

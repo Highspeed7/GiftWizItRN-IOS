@@ -18,9 +18,6 @@ class Home extends Component {
     componentDidMount = () => {
         this.props.setNotificationsCount();
         this.props.beginNotifications();
-        // this.timer = setInterval(() => {
-        //     this.props.setNotificationsCount();
-        // }, 2000);        
     }
     componentDidUpdate() {
         if(!this.props.isAuthenticated) {

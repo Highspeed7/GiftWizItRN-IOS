@@ -56,6 +56,7 @@ const storeFrontInterceptor = store => next => async (action) => {
             }
             break;
         case actionTypes.FETCH_CTGRY_PRODUCTS:
+            store.dispatch(actions.uiStartLoading());
             const activeCategory = state.storeFrontReducer.activeCategory;
 
             if(client == null) {
@@ -64,6 +65,7 @@ const storeFrontInterceptor = store => next => async (action) => {
 
             await client.collection.fetchWithProducts(activeCategory.id).then((collection) => {
                 action.payload = collection.products;
+                store.dispatch(actions.uiStopLoading());
             })
             break;
         case actionTypes.ADD_ITEM_TO_CART:
