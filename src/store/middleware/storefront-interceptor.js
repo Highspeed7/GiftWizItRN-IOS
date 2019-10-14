@@ -25,7 +25,6 @@ const storeFrontInterceptor = store => next => async (action) => {
     
                 await client.collection.fetchAllWithProducts().then((collections) => {
                     console.log(collections);
-                    store.dispatch()
                     action.payload.collections = collections;
                 });
     

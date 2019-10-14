@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import { Linking } from 'react-native';
 import { Provider } from 'react-redux';
-
 import {
   createSwitchNavigator, 
   createAppContainer, 
   NavigationActions
  } from 'react-navigation';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { ReactNativePlugin } from '@microsoft/applicationinsights-react-native';
 
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -24,6 +25,13 @@ import StoreProductNavigator from './src/components/navigation/store-product-nav
 import StoreFront from './src/components/store-selector/giftwizit-shopify/store-front';
 import ProductDetail from './src/components/store/product-detail';
 import StoreCart from './src/components/store/store-cart';
+
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({ 
+  dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
+});
+
 
 const store = storeConfiguration();
 
@@ -86,6 +94,18 @@ const AppSwitchNavigator = createSwitchNavigator({
 const AppContainer = createAppContainer(AppSwitchNavigator);
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    var RNPlugin = new ReactNativePlugin();
+    var appInsights = new ApplicationInsights({
+        config: {
+            instrumentationKey: '9dac77ae-75d7-4244-9c6d-80c403ecbb0a',
+            extensions: [RNPlugin]
+        }
+    });
+    appInsights.loadAppInsights();
+  }
+
   render() {
     return (
       [
