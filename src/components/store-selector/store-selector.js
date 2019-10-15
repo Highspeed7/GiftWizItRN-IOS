@@ -18,6 +18,7 @@ import Swatch from '../swatch/swatch';
 import AmazonView from './amazon/amazon-view';
 import WalmartView from './walmart/walmart-view';
 import TargetView from './target/target-view';
+import BBBYondView from './bbby-view/bbby-view';
 import { Card } from 'react-native-elements';
 import Auxiliary from '../../hoc/auxiliary';
 
@@ -26,6 +27,7 @@ class StoreSelector extends Component {
         amazonModalOpen: null,
         targetModalOpen: null,
         walmartModalOpen: null,
+        bbbYondModalOpen: null,
         orientation: '',
         canGoBack: false,
         webViewRef: null
@@ -52,21 +54,32 @@ class StoreSelector extends Component {
                 this.setState({
                     amazonModalOpen: true,
                     targetModalOpen: null,
-                    walmartModalOpen: null
+                    walmartModalOpen: null,
+                    bbbYondModalOpen: null
                 });
                 break;
             case "Walmart":
                 this.setState({
                     amazonModalOpen: null,
                     targetModalOpen: null,
-                    walmartModalOpen: true
+                    walmartModalOpen: true,
+                    bbbYondModalOpen: null
                 });
                 break;
             case "Target":
                 this.setState({
                     amazonModalOpen: null,
                     targetModalOpen: true,
-                    walmartModalOpen: null
+                    walmartModalOpen: null,
+                    bbbYondModalOpen: null
+                });
+                break;
+            case "BedBathBeyond":
+                this.setState({
+                    amazonModalOpen: null,
+                    targetModalOpen: null,
+                    walmartModalOpen: null,
+                    bbbYondModalOpen: true
                 });
                 break;
         }
@@ -78,7 +91,8 @@ class StoreSelector extends Component {
             this.setState({
                 amazonModalOpen: null,
                 targetModalOpen: null,
-                walmartModalOpen: null
+                walmartModalOpen: null,
+                bbbYondModalOpen: null
             });
         }
     }
@@ -172,6 +186,25 @@ class StoreSelector extends Component {
                                             setRef={this.setWebViewRef}
                                             canGoBack={this.setGoBackStatus}
                                             url={{uri: 'https://www.walmart.com'}} 
+                                            onItemAdded={this.onItemAdded}
+                                            onWebClose={() => this.setState({walmartModalOpen: null})}
+                                        />
+                                    </Modal>
+                                </Swatch>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("BedBathBeyond")}>
+                                <Swatch>
+                                    <Text>Bed Bath and Beyond</Text>
+                                    <Modal
+                                        visible={this.state.bbbYondModalOpen}
+                                        onRequestClose={this.closeModal}
+                                    >
+                                        <BBBYondView
+                                            setRef={this.setWebViewRef}
+                                            canGoBack={this.setGoBackStatus}
+                                            url={{uri: 'https://bedbathandbeyond.com'}}
+                                            onItemAdded={this.onItemAdded}
+                                            onWebClose={() => this.setState({bbbYondModalOpen: null})}
                                         />
                                     </Modal>
                                 </Swatch>
