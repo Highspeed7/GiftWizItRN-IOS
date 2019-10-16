@@ -44,8 +44,12 @@ export const walmartProductViewScript = `
             return nodes;
         }
 
-        let getXPathResult = (xpath) => {
-            return document.evaluate(xpath, document);
+        let getXPathResult = (xpath, context) => {
+            var evaluator = new XPathEvaluator();
+            var expression = evaluator.createExpression(xpath);
+            var result = expression.evaluate(context);
+            alert(result);
+            return result
         }
 
         const setupNewPage = () => {
@@ -72,7 +76,7 @@ export const walmartProductViewScript = `
 
         setGenProductList1Buttons = () => {
             try {
-                let containerElements = xPathToArray((getXPathResult(xPaths[pageType].rootElement)));
+                let containerElements = document.querySelectorAll("div.item-result-card");
                 
                 // We store this to verify the same number of elements after page change
                 wrappers = containerElements;
@@ -127,14 +131,12 @@ export const walmartProductViewScript = `
         // GENERAL_PRODUCTS_LIST_1 Data collector
         const getGenProduct1SelectedItemData = (button) => {
             try {
-                let root = document.evaluate(xPaths[pageType].rootElement, document).iterateNext();
-                alert(root);
-                let image = document.evaluate(xPaths[pageType].image, root).iterateNext();
-                alert(image);
-                let name = document.evaluate(xPaths[pageType].name, root).iterateNext();
-                let itemUrl = document.evaluate(xPaths[pageType].itemUrl, root).iterateNext();
+                let parentContainer = button.parentElement.parentElement;
+                let image = parentContainer.querySelector("img.Tile-image");
+                let name = parentContainer.querySelector(".product-title > p").textContent.trim();
+                let itemUrl = parentContainer.querySelector("a");
 
-                data.payload.name = name.textContent.trim();
+                data.payload.name = name;
                 data.payload.image = image.src.trim();
                 data.payload.url = itemUrl.href;
 
@@ -151,6 +153,7 @@ export const walmartProductViewScript = `
 
             // If the url is not set, set it to the page url.
             if(data.payload.url == null) {
+                alert("url is null");
                 data.payload.url = window.location.href;
             }
 
