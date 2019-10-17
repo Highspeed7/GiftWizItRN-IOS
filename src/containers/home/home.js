@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { View, Text, Button, ScrollView, ImageBackground, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
 import axios from 'axios';
 
 import * as actions from '../../store/actions/index';
@@ -18,6 +19,11 @@ class Home extends Component {
     componentDidMount = () => {
         this.props.setNotificationsCount();
         this.props.beginNotifications();
+    }
+    componentWillFocus = () => {
+        if(!this.props.isAuthenticated) {
+            this.props.navigation.navigate("preAuth");
+        }
     }
     componentDidUpdate() {
         if(!this.props.isAuthenticated) {
@@ -39,6 +45,7 @@ class Home extends Component {
     render() {
         return (
             <Auxiliary>
+                <NavigationEvents onWillFocus={this.componentWillFocus} />
                 <View style={{padding: 10}}>
                     <Text>Welcome Home!</Text>
                     <Button onPress={this.logOut} title="Logout" />

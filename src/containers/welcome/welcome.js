@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {
-     ScrollView, StyleSheet } from 'react-native';
+     ScrollView, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import IntroStep1 from '../../components/intro-modal/step-1';
@@ -14,6 +14,9 @@ import ListsViewed from '../../components/info-content/lists-viewed-card';
 import * as actions from '../../store/actions/index';
 
 class Welcome extends Component {
+    searchCardPressed = () => {
+        this.props.navigation.navigate("SearchLists");
+    }
     render() {
         renderModal = () => {
             switch(this.props.introStep) {
@@ -36,8 +39,13 @@ class Welcome extends Component {
                 <InfoCard>
                     <GiftIdeasCard />
                 </InfoCard>
-                <InfoCard>
+                {/* <InfoCard>
                     <ListsViewed />
+                </InfoCard> */}
+                <InfoCard>
+                    <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
+                        <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
+                    </TouchableOpacity>
                 </InfoCard>
                 {/* <Modal
                     visible={this.props.introComplete === null}
@@ -52,6 +60,16 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
         backgroundColor: '#9FC8E8'
+    },
+    infoCard: {
+        width: '100%',
+        height: '100%',
+        padding: 10
+    },
+    cardText: {
+        color: 'black',
+        fontFamily: 'Graciela-Regular',
+        fontSize: 22
     }
 })
 

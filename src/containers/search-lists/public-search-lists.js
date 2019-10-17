@@ -28,7 +28,7 @@ class SearchPublicLists extends Component {
     screenWillBlur = (e) => {
         this.setState({
             searchTerm: null,
-            searchFilter: null
+            emailFilter: null
         });
         this.props.clearSearchResults();
     }
