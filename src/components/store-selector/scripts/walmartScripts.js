@@ -13,8 +13,8 @@ export const walmartProductViewScript = `
 
         const elementsToSearch = [
             {
-                type: "PRODUCTS_PAGE_1",
-                rootElementPath: "//div[contains(@class, 'item-result-card')][a[//div[contains(@class, 'product-image')][//img[contains(@class, 'Tile-image')]]]]"
+                type: "PRODUCT_DETAIL_PAGE_1",
+                rootElementPath: "//div[contains(@class, 'product-image-carousel-container')]"
             },
             {
                 type: "GENERAL_PRODUCTS_LIST_1",
@@ -73,8 +73,11 @@ export const walmartProductViewScript = `
                 alert(err);
             }
         };
-
-        setGenProductList1Buttons = () => {
+        const setProductDetailPageButton = () => {
+            let containerElement = document.querySelector("div.product-image-carousel-container");
+            containerElement.append(getButton());
+        }
+        const setGenProductList1Buttons = () => {
             try {
                 let containerElements = document.querySelectorAll("div.item-result-card");
                 
@@ -94,8 +97,8 @@ export const walmartProductViewScript = `
 
         const setPageExperience = () => {
             switch(pageType) {
-                case "PRODUCTS_PAGE_1":
-                    // setListButtonElements();
+                case "PRODUCT_DETAIL_PAGE_1":
+                    setProductDetailPageButton();
                     break;
                 case "GENERAL_PRODUCTS_LIST_1":
                     wrappers = null;
@@ -104,7 +107,7 @@ export const walmartProductViewScript = `
                     break;
             }
         }
-        setPaginatorButtonEvents = () => {
+        const setPaginatorButtonEvents = () => {
             var nextButton = document.querySelector("button.paginator-btn-next");
             var prevButton = document.querySelector("button.paginator-btn-prev");
 
@@ -148,6 +151,21 @@ export const walmartProductViewScript = `
             }
         }
 
+        // PRODUCT_DETAIL_PAGE_1 data collection
+        const getProdDetails = (button) => {
+            try {
+                let parentContainer = button.parentElement.parentElement;
+                let image = parentContainer.querySelector("li.slider-slide--active img.prod-hero-image-carousel-image").src.trim();
+                let name = parentContainer.previousElementSibling.previousElementSibling.textContent.trim();
+
+                data.payload.name = name;
+                data.payload.image = image;
+
+            }catch(err) {
+                alert("Error " + err);
+            }
+        }
+
         let doAddItemCall = () => {
             data.case = "add_item";
 
@@ -168,6 +186,9 @@ export const walmartProductViewScript = `
             let btnStyle = null;
 
             switch(pageType) {
+                case "PRODUCT_DETAIL_PAGE_1":
+                    containerStyle = "height: 40px; width: 40px; position: absolute; z-index: 199; top: 0px; ";
+                    btnStyle = "box-shadow: 3px 3px 10px grey; height: 40px; width: 40px; border-radius: 5px; background: white url('https://gwresourceblob.blob.core.windows.net/images/gw_tm.png') no-repeat fixed center; background-size: 40px 40px;";
                 case "GENERAL_PRODUCTS_LIST_1":
                     containerStyle = "height: 40px; width: 40px; position: absolute; z-index: 199; top: 0px; ";
                     btnStyle = "box-shadow: 3px 3px 10px grey; height: 40px; width: 40px; border-radius: 5px; background: white url('https://gwresourceblob.blob.core.windows.net/images/gw_tm.png') no-repeat fixed center; background-size: 40px 40px;";
@@ -181,6 +202,14 @@ export const walmartProductViewScript = `
                 e.stopImmediatePropagation();
                 let button = e.currentTarget;
                 switch(pageType) {
+                    case "PRODUCT_DETAIL_PAGE_1":
+                        try {
+                            getProdDetails(button);
+                            doAddItemCall();
+                        }catch(err) {
+                            alert(err);
+                        }
+                        break;
                     case "GENERAL_PRODUCTS_LIST_1":
                         try {
                             getGenProduct1SelectedItemData(button);
