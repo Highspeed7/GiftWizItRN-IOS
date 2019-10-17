@@ -17,7 +17,6 @@ const apiInterceptor = store => next => async action => {
                 await axios.get('https://giftwizitapi.azurewebsites.net/api/GiftLists', {headers: commonHeaders}).then((response) => {
                     action.giftLists = response.data;
                     store.dispatch(actions.uiStopLoading());
-                    sleep(100);
                 })
             }catch(error) {
                 console.log(error);
@@ -226,18 +225,9 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.SEARCH_PUBLIC_LISTS:
             try {
-                token = await store.dispatch(actions.getAuthToken());
-                let headerObj = {
-                    'Authorization': `bearer ${token}`
-                };
-
                 body = action.data;
 
-                let config = {
-                    headers: headerObj
-                };
-
-                await axios.post('http://giftwizitapi.azurewebsites.net/api/SearchPublicLists', body, config).then((response) => {
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/SearchPublicLists', body).then((response) => {
                    action.data = response.data;
                 });
             }catch(error) {
@@ -246,7 +236,6 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.SET_PUBLIC_LIST_ITEMS:
             try {
-                token = await store.dispatch(actions.getAuthToken());
                 await axios.get(`http://giftwizitapi.azurewebsites.net/api/SearchPublicListItems?giftListId=${action.key}`).then((response) => {
                     action.payload = {
                         giftItems: response.data

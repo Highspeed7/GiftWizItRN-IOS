@@ -81,6 +81,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -131,8 +132,8 @@ android {
         applicationId "com.giftwizitmobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "0.10.0"
+        versionCode 10
+        versionName "0.12.1"
 		manifestPlaceholders = [
 			appAuthRedirectScheme: 'giftwi'
 		]
@@ -202,6 +203,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-device-info')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 

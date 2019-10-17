@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import { Linking } from 'react-native';
 import { Provider } from 'react-redux';
-
 import {
   createSwitchNavigator, 
-  createAppContainer, 
-  NavigationActions
+  createAppContainer
  } from 'react-navigation';
 
 import { createStackNavigator } from 'react-navigation-stack';
@@ -21,9 +19,14 @@ import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import StoreDrawerNavigator from './src/components/navigation/store-drawer-navigation';
 import StoreProductNavigator from './src/components/navigation/store-product-navigation';
-import StoreFront from './src/components/store-selector/giftwizit-shopify/store-front';
-import ProductDetail from './src/components/store/product-detail';
 import StoreCart from './src/components/store/store-cart';
+
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({ 
+  dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
+});
+
 
 const store = storeConfiguration();
 
@@ -89,8 +92,8 @@ class App extends Component {
   render() {
     return (
       [
-        <Spinner visible={this.props.loading} />,
-        <AppContainer />
+        <Spinner key="0" visible={this.props.loading} />,
+        <AppContainer key="1" />
       ]
     )
   }
@@ -105,9 +108,13 @@ const mapStateToProps = state => {
 const ConnectedRootContainer = connect(mapStateToProps)(App);
 
 export default function Root() {
-  return (
-    <Provider store={store}>
-      <ConnectedRootContainer />
-    </Provider>
-  )
+  try {
+    return (
+      <Provider store={store}>
+        <ConnectedRootContainer />
+      </Provider>
+    )
+  }catch(error) {
+    console.log(error);
+  }
 };
