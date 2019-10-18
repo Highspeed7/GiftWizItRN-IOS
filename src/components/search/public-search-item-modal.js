@@ -17,6 +17,11 @@ class PublicSearchItemModal extends Component {
         openProductWebView: null
     }
     openModal = () => {
+        if(this.props.item.afflt_Link == null) {
+            const productData = JSON.parse(this.props.item.product_Id);
+            this.props.storeProductClicked(productData);
+            return;
+        }
         this.setState({
             openProductWebView: true
         });

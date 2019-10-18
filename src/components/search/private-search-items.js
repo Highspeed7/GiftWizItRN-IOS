@@ -12,9 +12,8 @@ import {
 import Auxiliary from '../../hoc/auxiliary';
 import Swatch from '../swatch/swatch';
 import GWWebView from '../web-view/gw-web-view';
-import PublicSearchItemModal from './public-search-item-modal';
 
-class PublicSearchItems extends Component {
+class PrivateSearchItems extends Component {
     state = {
         productWebViewOpen: null,
         selectedItem: null
@@ -55,13 +54,7 @@ class PublicSearchItems extends Component {
                         visible={this.state.productWebViewOpen != null}
                         onRequestClose={() => this.closeProductView()}
                     >
-                        <PublicSearchItemModal 
-                            item={this.state.selectedItem}
-                            storeProductClicked={(productData) => {
-                                this.closeProductView();
-                                this.props.storeProductClicked(productData)
-                            }}
-                        />
+                        {/* <PrivateSearchItemModal item={this.state.selectedItem} /> */}
                     </Modal>
                 </ScrollView>
             </Auxiliary>
@@ -88,4 +81,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default PublicSearchItems;
+export default PrivateSearchItems;

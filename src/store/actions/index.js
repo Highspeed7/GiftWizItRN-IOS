@@ -46,9 +46,12 @@ export {
     searchPublicLists,
     searchPrivateLists,
     clearSearchState,
-    setListActive,
-    setListInactive,
-    setPublicListItems
+    setPublicListActive,
+    setPublicListInactive,
+    setPublicListItems,
+    setPrivateListItems,
+    setPrivateListActive,
+    setPrivateListInactive
 } from './search';
 
 export {
