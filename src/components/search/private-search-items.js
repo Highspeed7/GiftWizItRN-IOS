@@ -9,6 +9,7 @@ import {
     Modal,
     Alert } from 'react-native';
 
+import PrivateSearchItemModal from '../../components/search/private-search-item-modal';
 import Auxiliary from '../../hoc/auxiliary';
 import Swatch from '../swatch/swatch';
 import GWWebView from '../web-view/gw-web-view';
@@ -54,7 +55,13 @@ class PrivateSearchItems extends Component {
                         visible={this.state.productWebViewOpen != null}
                         onRequestClose={() => this.closeProductView()}
                     >
-                        {/* <PrivateSearchItemModal item={this.state.selectedItem} /> */}
+                        <PrivateSearchItemModal 
+                            item={this.state.selectedItem} 
+                            storeProductClicked={(productData) => {
+                                this.closeProductView();
+                                this.props.storeProductClicked(productData);
+                            }}
+                        />
                     </Modal>
                 </ScrollView>
             </Auxiliary>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as actions from '../../store/actions/index';
+import { NavigationEvents } from 'react-navigation';
 import { 
     View, 
     Text, 
@@ -23,6 +24,13 @@ class SearchPrivateLists extends Component {
         searchTerm: null,
         userEmail: null,
         password: null
+    }
+    screenWillBlur = (e) => {
+        this.setState({
+            searchTerm: null,
+            userEmail: null,
+            password: null
+        });
     }
     setSearchTerm = (value) => {
         this.setState({
@@ -76,7 +84,8 @@ class SearchPrivateLists extends Component {
     closeItemModal = (key) => {
         this.props.setPrivateListInactive(key);
     } 
-    storeProductClicked = (productData) => {
+    storeProductClicked = (productData, key) => {
+        this.props.setPrivateListInactive(key);
         this.props.navigation.navigate("Products", {...productData, startDiscussion: false});
     }
     render() {
@@ -94,7 +103,7 @@ class SearchPrivateLists extends Component {
                 >
                     <PrivateSearchItems
                         activeList={list}
-                        storeProductClicked={this.storeProductClicked}
+                        storeProductClicked={(productData) => this.storeProductClicked(productData, list.id)}
                     />
                 </Modal>
             </Auxiliary>
@@ -102,6 +111,7 @@ class SearchPrivateLists extends Component {
         : null
         return (
             <View style={styles.viewContainer}>
+                <NavigationEvents onWillBlur={this.screenWillBlur} />
                 <View>
                     <Text>Search Private Lists! You will need to provide 
                         the password and the email of the person who created the list for these lists.
