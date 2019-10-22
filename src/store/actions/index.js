@@ -20,7 +20,9 @@ export {
     moveGiftListItems,
     editGiftList,
     shareGiftList,
-    deleteGiftLists
+    deleteGiftLists,
+    connectToListChat,
+    disconnectFromListChat
 } from './giftLists';
 
 export {
@@ -59,7 +61,8 @@ export {
     beginNotifications,
     notificationRecieved,
     getNotifications,
-    fetchNextNotificationsPage
+    fetchNextNotificationsPage,
+    setConnectionId
 } from './notifications';
 
 export {

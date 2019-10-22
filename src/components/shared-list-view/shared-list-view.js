@@ -1,12 +1,37 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
+import { connect } from 'react-redux';
+import { 
+    View, 
+    Text, 
+    StyleSheet, 
+    ScrollView, 
+    TouchableOpacity, 
+    Image, 
+    Modal,
+    Button, 
+    Alert 
+} from 'react-native';
 
+import * as actions from '../../store/actions/index';
 import Swatch from '../../components/swatch/swatch';
 import SharedListItem from './shared-list-item';
 
 class SharedListView extends Component {
     state = {
         activeItem: null
+    }
+    componentDidMount = () => {
+        this.props.connectToListChatChannel(this.props.list.giftListId);
+    }
+    componentWillUnmount = () => {
+        this.props.disconnectFromListChatChannel(this.props.list.giftListId);
+    }
+    testChat = () => {
+        let chatContext = {
+            message: 'Hello World',
+            listId: this.props.list.giftListId
+        };
+        this.props.testChat(chatContext);
     }
     render() {
         let {listItems} = this.props.list;
@@ -31,6 +56,9 @@ class SharedListView extends Component {
             <View style={styles.viewContainer}>
                 <View>
                     <Text style={styles.listTitleHeader}>{this.props.list.giftListName}</Text>
+                </View>
+                <View>
+                    <Button title="Test Chat" onPress={this.testChat} />
                 </View>
                 <ScrollView>
                     <View style={styles.listsContainer}>
@@ -66,4 +94,12 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SharedListView;
+mapDispatchToProps = dispatch => {
+    return {
+        connectToListChatChannel: (list_id) => dispatch(actions.connectToListChat(list_id)),
+        disconnectFromListChatChannel: (list_id) => dispatch(actions.disconnectFromListChat(list_id)),
+        testChat: (chatContext) => dispatch({type: "TEST_CHAT", data: chatContext})
+    }
+}
+
+export default connect(null, mapDispatchToProps)(SharedListView);
