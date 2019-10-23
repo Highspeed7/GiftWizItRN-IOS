@@ -31,9 +31,9 @@ export const fetchNextNotificationsPage = () => {
     };
 };
 
-export const setConnectionId = (connId) => {
+export const setNotificationsConnectionId = (connId) => {
     return {
-        type: actionTypes.SET_CONNECTION_ID,
+        type: actionTypes.SET_NOTIFICATIONS_CONNECTION_ID,
         data: connId
     }
 }

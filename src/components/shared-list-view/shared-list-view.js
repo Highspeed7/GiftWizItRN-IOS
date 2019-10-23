@@ -8,23 +8,51 @@ import {
     TouchableOpacity, 
     Image, 
     Modal,
-    Button, 
+    Button,
+    AppState, 
     Alert 
 } from 'react-native';
 
 import * as actions from '../../store/actions/index';
 import Swatch from '../../components/swatch/swatch';
 import SharedListItem from './shared-list-item';
+import ListAction from '../list-actions/list-action';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import ListChat from '../list-chat/list-chat';
 
 class SharedListView extends Component {
     state = {
-        activeItem: null
+        activeItem: null,
+        appState: AppState.currentState,
+        chatModalActive: null
     }
-    componentDidMount = () => {
-        this.props.connectToListChatChannel(this.props.list.giftListId);
+    componentDidMount = async () => {
+        AppState.addEventListener('change', this.handleAppStateChange);
+        await this.props.connectToListChatChannel(this.props.list.giftListId);
     }
     componentWillUnmount = () => {
+        AppState.removeEventListener('change', this.handleAppStateChange);
         this.props.disconnectFromListChatChannel(this.props.list.giftListId);
+    }
+    handleAppStateChange = async (nextAppState) => {
+        this.setState({
+            appState: nextAppState
+        });
+        if(this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+            await this.props.connectToListChatChannel(this.props.list.giftListId);
+        }else if(nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
+            await this.props.disconnectFromListChat(this.props.list.giftListId);
+        }
+    }
+    setChatModalActive = () => {
+        this.setState({
+            chatModalActive: true
+        });
+    }
+    setChatModalInactive = () => {
+        this.setState({
+            chatModalActive: null
+        });
     }
     testChat = () => {
         let chatContext = {
@@ -57,8 +85,25 @@ class SharedListView extends Component {
                 <View>
                     <Text style={styles.listTitleHeader}>{this.props.list.giftListName}</Text>
                 </View>
-                <View>
-                    <Button title="Test Chat" onPress={this.testChat} />
+                <View style={styles.listsContainer}>
+                    <ListAction
+                        title="Message"
+                        icon={() => (
+                            <FontAwesome5
+                                name={'comment-alt'} solid
+                                color="black"
+                                size={25}
+                            />
+                        )}
+                        onPressed = {this.setChatModalActive}
+                    >
+                        <Modal
+                            visible={this.state.chatModalActive != null}
+                            onRequestClose={() => this.setChatModalInactive()}
+                        >
+                            <ListChat />
+                        </Modal>
+                    </ListAction>
                 </View>
                 <ScrollView>
                     <View style={styles.listsContainer}>

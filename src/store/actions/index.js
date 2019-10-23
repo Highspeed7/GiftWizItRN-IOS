@@ -62,8 +62,12 @@ export {
     notificationRecieved,
     getNotifications,
     fetchNextNotificationsPage,
-    setConnectionId
+    setNotificationsConnectionId
 } from './notifications';
+
+export {
+    setChatConnectionId
+} from './chat';
 
 export {
     uiStartLoading,

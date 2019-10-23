@@ -4,13 +4,13 @@ import { JsonHubProtocol, HttpTransportType, HubConnectionBuilder, HubConnection
 import axios from 'axios';
 import { Alert } from 'react-native';
 
-const startSignalRConnection = async (connection, store) => {
+const startNotificationsConnection = async (connection, store) => {
     let retryTimes = 3;
     let promise = new Promise((resolve, reject) => {
         connection.start().then(() => {
             // Once we have the connection we need to get the connection id
             connection.invoke("getConnectionId").then(async(id) => {
-                store.dispatch(actions.setConnectionId(id));
+                store.dispatch(actions.setNotificationsConnectionId(id));
                 resolve(id);
             })
         }).catch((err) => {
@@ -18,7 +18,7 @@ const startSignalRConnection = async (connection, store) => {
                 let timer = setTimeout(() => {
                     clearTimeout(timer);
                     retryTimes--;
-                    startSignalRConnection(connection);
+                    startNotificationsConnection(connection, store);
                 }, 5000);
             }else {
                 console.error("SignalR Connection Error: ", + err);
@@ -27,6 +27,56 @@ const startSignalRConnection = async (connection, store) => {
         })
     })
     return promise;
+}
+
+const startChatConnection = async (connection, store) => {
+    if(connection.state == HubConnectionState.Connected) {
+        await store.dispatch(actions.disconnectFromListChat(action.data));
+    }
+    let retryTimes = 3;
+    let promise = new Promise((resolve, reject) => {
+        connection.start().then(() => {
+            // Once we have the connection we need to get the connection id
+            connection.invoke("getConnectionId").then(async(id) => {
+                store.dispatch(actions.setChatConnectionId(id));
+                resolve(id);
+            })
+        }).catch((err) => {
+            if(retryTimes > 0) {
+                let timer = setTimeout(() => {
+                    clearTimeout(timer);
+                    retryTimes--;
+                    startChatConnection(connection, store);
+                }, 5000);
+            }else {
+                console.error("SignalR Connection Error: ", + err);
+                reject();
+            }
+        })
+    })
+    return promise;
+}
+
+const getChatHubConnection = () => {
+    const connectionHub = "http://giftwizitapi.azurewebsites.net/chatHub";
+    const protocol = new JsonHubProtocol();
+    const connection = new HubConnectionBuilder()
+        .withUrl(connectionHub)
+        .withHubProtocol(protocol)
+        .build();
+    return connection;
+}
+
+
+const getNotifHubConnection = () => {
+    const connectionHub = "http://giftwizitapi.azurewebsites.net/notifHub";
+    const protocol = new JsonHubProtocol();
+
+    const connection = new HubConnectionBuilder()
+        .withUrl(connectionHub)
+        .withHubProtocol(protocol)
+        .build();
+    return connection;
 }
 
 const makeChannelConnection = async (store, connectionId) => {
@@ -51,6 +101,7 @@ const makeChannelConnection = async (store, connectionId) => {
 }
 
 makeListChatConnection = async (store, connectionId, listId) => {
+    console.log(`Connection to chat channel with ${connectionId}`);
     let token = await store.dispatch(actions.getAuthToken());
 
     let headersObj = {
@@ -80,30 +131,22 @@ const testChat = (message) => {
 
 const signalRInterceptor = store => next => async (action) => {
     const state = store.getState();
-    const connectionId = state.signalRReducer.connectionId;
-    const connectionHub = "http://giftwizitapi.azurewebsites.net/notifHub";
-    const protocol = new JsonHubProtocol();
-
-    const connection = new HubConnectionBuilder()
-        .withUrl(connectionHub)
-        .withHubProtocol(protocol)
-        .build();
-
+    console.log("FUCK");
     switch(action.type) {
         case actionTypes.BEGIN_NOTIFICATIONS:
             {
-                // connection.on('Notification', store.dispatch({type: "POP_NOTIFICATION", message: res}));
+                var connection = getNotifHubConnection();
                 connection.on('Notification', (res) => {
                     store.dispatch(actions.notificationRecieved(res));
                 });
 
                 connection.onclose(async () => {
-                    await startSignalRConnection(connection, store).then(async (connId) => {
+                    await startNotificationsConnection(connection, store).then(async (connId) => {
                         await makeChannelConnection(store, connId);
                     });
                 });
                 
-                startSignalRConnection(connection, store).then(async (connId) => {
+                startNotificationsConnection(connection, store).then(async (connId) => {
                     await makeChannelConnection(store, connId);
                 });
                 
@@ -111,24 +154,39 @@ const signalRInterceptor = store => next => async (action) => {
             }
         case actionTypes.CONNECT_TO_LIST_CHAT:
             {
-                connection.on('ListMessage', (res) => {
-                    testChat(res);
-                });
+                try {
+                    var connection = getChatHubConnection();
 
-                connection.onclose(async () => {
-                    await startSignalRConnection(connection, store).then(async (connId) => {
+                    connection.on('ListMessage', (res) => {
+                        testChat(res);
+                    });
+
+                    connection.onclose(async () => {
+                        // Force a disconnect from channel; silently catch the error.
+                        try {
+                            await dispatch(actions.disconnectFromListChat(action.data));
+                        }
+                        catch(err) {
+                            // Do nothing
+                        }
+                        finally {
+                            await startChatConnection(connection, store).then(async (connId) => {
+                                await makeListChatConnection(store, connId, action.data);
+                            });
+                        }
+                    });
+
+                    startChatConnection(connection, store).then(async (connId) => {
                         await makeListChatConnection(store, connId, action.data);
                     });
-                });
-
-                startSignalRConnection(connection, store).then(async (connId) => {
-                    await makeListChatConnection(store, connId, action.data);
-                });
-
+                }catch(err) {
+                    console.error(err);
+                }
                 break;
             }
         case actionTypes.DISCONNECT_FROM_LIST_CHAT:
             {
+                let connectionId = state.chatReducer.connectionId
                 let token = await store.dispatch(actions.getAuthToken());
 
                 let headersObj = {

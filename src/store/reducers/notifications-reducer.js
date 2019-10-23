@@ -1,4 +1,5 @@
 const initialState = {
+    notificationsConnectionId: null,
     notificationCount: 0,
     notifications: null,
     notificationToast: []
@@ -31,6 +32,11 @@ const notificationsReducer = (state = initialState, action) => {
                     ...action.payload,
                     results: state.notifications.results.concat(action.payload.results)
                 }
+            }
+        case "SET_NOTIFICATIONS_CONNECTION_ID":
+            return {
+                ...state,
+                notificationsConnectionId: action.data
             }
     }
     return state;
