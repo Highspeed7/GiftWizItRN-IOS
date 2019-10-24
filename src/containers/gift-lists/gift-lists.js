@@ -19,6 +19,7 @@ import GiftListDetail from '../../components/gift-list/gift-list-detail';
 import Auxiliary from '../../hoc/auxiliary';
 import { goclone } from '../../utils/utils';
 import Checkbox from '../../components/checkbox/checkbox';
+import GiftListAdd from '../../components/gift-list/add-modal/gift-list-add';
 
 class GiftLists extends Component {
     state = {
@@ -26,8 +27,14 @@ class GiftLists extends Component {
         shareListModalOpen: null,
         selectedLists: [],
         newListName: null,
+        restrictChatFlag: false,
         deleteMode: null
     }
+    setChatRestriction = (value) => {
+        this.setState({
+            restrictChatFlag: value
+        });
+    };
     onSwatchPress(list) {
         var listId = list.id;
         if(this.state.deleteMode == null) {
@@ -161,11 +168,11 @@ class GiftLists extends Component {
                                 visible={this.state.addListModalOpen != null}
                                 onRequestClose={() => this.closeNewListModal()}
                             >
-                                <View style={{padding: 10}}>
-                                    <Text>Hello!</Text>
-                                    <TextInput placeholder="Name" onChangeText={this.addedGiftNameHandler} />
-                                    <Button title="Submit" onPress={this.newGiftListAdded} />
-                                </View>
+                                <GiftListAdd
+                                    addedGiftNameHandler={this.addedGiftNameHandler}
+                                    newGiftListAdded={this.newGiftListAdded}
+                                    restrictChatFlag={this.setChatRestriction}
+                                />
                             </Modal>
                         </ListAction>
                         <ListAction 
