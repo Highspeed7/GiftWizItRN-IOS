@@ -22,7 +22,8 @@ export {
     shareGiftList,
     deleteGiftLists,
     connectToListChat,
-    disconnectFromListChat
+    disconnectFromListChat,
+    sendMessageToList
 } from './giftLists';
 
 export {
@@ -62,11 +63,13 @@ export {
     notificationRecieved,
     getNotifications,
     fetchNextNotificationsPage,
-    setNotificationsConnectionId
+    setNotificationsConnectionId,
+    setNotificationsConnection
 } from './notifications';
 
 export {
-    setChatConnectionId
+    setChatConnectionId,
+    setChatConnection
 } from './chat';
 
 export {

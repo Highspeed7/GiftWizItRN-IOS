@@ -78,3 +78,17 @@ export const disconnectFromListChat = (list_id) => {
         data: list_id
     };
 };
+
+export const sendMessageToList = (messageData) => {
+    return {
+        type: actionTypes.SEND_MESSAGE_TO_LIST,
+        data: messageData
+    };
+};
+
+export const appendChatMessage = (messageData) => {
+    return {
+        type: actionTypes.APPEND_CHAT_MESSAGE,
+        data: messageData
+    };
+};

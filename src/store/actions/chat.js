@@ -6,3 +6,10 @@ export const setChatConnectionId = (connId) => {
         data: connId
     };
 };
+
+export const setChatConnection = (connection) => {
+    return {
+        type: actionTypes.SET_CHAT_CONNECTION,
+        data: connection
+    };
+};

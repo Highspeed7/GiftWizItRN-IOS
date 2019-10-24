@@ -1,4 +1,5 @@
 initialState = {
+    currentChatConnection: null,
     connectionId: null
 }
 
@@ -8,6 +9,11 @@ const chatReducer = (state = initialState, action) => {
             return {
                 ...state,
                 connectionId: action.data
+            }
+        case "SET_CHAT_CONNECTION":
+            return {
+                ...state,
+                currentChatConnection: action.data
             }
     }
     return state;

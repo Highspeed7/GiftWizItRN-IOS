@@ -7,10 +7,7 @@ import {
     ScrollView, 
     TouchableOpacity, 
     Image, 
-    Modal,
-    Button,
-    AppState, 
-    Alert 
+    Modal
 } from 'react-native';
 
 import * as actions from '../../store/actions/index';
@@ -23,26 +20,13 @@ import ListChat from '../list-chat/list-chat';
 class SharedListView extends Component {
     state = {
         activeItem: null,
-        appState: AppState.currentState,
         chatModalActive: null
     }
     componentDidMount = async () => {
-        AppState.addEventListener('change', this.handleAppStateChange);
         await this.props.connectToListChatChannel(this.props.list.giftListId);
     }
     componentWillUnmount = () => {
-        AppState.removeEventListener('change', this.handleAppStateChange);
         this.props.disconnectFromListChatChannel(this.props.list.giftListId);
-    }
-    handleAppStateChange = async (nextAppState) => {
-        this.setState({
-            appState: nextAppState
-        });
-        if(this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-            await this.props.connectToListChatChannel(this.props.list.giftListId);
-        }else if(nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
-            await this.props.disconnectFromListChat(this.props.list.giftListId);
-        }
     }
     setChatModalActive = () => {
         this.setState({
@@ -101,9 +85,29 @@ class SharedListView extends Component {
                             visible={this.state.chatModalActive != null}
                             onRequestClose={() => this.setChatModalInactive()}
                         >
-                            <ListChat />
+                            <ListChat 
+                                activeList={this.props.list}
+                            />
                         </Modal>
                     </ListAction>
+                    {/* <ListAction
+                        title="Test"
+                        icon={() => (
+                            <FontAwesome5
+                                name={'comment-alt'} solid
+                                color="black"
+                                size={25}
+                            />
+                        )}
+                        onPressed = {this.testChat}
+                    >
+                        <Modal
+                            visible={this.state.chatModalActive != null}
+                            onRequestClose={() => this.setChatModalInactive()}
+                        >
+                            <ListChat />
+                        </Modal>
+                    </ListAction> */}
                 </View>
                 <ScrollView>
                     <View style={styles.listsContainer}>

@@ -1,11 +1,10 @@
 import * as actionTypes from "../actions/actionTypes";
 import * as actions from '../actions/index';
-import { JsonHubProtocol, HttpTransportType, HubConnectionBuilder, HubConnectionState } from "@aspnet/signalr";
+import { JsonHubProtocol, HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from "@aspnet/signalr";
 import axios from 'axios';
 import { Alert } from 'react-native';
 
-const startNotificationsConnection = async (connection, store) => {
-    let retryTimes = 3;
+const startNotificationsConnection = async (connection, store, maxRetries = 3) => {
     let promise = new Promise((resolve, reject) => {
         connection.start().then(() => {
             // Once we have the connection we need to get the connection id
@@ -14,11 +13,10 @@ const startNotificationsConnection = async (connection, store) => {
                 resolve(id);
             })
         }).catch((err) => {
-            if(retryTimes > 0) {
+            if(maxRetries > 0) {
                 let timer = setTimeout(() => {
                     clearTimeout(timer);
-                    retryTimes--;
-                    startNotificationsConnection(connection, store);
+                    startNotificationsConnection(connection, store, --maxRetries);
                 }, 5000);
             }else {
                 console.error("SignalR Connection Error: ", + err);
@@ -29,11 +27,10 @@ const startNotificationsConnection = async (connection, store) => {
     return promise;
 }
 
-const startChatConnection = async (connection, store) => {
+const startChatConnection = async (connection, store, maxRetries = 3) => {
     if(connection.state == HubConnectionState.Connected) {
         await store.dispatch(actions.disconnectFromListChat(action.data));
     }
-    let retryTimes = 3;
     let promise = new Promise((resolve, reject) => {
         connection.start().then(() => {
             // Once we have the connection we need to get the connection id
@@ -42,11 +39,10 @@ const startChatConnection = async (connection, store) => {
                 resolve(id);
             })
         }).catch((err) => {
-            if(retryTimes > 0) {
+            if(maxRetries > 0) {
                 let timer = setTimeout(() => {
                     clearTimeout(timer);
-                    retryTimes--;
-                    startChatConnection(connection, store);
+                    startChatConnection(connection, store, --maxRetries);
                 }, 5000);
             }else {
                 console.error("SignalR Connection Error: ", + err);
@@ -63,20 +59,26 @@ const getChatHubConnection = () => {
     const connection = new HubConnectionBuilder()
         .withUrl(connectionHub)
         .withHubProtocol(protocol)
+        .configureLogging(LogLevel.Trace)
         .build();
     return connection;
 }
 
 
 const getNotifHubConnection = () => {
-    const connectionHub = "http://giftwizitapi.azurewebsites.net/notifHub";
-    const protocol = new JsonHubProtocol();
+    try {
+        const connectionHub = "http://giftwizitapi.azurewebsites.net/notifHub";
+        const protocol = new JsonHubProtocol();
 
-    const connection = new HubConnectionBuilder()
-        .withUrl(connectionHub)
-        .withHubProtocol(protocol)
-        .build();
-    return connection;
+        const connection = new HubConnectionBuilder()
+            .withUrl(connectionHub)
+            .withHubProtocol(protocol)
+            .configureLogging(LogLevel.Trace)
+            .build();
+        return connection;
+    }catch(err) {
+        console.error(err);
+    }
 }
 
 const makeChannelConnection = async (store, connectionId) => {
@@ -130,38 +132,53 @@ const testChat = (message) => {
 }
 
 const signalRInterceptor = store => next => async (action) => {
+    const retryTimes = 3;
     const state = store.getState();
-    console.log("FUCK");
     switch(action.type) {
         case actionTypes.BEGIN_NOTIFICATIONS:
             {
-                var connection = getNotifHubConnection();
-                connection.on('Notification', (res) => {
-                    store.dispatch(actions.notificationRecieved(res));
-                });
+                var connection = state.notificationsReducer.notificationsConnection;
 
-                connection.onclose(async () => {
-                    await startNotificationsConnection(connection, store).then(async (connId) => {
+                if(connection && connection.state == HubConnectionState.Connected) {
+                    console.log("Already connected");
+                    break;
+                }else {
+                    if(connection == null) {
+                        connection = getNotifHubConnection();
+                        store.dispatch(actions.setNotificationsConnection(connection));
+                    }
+
+                    connection.on('Notification', (res) => {
+                        store.dispatch(actions.notificationRecieved(res));
+                    });
+    
+                    connection.onclose(async () => {
+                        await startNotificationsConnection(connection, store).then(async (connId) => {
+                            await makeChannelConnection(store, connId);
+                        });
+                    });
+                    
+                    startNotificationsConnection(connection, store).then(async (connId) => {
                         await makeChannelConnection(store, connId);
                     });
-                });
-                
-                startNotificationsConnection(connection, store).then(async (connId) => {
-                    await makeChannelConnection(store, connId);
-                });
-                
+                }
                 break;
             }
         case actionTypes.CONNECT_TO_LIST_CHAT:
             {
                 try {
                     var connection = getChatHubConnection();
+                    store.dispatch(actions.setChatConnection(connection));
 
                     connection.on('ListMessage', (res) => {
                         testChat(res);
                     });
-
                     connection.onclose(async () => {
+                        // If the connection stored in state has been cleared, don't reconnect.
+                        var stateConnection = state.chatReducer.currentChatConnection;
+                        if(stateConnection == null) {
+                            return;
+                        }
                         // Force a disconnect from channel; silently catch the error.
                         try {
                             await dispatch(actions.disconnectFromListChat(action.data));
@@ -186,6 +203,8 @@ const signalRInterceptor = store => next => async (action) => {
             }
         case actionTypes.DISCONNECT_FROM_LIST_CHAT:
             {
+                store.dispatch(actions.uiStartLoading());
+                var connection = state.chatReducer.currentChatConnection;
                 let connectionId = state.chatReducer.connectionId
                 let token = await store.dispatch(actions.getAuthToken());
 
@@ -205,13 +224,19 @@ const signalRInterceptor = store => next => async (action) => {
                 await axios.post(`https://giftwizitapi.azurewebsites.net/api/LeaveListChat`, body, config)
                     .then(() => {
                         console.log("Disconnected from list channel");
+                        connection.stop().then(() => {
+                            console.log("Connection stopped");
+                            store.dispatch(actions.setChatConnection(null));
+                            store.dispatch(actions.uiStopLoading());
+                        });
                     })
                     .catch((err) => {
                         console.error("Disconnecting from list chat channel failed: ", err);
+                        store.dispatch(actions.uiStopLoading());
                     });
                 break;
             }
-        case "TEST_CHAT":
+        case actionTypes.SEND_MESSAGE_TO_LIST:
             {
                 let token = await store.dispatch(actions.getAuthToken());
                 
@@ -223,12 +248,12 @@ const signalRInterceptor = store => next => async (action) => {
                     headers: headersObj
                 };
 
-                body = {
-                    message: action.data.message,
-                    giftListId: action.data.listId
-                };
+                // body = {
+                //     message: action.data.message,
+                //     giftListId: action.data.giftListId
+                // };
 
-                await axios.post(`https://giftwizitapi.azurewebsites.net/api/SendMessageToList?message=${action.data.message}&giftListId=${action.data.listId}`, null, config)
+                await axios.post(`https://giftwizitapi.azurewebsites.net/api/SendMessageToList?message=${action.data.message}&giftListId=${action.data.giftListId}`, null, config)
                     .then(() => {
                         console.log("Message sent");
                     })

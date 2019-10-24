@@ -37,3 +37,10 @@ export const setNotificationsConnectionId = (connId) => {
         data: connId
     }
 }
+
+export const setNotificationsConnection = (connection) => {
+    return {
+        type: actionTypes.SET_CURRENT_NOTIFICATIONS_CONN,
+        data: connection
+    }
+}

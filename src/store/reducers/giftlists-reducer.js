@@ -2,7 +2,8 @@ import * as actionTypes from '../actions/actionTypes';
 import * as utils from '../../utils/utils';
 
 const initialState = {
-    giftLists: []
+    giftLists: [],
+    sessionChatMessages: []
 }
 
 const giftListsReducer = (state = initialState, action) => {
@@ -32,6 +33,11 @@ const giftListsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 giftLists: utils.updateObjectInArray(state.giftLists, {item: action.data, key: action.data.id}, "id")
+            }
+        case actionTypes.APPEND_CHAT_MESSAGE:
+            return {
+                ...state,
+                sessionChatMessages: state.sessionChatMessages.concat(action.data)
             }
         default: return state;
     }
