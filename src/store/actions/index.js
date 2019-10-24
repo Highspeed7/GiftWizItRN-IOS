@@ -23,7 +23,9 @@ export {
     deleteGiftLists,
     connectToListChat,
     disconnectFromListChat,
-    sendMessageToList
+    sendMessageToList,
+    appendChatMessage,
+    clearChatMessages
 } from './giftLists';
 
 export {

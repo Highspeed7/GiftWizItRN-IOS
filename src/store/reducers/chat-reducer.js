@@ -1,3 +1,5 @@
+import * as actionTypes from '../actions/actionTypes';
+
 initialState = {
     currentChatConnection: null,
     connectionId: null
@@ -5,12 +7,12 @@ initialState = {
 
 const chatReducer = (state = initialState, action) => {
     switch(action.type) {
-        case "SET_CHAT_CONNECTION_ID":
+        case actionTypes.SET_CHAT_CONNECTION_ID:
             return {
                 ...state,
                 connectionId: action.data
             }
-        case "SET_CHAT_CONNECTION":
+        case actionTypes.SET_CHAT_CONNECTION:
             return {
                 ...state,
                 currentChatConnection: action.data

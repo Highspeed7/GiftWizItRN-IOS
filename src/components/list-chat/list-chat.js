@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {StyleSheet, TextInput, Button, View, Text } from 'react-native';
+import {StyleSheet, TextInput, Button, View, Text, FlatList, ScrollView, Keyboard } from 'react-native';
 
 import * as actions from '../../store/actions/index';
+import { Card } from 'react-native-elements';
 
 class ListChat extends Component {
     state = {
@@ -14,6 +15,7 @@ class ListChat extends Component {
         });
     }
     sendMessage = async () => {
+        Keyboard.dismiss();
         const messageData = {
             message: this.state.messageText,
             giftListId: this.props.activeList.giftListId
@@ -25,11 +27,30 @@ class ListChat extends Component {
         });
     }
     render() {
+        messages = (this.props.sessionChatMessages.length > 0) 
+            // ? <FlatList
+            //     style={{borderWidth: 1, borderColor: 'red'}}
+            //     data={this.props.sessionChatMessages}
+            //     renderItem={(messageData) => {
+            //         <Text>{messageData.item.fromUser + ': ' + messageData.item.message}</Text>
+            //     }}
+            // />
+            ? this.props.sessionChatMessages.map((message) => (
+                <Card>
+                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>{message.fromUser + ' says: '}</Text>
+                    <Text>{message.message}</Text>
+                </Card>
+            ))
+            : null
         return (
             <View style={styles.viewContainer}>
-                <View style={{flex: 1, borderBottomWidth: 1, borderBottomColor: 'black', marginBottom: 10}}>
-                    <Text>Let's talk about the list '{this.props.activeList.giftListName}'</Text>
-                </View>
+                <ScrollView
+                    keyboardShouldPersistTaps={"handled"}
+                    keyboardDismissMode='on-drag' 
+                    style={{flex: 1, borderBottomWidth: 1, borderBottomColor: 'black', marginBottom: 10}}>
+                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>Let's talk about the list '{this.props.activeList.giftListName}'</Text>
+                    {messages}
+                </ScrollView>
                 <View style={styles.inputArea}>
                     <View style={{flex: 3}}>
                         <TextInput
@@ -75,7 +96,7 @@ mapDispatchToProps = dispatch => {
 
 mapStateToProps = state => {
     return {
-        sessionChatMessages: state.giftListReducer.sessionChatMessages
+        sessionChatMessages: state.giftListsReducer.sessionChatMessages
     }
 }
 

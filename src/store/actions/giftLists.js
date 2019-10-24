@@ -92,3 +92,9 @@ export const appendChatMessage = (messageData) => {
         data: messageData
     };
 };
+
+export const clearChatMessages = () => {
+    return {
+        type: actionTypes.CLEAR_MESSAGES
+    };
+};

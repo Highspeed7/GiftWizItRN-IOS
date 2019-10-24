@@ -126,11 +126,6 @@ makeListChatConnection = async (store, connectionId, listId) => {
             console.error("Connecting to list chat channel failed: ", err);
         });
 }
-
-const testChat = (message) => {
-    console.log(message);
-}
-
 const signalRInterceptor = store => next => async (action) => {
     const retryTimes = 3;
     const state = store.getState();
@@ -171,7 +166,7 @@ const signalRInterceptor = store => next => async (action) => {
                     store.dispatch(actions.setChatConnection(connection));
 
                     connection.on('ListMessage', (res) => {
-                        testChat(res);
+                        store.dispatch(actions.appendChatMessage(res));
                     });
                     connection.onclose(async () => {
                         // If the connection stored in state has been cleared, don't reconnect.
@@ -227,11 +222,13 @@ const signalRInterceptor = store => next => async (action) => {
                         connection.stop().then(() => {
                             console.log("Connection stopped");
                             store.dispatch(actions.setChatConnection(null));
+                            store.dispatch(actions.clearChatMessages());
                             store.dispatch(actions.uiStopLoading());
                         });
                     })
                     .catch((err) => {
                         console.error("Disconnecting from list chat channel failed: ", err);
+                        store.dispatch(actions.clearChatMessages());
                         store.dispatch(actions.uiStopLoading());
                     });
                 break;
