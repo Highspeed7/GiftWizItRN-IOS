@@ -32,7 +32,11 @@ class GiftListDetail extends Component {
         editModalOpen: null,
         shareListModalOpen: null
     }
-    setMoveMode = () => {
+    setMoveMode = async () => {
+        if(this.props.editableSharedLists.length == 0) {
+            await this.props.getEditableLists();
+        }
+
         this.setState({
             moveMode: true,
             deleteMode: null
@@ -48,9 +52,15 @@ class GiftListDetail extends Component {
     }
     onGListSelected = (glistId, position) => {
         // Get the list name from gift lists
-        const selectedList = goclone(this.props.giftLists.find((list) => {
+        var selectedList = goclone(this.props.giftLists.find((list) => {
             return list.id == glistId
         }));
+
+        if(selectedList == null) {
+            selectedList = goclone(this.props.editableSharedLists.find((list) => {
+                return list.id == glistId
+            }));
+        }
 
         this.setState({
             selectedGiftListId: glistId,
@@ -168,6 +178,15 @@ class GiftListDetail extends Component {
                 </TouchableOpacity>
             ))
             : null
+        const sharedGiftLists = (this.props.editableSharedLists.length > 0 && this.state.moveMode)
+            ? this.props.editableSharedLists.map((glist) => (
+                <Picker.Item
+                    key={glist.id}
+                    label={glist.name}
+                    value={glist.id}
+                />
+            ))
+            : null
         const giftLists = (this.props.giftLists.length > 0 && this.state.moveMode)
             ? this.props.giftLists.map((glist) => (
                 <Picker.Item
@@ -254,6 +273,7 @@ class GiftListDetail extends Component {
                                 onValueChange={this.onGListSelected}
                                 mode="dropdown"
                                 >{giftLists}
+                                {sharedGiftLists}
                             </Picker>
                             <Button title="Move" onPress={this.confirmItemsMove} />
                         </View>
@@ -303,13 +323,15 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
-        moveGiftListItems: (itemData) => dispatch(actions.moveGiftListItems(itemData))
+        moveGiftListItems: (itemData) => dispatch(actions.moveGiftListItems(itemData)),
+        getEditableLists: () => dispatch(actions.getEditableSharedLists())
     }
 };
 
 const mapStateToProps = state => {
     return {
-        giftLists: state.giftListsReducer.giftLists
+        giftLists: state.giftListsReducer.giftLists,
+        editableSharedLists: state.wishListReducer.editableSharedLists
     }
 };
 

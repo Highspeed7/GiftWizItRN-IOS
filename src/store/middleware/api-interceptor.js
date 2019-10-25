@@ -82,6 +82,21 @@ const apiInterceptor = store => next => async action => {
                 action.type = "SET_WISH_LIST_FAILED";
             }
             break;
+        case actionTypes.GET_EDITABLE_SHARED_LISTS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                }
+
+                await axios.get('http://giftwizitapi.azurewebsites.net/api/SpecialSharedLists', {headers: headerObj}).then((response) => {
+                    action.data = response.data
+                });
+            }catch(error) {
+                console.log(error);
+            }
+            break;
         case actionTypes.MOVE_WISH_LIST_ITEMS:
             try {
                 token = await store.dispatch(actions.getAuthToken());

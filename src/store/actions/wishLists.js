@@ -40,3 +40,9 @@ export const deleteWishListItems = (itemData) => {
         data: itemData
     }
 }
+
+export const getEditableSharedLists = () => {
+    return {
+        type: actionTypes.GET_EDITABLE_SHARED_LISTS
+    };
+};
