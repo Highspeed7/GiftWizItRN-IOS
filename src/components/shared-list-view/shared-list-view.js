@@ -1,12 +1,49 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
+import { connect } from 'react-redux';
+import { 
+    View, 
+    Text, 
+    StyleSheet, 
+    ScrollView, 
+    TouchableOpacity, 
+    Image, 
+    Modal
+} from 'react-native';
 
+import * as actions from '../../store/actions/index';
 import Swatch from '../../components/swatch/swatch';
 import SharedListItem from './shared-list-item';
+import ListAction from '../list-actions/list-action';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import ListChat from '../list-chat/list-chat';
 
 class SharedListView extends Component {
     state = {
-        activeItem: null
+        activeItem: null,
+        chatModalActive: null
+    }
+    componentDidMount = async () => {
+        await this.props.connectToListChatChannel(this.props.list.giftListId);
+    }
+    componentWillUnmount = () => {
+        this.props.disconnectFromListChatChannel(this.props.list.giftListId);
+    }
+    setChatModalActive = () => {
+        this.setState({
+            chatModalActive: true
+        });
+    }
+    setChatModalInactive = () => {
+        this.setState({
+            chatModalActive: null
+        });
+    }
+    testChat = () => {
+        let chatContext = {
+            message: 'Hello World',
+            listId: this.props.list.giftListId
+        };
+        this.props.testChat(chatContext);
     }
     render() {
         let {listItems} = this.props.list;
@@ -31,6 +68,46 @@ class SharedListView extends Component {
             <View style={styles.viewContainer}>
                 <View>
                     <Text style={styles.listTitleHeader}>{this.props.list.giftListName}</Text>
+                </View>
+                <View style={styles.listsContainer}>
+                    <ListAction
+                        title="Message"
+                        icon={() => (
+                            <FontAwesome5
+                                name={'comment-alt'} solid
+                                color="black"
+                                size={25}
+                            />
+                        )}
+                        onPressed = {this.setChatModalActive}
+                    >
+                        <Modal
+                            visible={this.state.chatModalActive != null}
+                            onRequestClose={() => this.setChatModalInactive()}
+                        >
+                            <ListChat 
+                                activeList={this.props.list}
+                            />
+                        </Modal>
+                    </ListAction>
+                    {/* <ListAction
+                        title="Test"
+                        icon={() => (
+                            <FontAwesome5
+                                name={'comment-alt'} solid
+                                color="black"
+                                size={25}
+                            />
+                        )}
+                        onPressed = {this.testChat}
+                    >
+                        <Modal
+                            visible={this.state.chatModalActive != null}
+                            onRequestClose={() => this.setChatModalInactive()}
+                        >
+                            <ListChat />
+                        </Modal>
+                    </ListAction> */}
                 </View>
                 <ScrollView>
                     <View style={styles.listsContainer}>
@@ -66,4 +143,12 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SharedListView;
+mapDispatchToProps = dispatch => {
+    return {
+        connectToListChatChannel: (list_id) => dispatch(actions.connectToListChat(list_id)),
+        disconnectFromListChatChannel: (list_id) => dispatch(actions.disconnectFromListChat(list_id)),
+        testChat: (chatContext) => dispatch({type: "TEST_CHAT", data: chatContext})
+    }
+}
+
+export default connect(null, mapDispatchToProps)(SharedListView);

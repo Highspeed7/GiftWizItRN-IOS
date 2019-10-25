@@ -12,7 +12,7 @@ import {
 import Auxiliary from '../../hoc/auxiliary';
 import ProductWebView from '../product-web-view/product-web-view';
 
-class PublicSearchItemModal extends Component {
+class PrivateSearchItemModal extends Component {
     state = {
         openProductWebView: null
     }
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default PublicSearchItemModal;
+export default PrivateSearchItemModal;

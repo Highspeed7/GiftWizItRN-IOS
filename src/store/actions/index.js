@@ -20,7 +20,12 @@ export {
     moveGiftListItems,
     editGiftList,
     shareGiftList,
-    deleteGiftLists
+    deleteGiftLists,
+    connectToListChat,
+    disconnectFromListChat,
+    sendMessageToList,
+    appendChatMessage,
+    clearChatMessages
 } from './giftLists';
 
 export {
@@ -29,7 +34,8 @@ export {
     setWishListInactive,
     moveWishListItems,
     addWishListItem,
-    deleteWishListItems
+    deleteWishListItems,
+    getEditableSharedLists
 } from './wishLists';
 
 export {
@@ -46,9 +52,12 @@ export {
     searchPublicLists,
     searchPrivateLists,
     clearSearchState,
-    setListActive,
-    setListInactive,
-    setPublicListItems
+    setPublicListActive,
+    setPublicListInactive,
+    setPublicListItems,
+    setPrivateListItems,
+    setPrivateListActive,
+    setPrivateListInactive
 } from './search';
 
 export {
@@ -56,8 +65,15 @@ export {
     beginNotifications,
     notificationRecieved,
     getNotifications,
-    fetchNextNotificationsPage
+    fetchNextNotificationsPage,
+    setNotificationsConnectionId,
+    setNotificationsConnection
 } from './notifications';
+
+export {
+    setChatConnectionId,
+    setChatConnection
+} from './chat';
 
 export {
     uiStartLoading,

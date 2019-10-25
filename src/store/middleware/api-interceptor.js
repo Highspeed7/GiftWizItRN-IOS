@@ -82,6 +82,21 @@ const apiInterceptor = store => next => async action => {
                 action.type = "SET_WISH_LIST_FAILED";
             }
             break;
+        case actionTypes.GET_EDITABLE_SHARED_LISTS:
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                }
+
+                await axios.get('http://giftwizitapi.azurewebsites.net/api/SpecialSharedLists', {headers: headerObj}).then((response) => {
+                    action.data = response.data
+                });
+            }catch(error) {
+                console.log(error);
+            }
+            break;
         case actionTypes.MOVE_WISH_LIST_ITEMS:
             try {
                 token = await store.dispatch(actions.getAuthToken());
@@ -225,13 +240,16 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.SEARCH_PUBLIC_LISTS:
             try {
+                store.dispatch(actions.uiStartLoading());
                 body = action.data;
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/SearchPublicLists', body).then((response) => {
                    action.data = response.data;
+                   store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
                 console.log(error);
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.SET_PUBLIC_LIST_ITEMS:
@@ -243,6 +261,31 @@ const apiInterceptor = store => next => async action => {
                 });
             }catch(error) {
                 console.log(error);
+            }
+            break;
+        case actionTypes.SET_PRIVATE_LIST_ITEMS:
+            try {
+                await axios.get(`http://giftwizitapi.azurewebsites.net/api/SearchPrivateListItems?giftListId=${action.key}`).then((response) => {
+                    action.payload = {
+                        giftItems: response.data
+                    };
+                });
+            }catch(err) {
+                console.log(err);
+            }
+            break;
+        case actionTypes.SEARCH_PRIVATE_LISTS:
+            try {
+                store.dispatch(actions.uiStartLoading());
+                body = action.data;
+
+                await axios.post('http://giftwizitapi.azurewebsites.net/api/SearchPrivateLists', body).then((response) => {
+                    action.data = response.data
+                    store.dispatch(actions.uiStopLoading());
+                });
+            }catch(err) {
+                console.log(error);
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.DELETE_WISH_LIST_ITEMS:

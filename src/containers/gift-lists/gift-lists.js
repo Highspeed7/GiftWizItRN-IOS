@@ -19,6 +19,7 @@ import GiftListDetail from '../../components/gift-list/gift-list-detail';
 import Auxiliary from '../../hoc/auxiliary';
 import { goclone } from '../../utils/utils';
 import Checkbox from '../../components/checkbox/checkbox';
+import GiftListAdd from '../../components/gift-list/add-modal/gift-list-add';
 
 class GiftLists extends Component {
     state = {
@@ -26,8 +27,20 @@ class GiftLists extends Component {
         shareListModalOpen: null,
         selectedLists: [],
         newListName: null,
+        restrictChatFlag: false,
+        allowAdds: true,
         deleteMode: null
     }
+    setChatRestriction = (value) => {
+        this.setState({
+            restrictChatFlag: value
+        });
+    };
+    setAllowAdds = (value) => {
+        this.setState({
+            allowAdds: value
+        });
+    };
     onSwatchPress(list) {
         var listId = list.id;
         if(this.state.deleteMode == null) {
@@ -104,7 +117,12 @@ class GiftLists extends Component {
         if(existingList.length > 0) {
             Alert.alert("Name already in use, please enter a different name.");
         }else {
-            await this.props.addNewGiftList(this.state.newListName);
+            var newGiftList = {
+                name: this.state.newListName,
+                restrictChat: this.state.restrictChatFlag,
+                allowItemAdds: this.state.allowAdds
+            };
+            await this.props.addNewGiftList(newGiftList);
             this.closeNewListModal();
         }
     }
@@ -161,11 +179,12 @@ class GiftLists extends Component {
                                 visible={this.state.addListModalOpen != null}
                                 onRequestClose={() => this.closeNewListModal()}
                             >
-                                <View style={{padding: 10}}>
-                                    <Text>Hello!</Text>
-                                    <TextInput placeholder="Name" onChangeText={this.addedGiftNameHandler} />
-                                    <Button title="Submit" onPress={this.newGiftListAdded} />
-                                </View>
+                                <GiftListAdd
+                                    addedGiftNameHandler={this.addedGiftNameHandler}
+                                    newGiftListAdded={this.newGiftListAdded}
+                                    restrictChatFlag={this.setChatRestriction}
+                                    allowItemAdds={this.setAllowAdds}
+                                />
                             </Modal>
                         </ListAction>
                         <ListAction 
@@ -234,7 +253,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => {
     return {
         getLists: () => dispatch(actions.setGiftLists()),
-        addNewGiftList: (name) => dispatch(actions.addNewGiftlist(name)),
+        addNewGiftList: (newGiftList) => dispatch(actions.addNewGiftlist(newGiftList)),
         setListActive: (key) => dispatch(actions.setGiftListActive(key)),
         setListInactive: (key) => dispatch(actions.setGiftListInactive(key)),
         setListItems: (key) => dispatch(actions.setGiftListItems(key)),

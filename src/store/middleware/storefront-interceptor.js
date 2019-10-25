@@ -3,10 +3,12 @@ import Client from 'shopify-buy/index.unoptimized.umd';
 import * as actionTypes from "../actions/actionTypes";
 import * as actions from '../actions/index';
 import axios from 'axios';
+import { sleep } from '../../utils/utils';
 
 const storeFrontInterceptor = store => next => async (action) => {
     const state = store.getState();
     let client = state.storeFrontReducer.client;
+    let collection = state.storeFrontReducer.collections
     let checkoutId = null;
     switch(action.type) {
         case actionTypes.INITIALIZE_STOREFRONT:
@@ -23,6 +25,7 @@ const storeFrontInterceptor = store => next => async (action) => {
     
                 action.payload.client = client;
     
+                // If there are no collections currently, get them.
                 await client.collection.fetchAllWithProducts().then((collections) => {
                     console.log(collections);
                     action.payload.collections = collections;
@@ -48,10 +51,13 @@ const storeFrontInterceptor = store => next => async (action) => {
                     await client.checkout.fetch(existingCheckout.checkoutId).then((checkout) => {
                         action.payload.checkout = checkout;
                         store.dispatch(actions.uiStopLoading());
+                        sleep(500);
                     })
                 }
             }catch(err) {
                 console.log(err);
+                store.dispatch(actions.uiStopLoading());
+                sleep(500);
             }
             break;
         case actionTypes.FETCH_CTGRY_PRODUCTS:
