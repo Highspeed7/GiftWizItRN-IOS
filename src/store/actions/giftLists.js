@@ -28,12 +28,10 @@ export const setGiftListItems = (key) => {
     };
 };
 
-export const addNewGiftlist = (glist_Name) => {
+export const addNewGiftlist = (newGiftList) => {
     return {
         type: actionTypes.ADD_NEW_GIFT_LIST,
-        data: {
-            name: glist_Name
-        }
+        data: newGiftList
     };
 };
 

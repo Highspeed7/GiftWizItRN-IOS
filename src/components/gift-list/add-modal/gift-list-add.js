@@ -7,7 +7,6 @@ import {
     StyleSheet,
     Picker
 } from 'react-native';
-import RadioForm, {RadioButtonLabel, RadioButton, RadioButtonInput} from 'react-native-simple-radio-button';
 
 class GiftListAdd extends Component {
     picker_options = [
@@ -22,12 +21,13 @@ class GiftListAdd extends Component {
         this.setState({
             restrictChat: value
         });
-        this.props.restrictChatFlag(value)
+        this.props.restrictChatFlag(value);
     };
     setAllowAddValue = (value) => {
         this.setState({
             allowAdds: value
         });
+        this.props.allowItemAdds(value);
     };
     render() {
         return (

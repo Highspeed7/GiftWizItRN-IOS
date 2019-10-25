@@ -34,7 +34,8 @@ export {
     setWishListInactive,
     moveWishListItems,
     addWishListItem,
-    deleteWishListItems
+    deleteWishListItems,
+    getEditableSharedLists
 } from './wishLists';
 
 export {

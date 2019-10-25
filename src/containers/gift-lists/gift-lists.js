@@ -28,11 +28,17 @@ class GiftLists extends Component {
         selectedLists: [],
         newListName: null,
         restrictChatFlag: false,
+        allowAdds: true,
         deleteMode: null
     }
     setChatRestriction = (value) => {
         this.setState({
             restrictChatFlag: value
+        });
+    };
+    setAllowAdds = (value) => {
+        this.setState({
+            allowAdds: value
         });
     };
     onSwatchPress(list) {
@@ -111,7 +117,12 @@ class GiftLists extends Component {
         if(existingList.length > 0) {
             Alert.alert("Name already in use, please enter a different name.");
         }else {
-            await this.props.addNewGiftList(this.state.newListName);
+            var newGiftList = {
+                name: this.state.newListName,
+                restrictChat: this.state.restrictChatFlag,
+                allowItemAdds: this.state.allowAdds
+            };
+            await this.props.addNewGiftList(newGiftList);
             this.closeNewListModal();
         }
     }
@@ -172,6 +183,7 @@ class GiftLists extends Component {
                                     addedGiftNameHandler={this.addedGiftNameHandler}
                                     newGiftListAdded={this.newGiftListAdded}
                                     restrictChatFlag={this.setChatRestriction}
+                                    allowItemAdds={this.setAllowAdds}
                                 />
                             </Modal>
                         </ListAction>
@@ -241,7 +253,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => {
     return {
         getLists: () => dispatch(actions.setGiftLists()),
-        addNewGiftList: (name) => dispatch(actions.addNewGiftlist(name)),
+        addNewGiftList: (newGiftList) => dispatch(actions.addNewGiftlist(newGiftList)),
         setListActive: (key) => dispatch(actions.setGiftListActive(key)),
         setListInactive: (key) => dispatch(actions.setGiftListInactive(key)),
         setListItems: (key) => dispatch(actions.setGiftListItems(key)),
