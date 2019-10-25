@@ -24,7 +24,7 @@ import StoreSelector from '../../components/store-selector/store-selector';
 import WishListItemModal from '../../components/wish-list/wish-list-item-modal';
 import Auxiliary from '../../hoc/auxiliary';
 import ListAction from '../../components/list-actions/list-action';
-import { goclone } from '../../utils/utils';
+import { goclone, shallowCompare } from '../../utils/utils';
 
 class WishList extends Component {
     state = {
@@ -33,7 +33,8 @@ class WishList extends Component {
         deleteMode: null,
         selectedItems: [],
         selectedGiftListId: null,
-        selectedGiftListName: null
+        selectedGiftListName: null,
+        combinedGiftLists: []
     }
     componentDidMount = () => {
         this.props.getWishList();
@@ -55,15 +56,22 @@ class WishList extends Component {
             openStoreSelector: true
         });
     }
-    setMoveMode = () => {
+    setMoveMode = async () => {
         // TODO: Return to determine whether or not to update giftLists.
         if(this.props.giftLists.length == 0) {
-            this.props.getGiftLists();
+            await this.props.getGiftLists();
+        }
+
+        if(this.props.editableSharedLists.length == 0) {
+            await this.props.getEditableLists();
         }
         this.setState({
             moveMode: true,
             deleteMode: null
         })
+    }
+    componentDidUpdate = (prevProps, prevState) => {
+        console.log(prevProps);
     }
     cancelActions = () => {
         const nowSelectedArr = [];
@@ -84,9 +92,15 @@ class WishList extends Component {
     }
     onGListSelected = (glistId, position) => {
         // Get the list name from gift lists
-        const selectedList = goclone(this.props.giftLists.find((list) => {
+        var selectedList = goclone(this.props.giftLists.find((list) => {
             return list.id == glistId
         }));
+
+        if(selectedList == null) {
+            selectedList = goclone(this.props.editableSharedLists.find((list) => {
+                return list.id == glistId
+            }));
+        }
 
         this.setState({
             selectedGiftListId: glistId,
@@ -213,6 +227,15 @@ class WishList extends Component {
             </TouchableOpacity>
         ))
         : null
+        const sharedGiftLists = (this.props.editableSharedLists.length > 0 && this.state.moveMode)
+        ? this.props.editableSharedLists.map((glist) => (
+            <Picker.Item
+                key={glist.id}
+                label={glist.name}
+                value={glist.id}
+            />
+        ))
+        : null
         const giftLists = (this.props.giftLists.length > 0 && this.state.moveMode)
         ? this.props.giftLists.map((glist) => (
             <Picker.Item
@@ -279,6 +302,7 @@ class WishList extends Component {
                                 onValueChange={this.onGListSelected}
                                 mode="dropdown"
                                 >{giftLists}
+                                {sharedGiftLists}
                             </Picker>
                             <Button title="Move" onPress={this.confirmItemsMove} />
                         </View>
@@ -357,6 +381,7 @@ const mapDispatchToProps = dispatch => {
     return {
         getWishList: () => dispatch(actions.setWishList()),
         getGiftLists: () => dispatch(actions.setGiftLists()),
+        getEditableLists: () => dispatch(actions.getEditableSharedLists()),
         setWishListActive: (key) => dispatch(actions.setWishListActive(key)),
         setWishListInactive: (key) => dispatch(actions.setWishListInactive(key)),
         moveWishListItems: (itemData) => dispatch(actions.moveWishListItems(itemData)),
@@ -367,7 +392,9 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         wishList: state.wishListReducer.wishList,
-        giftLists: state.giftListsReducer.giftLists
+        giftLists: state.giftListsReducer.giftLists,
+        sharedLists: state.sharedListsReducer.sharedLists,
+        editableSharedLists: state.wishListReducer.editableSharedLists
     }
 }
 

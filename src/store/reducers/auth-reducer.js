@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 const initialState = {
     isAuthenticated: false,
     accessToken: null,
+    userData: null,
     accessTokenExpiration: null,
     refreshToken: null,
     authInProgress: false,

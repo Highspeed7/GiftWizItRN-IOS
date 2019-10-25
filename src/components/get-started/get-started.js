@@ -43,6 +43,7 @@ class GetStarted extends Component {
     }
     authCheck = async() => {
         // This component should redirect to dashboard if the user is logged in
+        console.log("NIGGER");
         if(this.props.isAuthenticated) {
             await this.registerUser();
             this.props.navigation.navigate("postAuth");
