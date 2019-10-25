@@ -96,3 +96,10 @@ export const clearChatMessages = () => {
         type: actionTypes.CLEAR_MESSAGES
     };
 };
+
+export const deleteGiftItems = (itemsData) => {
+    return {
+        type: actionTypes.DELETE_GIFT_ITEMS,
+        data: itemsData
+    };
+};

@@ -429,6 +429,27 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
             }
             break;
+        case actionTypes.DELETE_GIFT_ITEMS: 
+            try {
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                let body = action.data;
+
+                let config = {
+                    headers: headerObj
+                };
+
+                await axios.post("https://giftwizitapi.azurewebsites.net/api/GiftListItems", body, config).then((response) => {
+                    store.dispatch(actions.setGiftListItems(action.data[0].gift_List_Id));
+                });
+            }catch(error) {
+                console.log(error);
+            }
+            break;
         case actionTypes.ADD_CONTACT:
             try {
                 store.dispatch(actions.uiStartLoading());

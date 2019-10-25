@@ -42,6 +42,12 @@ class GiftListDetail extends Component {
             deleteMode: null
         });
     }
+    setDeleteMode = () => {
+        this.setState({
+            moveMode: null,
+            deleteMode: true
+        });
+    }
     cancelActions = () => {
         const nowSelectedArr = [];
         this.setState({
@@ -157,6 +163,18 @@ class GiftListDetail extends Component {
             shareListModalOpen: null
         });
     }
+    confirmItemsDelete = () => {
+        let deletedItemsArr = [];
+        let deletedItemObj = {};
+
+        this.state.selectedItems.forEach((item) => {
+            deletedItemObj["item_Id"] = item;
+            deletedItemObj["gift_List_Id"] = this.props.list.id;
+            deletedItemsArr.push(goclone(deletedItemObj));
+        });
+        this.cancelActions();
+        this.props.deleteItemsFromList(deletedItemsArr);
+    }
     render(){
         const giftItems = (this.props.list.itemsData != null && this.props.list.itemsData.length > 0) 
             ? this.props.list.itemsData.map((item) => (
@@ -250,7 +268,7 @@ class GiftListDetail extends Component {
                                 color="black"
                                 size={25}    
                             />)}
-                            onPressed={() => Alert.alert("Delete list pressed")}
+                            onPressed={() => this.setDeleteMode()}
                         >
                         </ListAction>
                         {(this.state.moveMode != null || this.state.deleteMode != null)
@@ -277,6 +295,18 @@ class GiftListDetail extends Component {
                             </Picker>
                             <Button title="Move" onPress={this.confirmItemsMove} />
                         </View>
+                        : null
+                    }
+                    {(this.state.selectedItems.length > 0 && this.state.deleteMode == true)
+                        ? <View>
+                            <Text>Are you sure you want to remove the selected items?</Text>
+                            <Button title="Yes" onPress={this.confirmItemsDelete} />
+                            <Button title="No" onPress={this.cancelActions} />
+                        </View>
+                        : null
+                    }
+                    {(this.state.deleteMode || this.state.moveMode) 
+                        ? <Text style={{fontSize: 20}}>You may select multiple items...</Text> 
                         : null
                     }
                 </View>
@@ -324,7 +354,8 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => {
     return {
         moveGiftListItems: (itemData) => dispatch(actions.moveGiftListItems(itemData)),
-        getEditableLists: () => dispatch(actions.getEditableSharedLists())
+        getEditableLists: () => dispatch(actions.getEditableSharedLists()),
+        deleteItemsFromList: (itemData) => dispatch(actions.deleteGiftItems(itemData))
     }
 };
 
