@@ -76,4 +76,3 @@ export const timestampUTCToLocalReadable = (dateTime) => {
     newDate = new Date(newDate);
     return newDate.toDateString();
 }
-
