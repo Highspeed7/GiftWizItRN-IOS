@@ -103,3 +103,17 @@ export const deleteGiftItems = (itemsData) => {
         data: itemsData
     };
 };
+
+export const getListMessages = (giftListId) => {
+    return {
+        type: actionTypes.GET_LIST_MESSAGES,
+        data: giftListId
+    };
+};
+
+export const setListMessages = (messageData) => {
+    return {
+        type: actionTypes.SET_LIST_MESSAGES,
+        data: messageData
+    }
+}

@@ -26,7 +26,9 @@ export {
     sendMessageToList,
     appendChatMessage,
     clearChatMessages,
-    deleteGiftItems
+    deleteGiftItems,
+    getListMessages,
+    setListMessages
 } from './giftLists';
 
 export {

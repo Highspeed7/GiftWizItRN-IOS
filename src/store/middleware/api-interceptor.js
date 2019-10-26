@@ -17,11 +17,13 @@ const apiInterceptor = store => next => async action => {
                 await axios.get('https://giftwizitapi.azurewebsites.net/api/GiftLists', {headers: commonHeaders}).then((response) => {
                     action.giftLists = response.data;
                     store.dispatch(actions.uiStopLoading());
+                    sleep(500);
                 })
             }catch(error) {
                 console.log(error);
                 action.type = "LIST_FAIL";
                 store.dispatch(actions.uiStopLoading()); 
+                sleep(500);
             }
             break;
         case actionTypes.SET_GLIST_ITEMS:
@@ -46,10 +48,12 @@ const apiInterceptor = store => next => async action => {
                         giftItems: response.data
                     }
                     store.dispatch(actions.uiStopLoading()); 
+                    sleep(500);
                 });
                 break;
             }catch(error) {
                 store.dispatch(actions.uiStopLoading()); 
+                sleep(500);
             }
         case actionTypes.SET_CONTACTS:
             try {
@@ -61,9 +65,11 @@ const apiInterceptor = store => next => async action => {
                 await axios.get('http://giftwizitapi.azurewebsites.net/api/Contacts/Get', {headers: headerObj}).then((response) => {
                     action.contacts = response.data;
                     store.dispatch(actions.uiStopLoading());
+                    sleep(500);
                 });
             }catch(error) {
                 store.dispatch(actions.uiStopLoading());
+                sleep(500);
                 console.log(error);
                 action.type = "SET_CONTACTS_FAILED";
             }
@@ -194,9 +200,11 @@ const apiInterceptor = store => next => async action => {
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/GiftLists/Update', body, config).then((response) => {
                     action.data = response.data;
                     store.dispatch(actions.uiStopLoading());
+                    sleep(500);
                 });
             }catch(error) {
                 store.dispatch(actions.uiStopLoading());
+                sleep(500);
             }
             break;
         case actionTypes.SHARE_GIFT_LIST:
@@ -223,6 +231,7 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
                 store.dispatch(actions.uiStopLoading());
+                sleep(500);
             }
             break;
         case actionTypes.GET_SHARED_LISTS:
@@ -246,10 +255,12 @@ const apiInterceptor = store => next => async action => {
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/SearchPublicLists', body).then((response) => {
                    action.data = response.data;
                    store.dispatch(actions.uiStopLoading());
+                   sleep(500);
                 });
             }catch(error) {
                 console.log(error);
                 store.dispatch(actions.uiStopLoading());
+                sleep(500);
             }
             break;
         case actionTypes.SET_PUBLIC_LIST_ITEMS:
@@ -282,10 +293,12 @@ const apiInterceptor = store => next => async action => {
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/SearchPrivateLists', body).then((response) => {
                     action.data = response.data
                     store.dispatch(actions.uiStopLoading());
+                    sleep(500);
                 });
             }catch(err) {
                 console.log(error);
                 store.dispatch(actions.uiStopLoading());
+                sleep(500);
             }
             break;
         case actionTypes.DELETE_WISH_LIST_ITEMS:
@@ -468,6 +481,7 @@ const apiInterceptor = store => next => async action => {
                 await axios.post("https://giftwizitapi.azurewebsites.net/api/Contacts/Add", body, config).then((response) => {
                     store.dispatch(actions.setContacts());
                     store.dispatch(actions.uiStopLoading());
+                    sleep(500);
                 })
             }catch(error) {
                 console.log(error);
@@ -490,9 +504,28 @@ const apiInterceptor = store => next => async action => {
 
                 await axios.post("https://giftwizitapi.azurewebsites.net/api/Contacts/Delete", body, config).then((response) => {
                     store.dispatch(actions.uiStopLoading());
+                    sleep(500);
                 });
             }catch(error) {
+                console.log(error);
                 store.dispatch(actions.uiStopLoading());
+                sleep(500);
+            }
+            break;
+        case actionTypes.GET_LIST_MESSAGES:
+            try {
+                store.dispatch(actions.uiStartLoading());
+
+                await axios.get(`https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20`).then((response) => {
+                    store.dispatch(actions.setListMessages(response.data))
+                    store.dispatch(actions.uiStopLoading());
+                    sleep(500);
+                });
+
+            }catch(error) {
+                console.log(error);
+                store.dispatch(actions.uiStopLoading());
+                sleep(500);
             }
     }
     next(action);

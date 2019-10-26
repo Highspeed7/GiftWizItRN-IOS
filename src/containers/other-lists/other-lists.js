@@ -73,7 +73,7 @@ class OtherLists extends Component {
                 <View>
                     <Text style={{fontSize: 24, fontWeight: 'bold'}}>Lists Shared with you...</Text>
                 </View>
-                <ScrollView style={styles.scrollView}>
+                <ScrollView keyboardShouldPersistTaps="always" style={styles.scrollView}>
                     {lists}
                 </ScrollView>
             </View>
