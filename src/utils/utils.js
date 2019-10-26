@@ -63,6 +63,12 @@ const objShallowEqual = (objA, objB) => {
   return true;
 }
 
+export const prependToArray = (value, arrayToCopy) => {
+    var newArr = [...arrayToCopy];
+    newArr.unshift(value);
+    return newArr;
+}
+
 export const shallowCompare = (instance, nextProps, nextState) => {
     return (
       !objShallowEqual(instance.props, nextProps) ||
@@ -76,4 +82,3 @@ export const timestampUTCToLocalReadable = (dateTime) => {
     newDate = new Date(newDate);
     return newDate.toDateString();
 }
-

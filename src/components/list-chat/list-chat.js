@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {StyleSheet, TextInput, Button, View, Text, FlatList, ScrollView, Keyboard } from 'react-native';
+import {StyleSheet, TextInput, Button, View, Text, FlatList, ScrollView, Keyboard, Alert, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 import * as actions from '../../store/actions/index';
 import { Card } from 'react-native-elements';
@@ -14,8 +14,10 @@ class ListChat extends Component {
             messageText: value
         });
     }
+    componentDidMount = async () => {
+        await this.props.getListMessages(this.props.activeList.giftListId);
+    }
     sendMessage = async () => {
-        Keyboard.dismiss();
         const messageData = {
             message: this.state.messageText,
             giftListId: this.props.activeList.giftListId
@@ -28,32 +30,29 @@ class ListChat extends Component {
     }
     render() {
         messages = (this.props.sessionChatMessages.length > 0) 
-            // ? <FlatList
-            //     style={{borderWidth: 1, borderColor: 'red'}}
-            //     data={this.props.sessionChatMessages}
-            //     renderItem={(messageData) => {
-            //         <Text>{messageData.item.fromUser + ': ' + messageData.item.message}</Text>
-            //     }}
-            // />
-            ? this.props.sessionChatMessages.map((message) => (
-                <Card>
-                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>{message.fromUser + ' says: '}</Text>
-                    <Text>{message.message}</Text>
-                </Card>
-            ))
+            ? <FlatList
+                keyboardShouldPersistTaps="always"
+                inverted={true}
+                data={this.props.sessionChatMessages}
+                renderItem={(messageData, i) => (
+                    <Card key={i}>
+                            <Text style={{fontWeight: 'bold', marginBottom: 5}}>{(messageData.item.fromUser || messageData.item.userName) + ' said: '}</Text>
+                            <Text>{messageData.item.message}</Text>
+                    </Card>
+                )}
+            />
             : null
         return (
-            <View style={styles.viewContainer}>
-                <ScrollView
-                    keyboardShouldPersistTaps={"handled"}
-                    keyboardDismissMode='on-drag' 
-                    style={{flex: 1, borderBottomWidth: 1, borderBottomColor: 'black', marginBottom: 10}}>
+            <KeyboardAvoidingView style={styles.viewContainer}>
+                <View
+                    style={{paddingBottom: 25, flex: 1, borderBottomWidth: 1, borderBottomColor: 'black', marginBottom: 10}}>
                     <Text style={{fontWeight: 'bold', marginBottom: 5}}>Let's talk about the list '{this.props.activeList.giftListName}'</Text>
                     {messages}
-                </ScrollView>
+                </View>
                 <View style={styles.inputArea}>
                     <View style={{flex: 3}}>
                         <TextInput
+                            blurOnSubmit={false}
                             style={{minWidth: '85%', maxWidth: '85%', maxHeight: 150, textAlignVertical: "top"}} 
                             placeholder="Enter your message..."
                             onChangeText={this.textEntered} 
@@ -70,7 +69,7 @@ class ListChat extends Component {
                         />
                     </View>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 }
@@ -85,12 +84,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         position: 'relative',
         bottom: 0
+    },
+    buttonText: {
+        fontSize: 18,
+        color: 'grey'
     }
 });
 
 mapDispatchToProps = dispatch => {
     return {
-        sendMessageToList: (messageData) => dispatch(actions.sendMessageToList(messageData))
+        sendMessageToList: (messageData) => dispatch(actions.sendMessageToList(messageData)),
+        getListMessages: (giftListId) => dispatch(actions.getListMessages(giftListId))
     }
 }
 

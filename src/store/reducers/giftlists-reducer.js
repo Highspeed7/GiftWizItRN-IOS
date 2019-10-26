@@ -37,7 +37,12 @@ const giftListsReducer = (state = initialState, action) => {
         case actionTypes.APPEND_CHAT_MESSAGE:
             return {
                 ...state,
-                sessionChatMessages: state.sessionChatMessages.concat(action.data)
+                sessionChatMessages: utils.prependToArray(action.data, state.sessionChatMessages)
+            }
+        case actionTypes.SET_LIST_MESSAGES:
+            return {
+                ...state,
+                sessionChatMessages: state.sessionChatMessages.concat(action.data.results)
             }
         case actionTypes.CLEAR_MESSAGES:
             return {

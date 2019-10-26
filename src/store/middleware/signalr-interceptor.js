@@ -162,6 +162,7 @@ const signalRInterceptor = store => next => async (action) => {
         case actionTypes.CONNECT_TO_LIST_CHAT:
             {
                 try {
+                    store.dispatch(actions.uiStartLoading());
                     var connection = getChatHubConnection();
                     store.dispatch(actions.setChatConnection(connection));
 
@@ -190,9 +191,11 @@ const signalRInterceptor = store => next => async (action) => {
 
                     startChatConnection(connection, store).then(async (connId) => {
                         await makeListChatConnection(store, connId, action.data);
+                        store.dispatch(actions.uiStopLoading());
                     });
                 }catch(err) {
                     console.error(err);
+                    store.dispatch(actions.uiStopLoading());
                 }
                 break;
             }

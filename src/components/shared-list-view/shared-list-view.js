@@ -34,6 +34,7 @@ class SharedListView extends Component {
         });
     }
     setChatModalInactive = () => {
+        this.props.clearChatMessages();
         this.setState({
             chatModalActive: null
         });
@@ -109,7 +110,9 @@ class SharedListView extends Component {
                         </Modal>
                     </ListAction> */}
                 </View>
-                <ScrollView>
+                <ScrollView
+                    keyboardShouldPersistTaps='always'
+                >
                     <View style={styles.listsContainer}>
                         {listItems}
                     </View>
@@ -145,6 +148,7 @@ const styles = StyleSheet.create({
 
 mapDispatchToProps = dispatch => {
     return {
+        clearChatMessages: () => dispatch(actions.clearChatMessages()),
         connectToListChatChannel: (list_id) => dispatch(actions.connectToListChat(list_id)),
         disconnectFromListChatChannel: (list_id) => dispatch(actions.disconnectFromListChat(list_id)),
         testChat: (chatContext) => dispatch({type: "TEST_CHAT", data: chatContext})

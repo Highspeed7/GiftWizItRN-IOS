@@ -96,3 +96,24 @@ export const clearChatMessages = () => {
         type: actionTypes.CLEAR_MESSAGES
     };
 };
+
+export const deleteGiftItems = (itemsData) => {
+    return {
+        type: actionTypes.DELETE_GIFT_ITEMS,
+        data: itemsData
+    };
+};
+
+export const getListMessages = (giftListId) => {
+    return {
+        type: actionTypes.GET_LIST_MESSAGES,
+        data: giftListId
+    };
+};
+
+export const setListMessages = (messageData) => {
+    return {
+        type: actionTypes.SET_LIST_MESSAGES,
+        data: messageData
+    }
+}

@@ -60,4 +60,3 @@ const searchListsReducer = (state = initialState, action) => {
 }
 
 export default searchListsReducer;
-
