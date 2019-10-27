@@ -42,7 +42,11 @@ export const targetProductViewScript = `(
         }
         let setupNewPage = () => {
             getPageType();
-            setPageExperience();
+            if(pageType != null) {
+                setPageExperience();
+            }else {
+                window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
+            }
         }
         let setPageExperience = () => {
             switch(pageType) {
@@ -50,9 +54,11 @@ export const targetProductViewScript = `(
                     wrappers = null;
                     setListButtonElements();
                     setListPageScrollEvent();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
                 case "DETAIL_PAGE":
                     setDetailButtonElement();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
             }
         }

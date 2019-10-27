@@ -54,7 +54,11 @@ export const walmartProductViewScript = `
 
         const setupNewPage = () => {
             getPageType();
-            setPageExperience();
+            if(pageType != null) {
+                setPageExperience();
+            }else {
+                window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
+            }
         };
 
         const getPageType = () => {
@@ -99,11 +103,13 @@ export const walmartProductViewScript = `
             switch(pageType) {
                 case "PRODUCT_DETAIL_PAGE_1":
                     setProductDetailPageButton();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
                 case "GENERAL_PRODUCTS_LIST_1":
                     wrappers = null;
                     setGenProductList1Buttons();
                     setPaginatorButtonEvents();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
             }
         }

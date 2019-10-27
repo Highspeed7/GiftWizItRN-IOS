@@ -4,6 +4,7 @@ export const amazonProductView1Script = `
         let pageType = undefined;
         let pageAlertSet;
         let pageTypeTimer;
+        let pageSetupTicker = 0;
         let data = {
             payload: {},
             case: null
@@ -84,9 +85,14 @@ export const amazonProductView1Script = `
         const setupNewPage = () => {
             getPageType();
             if(pageType == null) {
-                setTimeout(() => {
-                    setupNewPage();
-                }, 1000)
+                if(pageSetupTicker < 6) {
+                    setTimeout(() => {
+                        setupNewPage();
+                        pageSetupTicker++;
+                    }, 1000)
+                }else {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
+                }
             }else {
                 setPageExperience();
             }
@@ -95,17 +101,16 @@ export const amazonProductView1Script = `
         const getPageType = () => {
             try {
                 let elements;
-
                 elementsToSearch.forEach((elem) => {
                     let result = document.evaluate(elem.rootElementPath, document);
                     elements = xPathToArray(result);
                     if(elements.length != 0) {
                         pageType = elem.type;
+                        // window.ReactNativeWebView.postMessage(JSON.stringify({startSpinner: true}));
                     }
                 })
             }catch(err) {
                 alert(err);
-                reject();
             }
         };
 
@@ -113,6 +118,7 @@ export const amazonProductView1Script = `
             switch(pageType) {
                 case "LIST_PAGE_2":
                     if(pageAlertSet == null) {
+                        window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                         window.ReactNativeWebView.postMessage(JSON.stringify({pageMessage: "For items on this page, please click through to the item to add it to your list"}));
                         pageAlertSet = true;
                     } 
@@ -120,14 +126,36 @@ export const amazonProductView1Script = `
                 case "LIST_PAGE_3":
                 case "LIST_PAGE_1":
                     setListButtonElements();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
                 case "DETAIL_PAGE_1":
                     setDetailButtonElements();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
                 case "DETAIL_PAGE_2":
+                    window.onhashchange = () => {
+                        var hash = location.hash;
+                        if(hash.length == 0) {
+                            window.ReactNativeWebView.postMessage(JSON.stringify({startSpinner: true}));
+                            var timer;
+                            // Check for the next 3 seconds for button removal
+                            timer = setTimeout(() => {
+                                if(!isButtonStillVisible()) {
+                                    location.href = location.href;
+                                }
+                            }, 3000)
+                        }else {
+                            window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
+                        }
+                    }
                     setDetailButtonElements();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
             }
+        }
+        const isButtonStillVisible = () => {
+            let button = getSingleXPathElement((getXPathResult(xPaths[pageType].button)));
+            return button != null;
         }
         const setDetailButtonElements = () => {
             try {

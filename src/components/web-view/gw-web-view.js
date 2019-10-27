@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Alert, ActivityIndicator, Platform, BackHandler, Modal, Text, View, TouchableOpacity, Button } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { connect } from 'react-redux';
 
+import * as actions from '../../store/actions/index';
 import WebViewNav from '../web-view-nav/web-view-nav';
 import Auxiliary from '../../hoc/auxiliary';
 import * as scripts from '../store-selector/scripts/scripts';
 import { Overlay } from 'react-native-elements';
+import { sleep } from '../../utils/utils';
 
 class GWWebView extends Component {
     pageAlertIssued = false;
@@ -46,6 +49,7 @@ class GWWebView extends Component {
         }
     }
     navStateChanged = (navState) => {
+        this.props.uiStartLoading();
         this.pageAlertIssued = false;
         this.props.canGoBack(navState);
     }
@@ -115,6 +119,11 @@ class GWWebView extends Component {
                 this.pageAlertIssued = true;
             }
             return;
+        }else if((JSON.parse(event.nativeEvent.data)).startSpinner != null) {
+            this.props.uiStartLoading();
+        }else if((JSON.parse(event.nativeEvent.data)).stopSpinner != null) {
+            this.props.uiStopLoading();
+            sleep(500);
         }
        
         let config = this.props.config;
@@ -122,7 +131,7 @@ class GWWebView extends Component {
         let eventCall = JSON.parse(event.nativeEvent.data).case;
         let payload = JSON.parse(event.nativeEvent.data).payload;
 
-        console.log(JSON.parse(event.nativeEvent.data));
+        console.log("Event: " + event.nativeEvent.data + " at: " + new Date());
 
         try {
             caseHandlers.forEach((viewCase) => {
@@ -138,4 +147,11 @@ class GWWebView extends Component {
     }
 }
 
-export default GWWebView;
+mapDispatchToProps = dispatch => {
+    return {
+        uiStartLoading: () => dispatch(actions.uiStartLoading()),
+        uiStopLoading: () => dispatch(actions.uiStopLoading())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(GWWebView);
