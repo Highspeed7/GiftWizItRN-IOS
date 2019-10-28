@@ -117,7 +117,6 @@ class SearchPrivateLists extends Component {
                         the password and the email of the person who created the list for these lists.
                         {"\n\n"}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 18}}>NOTE: Feature not yet fully implemented; Coming Soon!</Text>
                     <TextInput style={styles.textInput} placeholder="List Name" onChangeText={this.setSearchTerm} value={this.state.searchTerm} />
                     <TextInput style={styles.textInput} placeholder="Email" onChangeText={this.setUserEmail} value={this.state.userEmail} />
                     <TextInput style={styles.textInput} placeholder="Password" secureTextEntry={true} onChangeText={this.setPassword} value={this.state.password} />

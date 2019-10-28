@@ -14,6 +14,10 @@ import ListsViewed from '../../components/info-content/lists-viewed-card';
 import * as actions from '../../store/actions/index';
 
 class Welcome extends Component {
+    openStoreFront = () => {
+        this.props.uiStartLoading();
+        this.props.navigation.navigate("Store");
+    }
     searchCardPressed = () => {
         this.props.navigation.navigate("SearchLists");
     }
@@ -37,11 +41,13 @@ class Welcome extends Component {
                     <NextHolidayCard />
                 </InfoCard>
                 <InfoCard>
-                    <GiftIdeasCard />
+                    <TouchableOpacity style={styles.infoCard} onPress={this.openStoreFront}>
+                        <Text style={[styles.cardText, {color: "black"}]}>Shop Our Store</Text>
+                    </TouchableOpacity>
                 </InfoCard>
-                {/* <InfoCard>
-                    <ListsViewed />
-                </InfoCard> */}
+                <InfoCard>
+                    <GiftIdeasCard authed={false} />
+                </InfoCard>
                 <InfoCard>
                     <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
                         <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
@@ -82,7 +88,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onModalClosed: () => dispatch({type: "MODAL_CLOSED"})
+        onModalClosed: () => dispatch({type: "MODAL_CLOSED"}),
+        uiStartLoading: () => dispatch(actions.uiStartLoading())
     }
 }
 

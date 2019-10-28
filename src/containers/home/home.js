@@ -14,6 +14,7 @@ import { NavigationEvents } from 'react-navigation';
 import axios from 'axios';
 
 import * as actions from '../../store/actions/index';
+import GiftIdeasCard from '../../components/info-content/gift-ideas-card/gift-ideas-card';
 import storeConfiguration from '../../store/storeConfig';
 import InfoCard from '../../components/welcome/info-card';
 import Auxiliary from '../../hoc/auxiliary';
@@ -69,7 +70,7 @@ class Home extends Component {
                     </InfoCard>
                     <InfoCard>
                         <TouchableOpacity style={styles.infoCard}>
-                            <Text style={[styles.cardText, {color: "black"}]}>Gift Ideas</Text>
+                            <GiftIdeasCard authed={true} />
                         </TouchableOpacity>
                     </InfoCard>
                     <InfoCard>

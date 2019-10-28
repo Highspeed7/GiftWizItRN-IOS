@@ -20,8 +20,10 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import StoreDrawerNavigator from './src/components/navigation/store-drawer-navigation';
 import StoreProductNavigator from './src/components/navigation/store-product-navigation';
 import StoreCart from './src/components/store/store-cart';
+import BabyShowerPage from './src/components/gift-ideas/baby-shower-page';
 
 import * as Sentry from '@sentry/react-native';
+import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
 
 Sentry.init({ 
   dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
@@ -47,6 +49,9 @@ const PostAuthStackNavigator = createStackNavigator({
     screen: StoreDrawerNavigator,
     path: 'test'
   },
+  GiftIdeasAuthed: {
+    screen: GiftIdeasStackNavigator
+  },
   Products: {
     screen: StoreProductNavigator
   },
@@ -55,8 +60,6 @@ const PostAuthStackNavigator = createStackNavigator({
     path: "cart"
   }
 });
-
-
 
 const startStackNavigator = createStackNavigator({
   Splash
