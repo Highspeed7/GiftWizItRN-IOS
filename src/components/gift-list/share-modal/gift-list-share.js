@@ -18,8 +18,8 @@ class ShareGiftList extends Component {
         shareableContacts: []
     }
     componentDidMount = async () => {
-        await this.props.getContacts();
         await this.props.getSharedLists();
+        await this.props.getContacts();
     }
     componentDidUpdate = () => {
         if(this.props.contacts.length > 0 && this.shouldReloadContacts) {
@@ -32,30 +32,35 @@ class ShareGiftList extends Component {
         this.shouldReloadContacts = true;
     }
     setShareableContacts = () => {
-        const activeListId = this.props.activeList.id
-        let listSharedContacts = this.props.sharedLists.map((sharedList) => {
-            if(sharedList.giftListId == activeListId) {
-                return sharedList.contact
-            }
-        }).filter((el) => {
-            return el != null;
-        });
-
-        let filteredListContacts = this.props.contacts.slice(0);
-
-        if(listSharedContacts.length > 0) {
-            listSharedContacts.forEach((listContact) => {
-                for(var i = 0; i < filteredListContacts.length; i++) {
-                    if(listContact.email == filteredListContacts[i].contact.email) {
-                        filteredListContacts.splice(i, 1);
-                    }
+        
+        try {
+            const activeListId = this.props.activeList.id
+            let listSharedContacts = this.props.sharedLists.map((sharedList) => {
+                if(sharedList.giftListId == activeListId) {
+                    return sharedList.contact
                 }
+            }).filter((el) => {
+                return el != null;
             });
-        }
 
-        this.setState({
-            shareableContacts: filteredListContacts
-        });
+            let filteredListContacts = this.props.contacts.slice(0);
+
+            if(listSharedContacts.length > 0) {
+                listSharedContacts.forEach((listContact) => {
+                    for(var i = 0; i < filteredListContacts.length; i++) {
+                        if(listContact.email == filteredListContacts[i].contact.email) {
+                            filteredListContacts.splice(i, 1);
+                        }
+                    }
+                });
+            }
+
+            this.setState({
+                shareableContacts: filteredListContacts
+            });
+        }catch(err) {
+            alert(err);
+        }
     }
     onContactSelected = (contact) => {
         console.log(this.state.selectedContacts);
