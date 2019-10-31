@@ -106,7 +106,7 @@ class StoreFront extends Component {
             product_Id: product.id
         }
         // Send the productId as well as the first variantId, because 'Products will be expecting it.
-        this.props.navigation.navigate("Products", productData);
+        this.props.navigation.navigate("Products", {...productData, enableWishListAdd: this.shouldGetPreviousCheckout});
     }
     fetchNextPageOfProducts = () => {
         let lastProductIndex = this.props.products.length - 1;

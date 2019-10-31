@@ -527,6 +527,15 @@ const apiInterceptor = store => next => async action => {
                 store.dispatch(actions.uiStopLoading());
                 sleep(500);
             }
+            break;
+        case actionTypes.GET_ALL_PROMO_COLLECTIONS:
+            try {
+                await axios.get(`https://giftwizitapi.azurewebsites.net/api/PromoCollections/getPromoCollections`).then((response) => {
+                    action.data = response.data
+                });
+            }catch(error) {
+                console.log(error);
+            }
     }
     next(action);
 }

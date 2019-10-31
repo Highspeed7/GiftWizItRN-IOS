@@ -26,8 +26,7 @@ const storeFrontInterceptor = store => next => async (action) => {
                 action.payload.client = client;
     
                 // If there are no collections currently, get them.
-                await client.collection.fetchAllWithProducts().then((collections) => {
-                    console.log(collections);
+                await client.collection.fetchAll().then((collections) => {
                     action.payload.collections = collections;
                 });
     
