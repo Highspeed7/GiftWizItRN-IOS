@@ -24,4 +24,11 @@ export default ListsTabNavigator = createMaterialTopTabNavigator({
         tabBarLabel: "Other Lists"
       } 
     }
+  },
+  {
+    tabBarOptions:{
+      activeTintColor: 'white',
+      indicatorStyle: {backgroundColor: 'white'},
+      tabStyle: {backgroundColor: '#4c669f'}
+    }
   });

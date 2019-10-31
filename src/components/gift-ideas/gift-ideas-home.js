@@ -6,6 +6,7 @@ import { Card } from 'react-native-elements';
 import { getGiftIdeaNavigationRoute } from '../../utils/giftIdea-utils';
 
 import * as actions from '../../store/actions/index';
+import LinearGradient from 'react-native-linear-gradient';
 
 class GiftIdeasHome extends Component {
     // inAuthView = false;
@@ -23,16 +24,17 @@ class GiftIdeasHome extends Component {
     componentDidMount = async () => {
         await this.props.getAllPromoCollections();
     }
-    navigateToIdeaPage = (collName) => {
+    navigateToIdeaPage = (collName, collectionId) => {
+        this.props.setIdeaCollectionActive(collectionId);
         var route = getGiftIdeaNavigationRoute(collName)
         this.props.navigation.navigate(route);
     }
     render(){
-        const promo_collections = (this.props.promoCollections.length > 0)
+        const promo_collections = (this.props.promoCollections && this.props.promoCollections.length > 0)
             ? <FlatList
                 data={this.props.promoCollections}
                 renderItem={({item}) => (
-                    <TouchableOpacity onPress={() => this.navigateToIdeaPage(item.name)}>
+                    <TouchableOpacity onPress={() => this.navigateToIdeaPage(item.name, item.id)}>
                         <Card>
                             <Text>{item.name}</Text>
                         </Card>
@@ -41,24 +43,32 @@ class GiftIdeasHome extends Component {
             />
             : null
         return (
-            <ScrollView style={styles.contentContainer}>
-                <Text>Gift Ideas Home</Text>
+            <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={styles.contentContainer}>
+                <Text style={styles.titleText}>Gift Ideas</Text>
                 {promo_collections}
-            </ScrollView>
+            </LinearGradient>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    titleText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 20
+    },
     contentContainer: {
-        padding: 10
+        flex: 1,
+        padding: 10,
+        backgroundColor: '#9FC8E8'
     }
 });
 
 mapDispatchToProps = dispatch => {
     return {
         uiStartLoading: () => dispatch(actions.uiStartLoading()),
-        getAllPromoCollections: () => dispatch(actions.getAllPromoCollections())
+        getAllPromoCollections: () => dispatch(actions.getAllPromoCollections()),
+        setIdeaCollectionActive: (collectionId) => dispatch(actions.setIdeaCollectionActive(collectionId))
     };
 };
 

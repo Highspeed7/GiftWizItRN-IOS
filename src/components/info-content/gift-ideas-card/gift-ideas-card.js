@@ -14,7 +14,7 @@ class GiftIdeasCard extends Component {
     }
     render() {
         return (
-            <View style={styles.cardContainer}>
+            <View>
                 <TouchableOpacity
                     onPress={this.navigateToIdeasStore}
                 >
@@ -51,9 +51,6 @@ const styles = StyleSheet.create({
     listItemImage: {
         width: 75,
         height: 75
-    },
-    cardContainer: {
-        padding: 10
     },
     cardText: {
         fontFamily: 'Graciela-Regular',

@@ -545,6 +545,14 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+        case actionTypes.SET_IDEA_COLL_ITEMS:
+            try {
+                await axios.get(`https://giftwizitapi.azurewebsites.net/api/PromoCollections/GetPromoCollectionItems?collectionId=${action.collectionId}`).then((response) => {
+                    action.data = response.data;
+                });
+            }catch(error) {
+
+            }
     }
     next(action);
 }

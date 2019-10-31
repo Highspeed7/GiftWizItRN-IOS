@@ -1,13 +1,28 @@
 import React, {Component} from 'react';
-import { Text, Button } from 'react-native';
+import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
+
+import * as actions from '../../store/actions/index';
 import GiftIdeasPage from './gift-ideas-page';
 
 class BabyShowerPage extends Component {
+    willBlur = () => {
+        this.props.setIdeaCollectionInactive();
+    }
     render(){
         return (
-            <GiftIdeasPage title="Baby Shower Ideas Page" />
+            [
+                <NavigationEvents onWillBlur={this.willBlur} />,
+                <GiftIdeasPage title="Baby Shower Ideas Page" />
+            ]
         )
     }
 }
 
-export default BabyShowerPage;
+mapDispatchToProps = dispatch => {
+    return {
+        setIdeaCollectionInactive: () => dispatch(actions.setIdeaCollectionInactive())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(BabyShowerPage);

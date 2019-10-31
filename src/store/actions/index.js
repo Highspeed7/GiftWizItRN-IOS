@@ -32,7 +32,10 @@ export {
 } from './giftLists';
 
 export {
-    getAllPromoCollections
+    getAllPromoCollections,
+    setIdeaCollectionActive,
+    setIdeaCollectionInactive,
+    setIdeaCollectionItems
 } from './giftIdeas';
 
 export {

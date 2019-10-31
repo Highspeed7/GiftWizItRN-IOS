@@ -1,20 +1,55 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import { Text, StyleSheet, View, FlatList, TouchableOpacity } from 'react-native';
+
+import * as actions from '../../store/actions/index';
+import { Card } from 'react-native-elements';
 
 class GiftIdeasPage extends Component {
+    componentDidMount = () => {
+        this.props.setIdeaCollectionItems(this.props.activeCollection);
+    }
     render() {
+        const collectionsItems = (this.props.collectionItems && this.props.collectionItems.length > 0)
+            ? <FlatList
+                data={this.props.collectionItems}
+                renderItem={({item}) => (
+                    <TouchableOpacity onPress={() => {}}>
+                        <Card>
+                            <Text>{item.name}</Text>
+                        </Card>
+                    </TouchableOpacity>
+                )}
+            />
+            : null
         return (
-            <ScrollView style={styles.contentContainer}>
+            <View style={styles.contentContainer}>
                 <Text>{this.props.title}</Text>
-            </ScrollView>
+                {collectionsItems}
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
     contentContainer: {
-        padding: 10
+        padding: 10,
+        flex: 1,
+        backgroundColor: '#9FC8E8'
     }
 });
 
-export default GiftIdeasPage;
+mapDispatchToProps = dispatch => {
+    return {
+        setIdeaCollectionItems: (collectionId) => dispatch(actions.setIdeaCollectionItems(collectionId))
+    }
+};
+
+mapStateToProps = state => {
+    return {
+        activeCollection: state.giftIdeasReducer.activeCollection,
+        collectionItems: state.giftIdeasReducer.collectionItems
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(GiftIdeasPage);

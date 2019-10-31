@@ -20,7 +20,6 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import StoreDrawerNavigator from './src/components/navigation/store-drawer-navigation';
 import StoreProductNavigator from './src/components/navigation/store-product-navigation';
 import StoreCart from './src/components/store/store-cart';
-import BabyShowerPage from './src/components/gift-ideas/baby-shower-page';
 
 import * as Sentry from '@sentry/react-native';
 import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
@@ -77,6 +76,13 @@ const PreAuthStackNavigator = createBottomTabNavigator({
     navigationOptions: {
       tabBarLabel: "Get Started"
     }
+  }
+},{
+  tabBarOptions: {
+    activeBackgroundColor: '#4c669f',
+    inactiveBackgroundColor: '#7db9e8',
+    tabStyle: {borderTopColor: 'transparent', borderTopWidth: 0},
+    labelStyle: {color: 'white', borderTopWidth: 0},
   }
 });
 

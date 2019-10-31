@@ -17,6 +17,7 @@ import ListAction from '../../components/list-actions/list-action';
 import AddContactModal from '../../components/contacts/add-contact';
 import Checkbox from '../../components/checkbox/checkbox';
 import { goclone } from '../../utils/utils';
+import LinearGradient from 'react-native-linear-gradient';
 
 class Contacts extends Component {
     state = {
@@ -88,7 +89,7 @@ class Contacts extends Component {
     }
     render() {
         const contactsList = (this.props.contacts !== null)
-            ? <View style={{flex: 1}}>
+            ? <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={styles.listContainer}>
                 <FlatList 
                     horizontal={false}
                     data={this.props.contacts}
@@ -115,15 +116,15 @@ class Contacts extends Component {
                         </Card>
                     )}
                 />
-            </View>
+            </LinearGradient>
             : <Text>There are no contacts yet...</Text>
         return (
             <Auxiliary>
-                <View style={styles.viewContainer}>
+                <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.viewContainer}>
                     <View>
                         <Text style={styles.contactHeading}>Your Contacts</Text>
                     </View>
-                    <View style={styles.listsContainer}>
+                    <View style={styles.listsActionsContainer}>
                         <ListAction 
                             title="Add"
                             icon={() => (<FontAwesome5 
@@ -163,15 +164,15 @@ class Contacts extends Component {
                     </Modal>
                     {(this.state.deleteMode == true)
                         ? <View>
-                            <Text>Are you sure you want to remove the selected contacts?</Text>
+                            <Text style={{color: 'white'}}>Are you sure you want to remove the selected contacts?</Text>
                             <Button title="Yes" onPress={this.confirmContactsDelete} />
                             <Button title="No" onPress={this.cancelActions} />
                         </View>
                         : null
                     }
-                </View>
+                </LinearGradient>
                 {contactsList}
-                <View style={styles.spacer}></View>
+                <View style={{...styles.spacer, backgroundColor: '#7db9e8'}}></View>
             </Auxiliary>
         )
     }
@@ -179,13 +180,17 @@ class Contacts extends Component {
 
 const styles = StyleSheet.create({
     contactHeading: {
-        fontSize: 24,
-        fontWeight: 'bold'
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white'
     },
     viewContainer: {
         padding: 10
     },
-    listsContainer: {
+    listContainer: {
+        flex: 1
+    },
+    listsActionsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap'
     },

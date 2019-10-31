@@ -14,7 +14,6 @@ import {
     BackHandler
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-// import iconSet from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
 
@@ -24,7 +23,8 @@ import StoreSelector from '../../components/store-selector/store-selector';
 import WishListItemModal from '../../components/wish-list/wish-list-item-modal';
 import Auxiliary from '../../hoc/auxiliary';
 import ListAction from '../../components/list-actions/list-action';
-import { goclone, shallowCompare } from '../../utils/utils';
+import { goclone } from '../../utils/utils';
+import LinearGradient from 'react-native-linear-gradient';
 
 class WishList extends Component {
     state = {
@@ -248,9 +248,9 @@ class WishList extends Component {
         return (
             <Auxiliary>
                 <NavigationEvents onWillFocus={this.componentWillFocus} />
-                <View style={styles.actionContainer}>
-                    <Text style={{fontSize: 20, textDecorationLine:"underline"}}>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
-                    <View style={styles.listsContainer}>
+                <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.actionContainer}>
+                    <Text style={{...styles.listActionText, textDecorationLine: "underline"}}>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
+                    <View style={styles.listActionsContainer}>
                         <ListAction 
                             title="Add"
                             icon={() => (<FontAwesome5 
@@ -298,6 +298,7 @@ class WishList extends Component {
                     {(this.state.selectedItems.length > 0 && this.state.moveMode == true)
                         ? <View>
                             <Picker
+                                style={{color: 'white'}}
                                 selectedValue={this.state.selectedGiftListId}
                                 onValueChange={this.onGListSelected}
                                 mode="dropdown"
@@ -310,33 +311,35 @@ class WishList extends Component {
                     }
                     {(this.state.selectedItems.length > 0 && this.state.deleteMode == true)
                         ? <View>
-                            <Text>Are you sure you want to remove the selected items?</Text>
+                            <Text style={{color: 'white'}}>Are you sure you want to remove the selected items?</Text>
                             <Button title="Yes" onPress={this.confirmItemsDelete} />
                             <Button title="No" onPress={this.cancelActions} />
                         </View>
                         : null
                     }
                     {(this.state.deleteMode || this.state.moveMode) 
-                        ? <Text style={{fontSize: 20}}>You may select multiple items...</Text> 
+                        ? <Text style={styles.listActionText}>You may select multiple items...</Text> 
                         : (this.props.wishList.length > 0) 
-                        ? <Text style={{fontSize: 20}}>Select an item to see more details...</Text>
-                        : <Text style={{fontSize: 20}}>There are no items to display... {'\n'}Add some above!</Text>
+                        ? <Text style={styles.listActionText}>Select an item to see more details...</Text>
+                        : <Text style={styles.listActionText}>There are no items to display... {'\n'}Add some above!</Text>
                     }
-                </View>
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.listsContainer}>
-                        {wishList}
-                    </View>
-                    <Modal
-                        visible={this.state.openStoreSelector}
-                        onRequestClose={this.onStoreSelectorClosed}
-                    >
-                        <StoreSelector 
-                            onClose={this.onStoreSelectorClosed} 
-                            openStoreFront={this.openStoreFront}
-                        />
-                    </Modal>
-                </ScrollView>
+                </LinearGradient>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
+                    <ScrollView style={styles.listContainer}>
+                        <View style={styles.listsContainer}>
+                            {wishList}
+                        </View>
+                        <Modal
+                            visible={this.state.openStoreSelector}
+                            onRequestClose={this.onStoreSelectorClosed}
+                        >
+                            <StoreSelector 
+                                onClose={this.onStoreSelectorClosed} 
+                                openStoreFront={this.openStoreFront}
+                            />
+                        </Modal>
+                    </ScrollView>
+                </LinearGradient>
             </Auxiliary>
         )
     }
@@ -351,14 +354,20 @@ const styles = StyleSheet.create({
     actionContainer: {
         padding: 10
     },
-    scrollView: {
-        padding: 10
-    },
     touchableSwatch: {
         width: '24%',
-        margin: 1
+        margin: 1,
+        backgroundColor: 'white'
     },
-    listsContainer: {
+    listContainer: {
+        padding: 10,
+        flex: 1
+    },
+    listActionText: {
+        color: 'white',
+        fontSize: 20
+    },
+    listActionsContainer: {
         marginBottom: 10,
         flexDirection: 'row',
         flexWrap: 'wrap'
