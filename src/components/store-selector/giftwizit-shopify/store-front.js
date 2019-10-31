@@ -19,8 +19,19 @@ import * as storeConstants from '../../../resources/storefront-store';
 import * as actions from '../../../store/actions/index';
 
 class StoreFront extends Component {
+    shouldGetPreviousCheckout = false;
     componentDidMount() {
-        this.props.initializeStore()
+        if(this.props.navigation.state.params != null) {
+            try {
+                const {getPrevCheckout} = this.props.navigation.state.params;
+                this.shouldGetPreviousCheckout = getPrevCheckout;
+                this.props.initializeStore(getPrevCheckout)
+            }catch(e) {
+                this.props.initializeStore(null);
+            }
+        }else {
+            this.props.initializeStore(null);
+        }
     }
     fetchCategoryProducts = async () => {
         await this.props.fetchCategoryProducts();
@@ -198,7 +209,7 @@ const styles = StyleSheet.create({
 
 mapDispatchToProps = dispatch => {
     return {
-        initializeStore: () => dispatch(actions.initializeStore()),
+        initializeStore: (getPrevCheckout) => dispatch(actions.initializeStore(getPrevCheckout)),
         fetchCategoryProducts: () => dispatch(actions.fetchCategoryProducts()),
         addItemToCart: (lineItems) => dispatch(actions.addItemToCart(lineItems)),
         addItemToWList: (item) => dispatch(actions.addWishListItem(item)),

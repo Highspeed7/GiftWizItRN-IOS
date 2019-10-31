@@ -7,9 +7,10 @@ import * as actions from './index';
 
 import axios from 'axios';
 
-export const initializeStore = () => {
+export const initializeStore = (getPrevCheckout = null) => {
     return {
-        type: actionTypes.INITIALIZE_STOREFRONT
+        type: actionTypes.INITIALIZE_STOREFRONT,
+        getPrevCheckout: getPrevCheckout
     }
 }
 

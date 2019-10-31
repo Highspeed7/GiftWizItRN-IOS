@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
-import { Alert, ActivityIndicator, Platform, BackHandler } from 'react-native';
+import { Alert, ActivityIndicator, Platform, BackHandler, Modal, Text, View, TouchableOpacity, Button } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { connect } from 'react-redux';
 
+import * as actions from '../../store/actions/index';
 import WebViewNav from '../web-view-nav/web-view-nav';
 import Auxiliary from '../../hoc/auxiliary';
 import * as scripts from '../store-selector/scripts/scripts';
+import { Overlay } from 'react-native-elements';
+import { sleep } from '../../utils/utils';
 
 class GWWebView extends Component {
+    pageAlertIssued = false;
     state = {
         webRef: null,
-        canGoBack: false
+        canGoBack: false,
+        modalMessage: null,
+        showMessageModal: false
     }
     INJECTED_JAVASCRIPT = null;
     setWebRef = (r) => {
@@ -41,6 +48,11 @@ class GWWebView extends Component {
             BackHandler.removeEventListener('hardwareBackPress');
         }
     }
+    navStateChanged = (navState) => {
+        this.props.uiStartLoading();
+        this.pageAlertIssued = false;
+        this.props.canGoBack(navState);
+    }
     webViewError = (event) => {
         Alert.alert("Error from view " + event.nativeEvent.description);
     }
@@ -56,8 +68,25 @@ class GWWebView extends Component {
                     startInLoadingState={true}
                     renderLoading={() => <ActivityIndicator/>}
                     onError={this.webViewError}
-                    onNavigationStateChange={this.props.canGoBack}
+                    onNavigationStateChange={this.navStateChanged}
                 ></WebView>
+                <Overlay
+                    height={150}
+                    isVisible={this.state.showMessageModal == true}
+                    onBackdropPress={() => {}}
+                >
+                    <View style={{padding: 10, flexDirection: 'column'}}>
+                        <View>
+                            <Text style={{fontSize: 18}}>{this.state.modalMessage}</Text>
+                        </View>
+                        <View style={{alignSelf: 'center', justifyContent: 'center'}}>
+                            <Button
+                                title="OK"
+                                onPress={() => this.setState({showMessageModal: false, modalMessage: null})}
+                            />
+                        </View>
+                    </View>
+                </Overlay>
             </Auxiliary>
         )
     }
@@ -74,13 +103,27 @@ class GWWebView extends Component {
             initial_js: func()
         }
         */
-
         if((JSON.parse(event.nativeEvent.data)).debug != null) {
             // Added for debug purposes;
             var data = JSON.parse(event.nativeEvent.data).debug;
             alert((JSON.parse(event.nativeEvent.data)).debug);
             console.log(data);
             return;
+        }else if((JSON.parse(event.nativeEvent.data)).pageMessage != null) {
+            if(this.pageAlertIssued == false) {
+                var data = JSON.parse(event.nativeEvent.data).pageMessage;
+                this.setState({
+                    showMessageModal: true,
+                    modalMessage: data
+                });
+                this.pageAlertIssued = true;
+            }
+            return;
+        }else if((JSON.parse(event.nativeEvent.data)).startSpinner != null) {
+            this.props.uiStartLoading();
+        }else if((JSON.parse(event.nativeEvent.data)).stopSpinner != null) {
+            this.props.uiStopLoading();
+            sleep(500);
         }
        
         let config = this.props.config;
@@ -88,7 +131,7 @@ class GWWebView extends Component {
         let eventCall = JSON.parse(event.nativeEvent.data).case;
         let payload = JSON.parse(event.nativeEvent.data).payload;
 
-        console.log(JSON.parse(event.nativeEvent.data));
+        console.log("Event: " + event.nativeEvent.data + " at: " + new Date());
 
         try {
             caseHandlers.forEach((viewCase) => {
@@ -104,4 +147,11 @@ class GWWebView extends Component {
     }
 }
 
-export default GWWebView;
+mapDispatchToProps = dispatch => {
+    return {
+        uiStartLoading: () => dispatch(actions.uiStartLoading()),
+        uiStopLoading: () => dispatch(actions.uiStopLoading())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(GWWebView);

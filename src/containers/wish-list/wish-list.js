@@ -197,7 +197,7 @@ class WishList extends Component {
         this.setState({
             openStoreSelector: null
         }, () => {
-            this.props.navigation.navigate("Store");
+            this.props.navigation.navigate("Store", {getPrevCheckout: true});
         });
     }
     render() {

@@ -24,10 +24,6 @@ export default StoreDrawerNavigator = createDrawerNavigator(
     }
 );
 
-const test = () => {
-    Alert.alert("Testing")
-}
-
 StoreDrawerNavigator.navigationOptions = navData => {
     return {
         headerTitle: "Choose a category",
