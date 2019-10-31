@@ -11,6 +11,7 @@ import {
 import { Card } from 'react-native-elements';
 
 import { timestampUTCToLocalReadable } from '../../utils/utils';
+import LinearGradient from 'react-native-linear-gradient';
 
 class Notifications extends Component {
     async componentDidMount() {
@@ -38,7 +39,7 @@ class Notifications extends Component {
     }
     render() {
         return (
-            <View style={{padding: 10, flex: 1}}>
+            <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{padding: 10, flex: 1}}>
                 {this.props.notifications != null
                     ? <FlatList
                         ListFooterComponent={() => <View style={{height: 40}}></View>}
@@ -53,15 +54,15 @@ class Notifications extends Component {
                             <Card containerStyle={{backgroundColor: cardColor}}>
                                 <TouchableOpacity>
                                     <View>
-                                        <Text>{timestampUTCToLocalReadable(item.createdOn)}</Text>
+                                        <Text style={styles.notificationText}>{timestampUTCToLocalReadable(item.createdOn)}</Text>
                                     </View>
                                     <View style={{borderBottom: 1}}>
-                                        <Text>{item.title}</Text>
+                                        <Text style={styles.notificationText}>{item.title}</Text>
                                     </View>
                                     {
                                         false 
                                         ? <View>
-                                            <Text>{item.message}</Text>
+                                            <Text style={styles.notificationText}>{item.message}</Text>
                                         </View>
                                         : null                                
                                     }
@@ -73,13 +74,15 @@ class Notifications extends Component {
                     : null
                 }
                
-            </View>
+            </LinearGradient>
         )
     }
 }
 
 const styles = StyleSheet.create({
-
+    notificationText: {
+        color: 'white'
+    }
 })
 
 mapDispatchToProps = dispatch => {

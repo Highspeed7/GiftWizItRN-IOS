@@ -8,6 +8,7 @@ import { NavigationEvents } from 'react-navigation';
 import * as actions from '../../store/actions/index';
 
 import * as actionCreators from '../../store/actions/auth';
+import LinearGradient from 'react-native-linear-gradient';
 
 class GetStarted extends Component {
     componentDidMount = () => {
@@ -25,9 +26,9 @@ class GetStarted extends Component {
     }
     render() {
         return (
-            <View>
+            <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
                 <NavigationEvents onWillFocus={this.componentWillFocus} />
-                <Text>Get Started!</Text>
+                <Text style={{color: 'white'}}>Login to get started!</Text>
                 {
                     this.props.authInProgress === true 
                     ? <ActivityIndicator />
@@ -38,12 +39,11 @@ class GetStarted extends Component {
                     ? <Button title="Login" onPress={this.props.onAuth} />
                     : <Button title="Logout" onPress={() => this.props.onRevoke(this.props.accessToken)} />
                 }
-            </View>
+            </LinearGradient>
         )
     }
     authCheck = async() => {
         // This component should redirect to dashboard if the user is logged in
-        console.log("NIGGER");
         if(this.props.isAuthenticated) {
             await this.registerUser();
             this.props.navigation.navigate("postAuth");

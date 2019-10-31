@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 class Swatch extends Component {
     render() {
         return (
-            <View style={[styles.swatchContainer, this.props.style]}>
+            <LinearGradient colors={['#e6e6e6', '#ffffff', '#e6e6e6']} style={[styles.swatchContainer, this.props.style]}>
                 {this.props.children}
-            </View>
+            </LinearGradient>
         )
     }
 }

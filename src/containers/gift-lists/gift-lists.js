@@ -20,6 +20,7 @@ import Auxiliary from '../../hoc/auxiliary';
 import { goclone } from '../../utils/utils';
 import Checkbox from '../../components/checkbox/checkbox';
 import GiftListAdd from '../../components/gift-list/add-modal/gift-list-add';
+import LinearGradient from 'react-native-linear-gradient';
 
 class GiftLists extends Component {
     state = {
@@ -164,8 +165,8 @@ class GiftLists extends Component {
         // TODO: Make add gift list into it's own component.
         return (
             <Auxiliary>
-                <View style={styles.actionContainer}>
-                    <View style={styles.listsContainer}>
+                <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.actionContainer}>
+                    <View style={styles.listActionsContainer}>
                         <ListAction 
                             title="Add"
                             icon={() => (<FontAwesome5 
@@ -220,25 +221,27 @@ class GiftLists extends Component {
                         </View>
                         : null
                     }
-                </View>
-                <ScrollView style={styles.scrollView}>
-                    {giftLists}
-                    <View style={styles.spacer}></View>
-                </ScrollView>
+                </LinearGradient>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
+                    <ScrollView style={styles.listContainer}>
+                        {giftLists}
+                        <View style={styles.spacer}></View>
+                    </ScrollView>
+                </LinearGradient>
             </Auxiliary>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
-        padding: 10
-    },
     touchableSwatch: {
         width: '100%',
         margin: 1
     },
-    listsContainer: {
+    listContainer: {
+        padding: 10
+    },
+    listActionsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap'
     },

@@ -5,6 +5,7 @@ import { Card } from 'react-native-elements';
 
 import * as actions from '../../store/actions/index';
 import SharedListView from '../../components/shared-list-view/shared-list-view';
+import LinearGradient from 'react-native-linear-gradient';
 
 class OtherLists extends Component {
     activeList = null;
@@ -69,21 +70,22 @@ class OtherLists extends Component {
             ))
             : null
         return (
-            <View style={styles.viewContainer}>
+            <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={styles.viewContainer}>
                 <View>
-                    <Text style={{fontSize: 24, fontWeight: 'bold'}}>Lists Shared with you...</Text>
+                    <Text style={{fontSize: 24, fontWeight: 'bold', color: 'white'}}>Lists Shared with you...</Text>
                 </View>
                 <ScrollView keyboardShouldPersistTaps="always" style={styles.scrollView}>
                     {lists}
                 </ScrollView>
-            </View>
+            </LinearGradient>
         )
     }
 }
 
 const styles = StyleSheet.create({
     viewContainer: {
-        padding: 10
+        padding: 10,
+        flex: 1
     },
     scrollView: {
         marginBottom: 40

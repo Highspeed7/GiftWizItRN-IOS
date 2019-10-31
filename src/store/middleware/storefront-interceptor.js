@@ -26,24 +26,27 @@ const storeFrontInterceptor = store => next => async (action) => {
                 action.payload.client = client;
     
                 // If there are no collections currently, get them.
-                await client.collection.fetchAllWithProducts().then((collections) => {
-                    console.log(collections);
+                await client.collection.fetchAll().then((collections) => {
                     action.payload.collections = collections;
                 });
-    
-                // Call to see if there is an existing checkout already
-                var existingCheckout = await store.dispatch(actions.getCheckout());
+                
+                if(action.getPrevCheckout) {
+                     // Call to see if there is an existing checkout already
+                    var existingCheckout = await store.dispatch(actions.getCheckout());
+                }
 
                 // If not create a new checkout
                 if(existingCheckout == null) {
                     await client.checkout.create().then((checkout) => {
                         console.log(checkout.id)
                         
-                        var checkoutToStore = {
-                            id: checkout.id,
-                            webUrl: checkout.webUrl
-                        };
-                        store.dispatch(actions.setCheckout(checkoutToStore));
+                        if(action.getPrevCheckout) {
+                            var checkoutToStore = {
+                                id: checkout.id,
+                                webUrl: checkout.webUrl
+                            };
+                            store.dispatch(actions.setCheckout(checkoutToStore));
+                        }
                         action.payload.checkout = checkout;
                         store.dispatch(actions.uiStopLoading());
                     });

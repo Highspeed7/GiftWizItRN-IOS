@@ -515,8 +515,17 @@ const apiInterceptor = store => next => async action => {
         case actionTypes.GET_LIST_MESSAGES:
             try {
                 store.dispatch(actions.uiStartLoading());
+                token = await store.dispatch(actions.getAuthToken());
 
-                await axios.get(`https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20`).then((response) => {
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.get(`https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20`, config).then((response) => {
                     store.dispatch(actions.setListMessages(response.data))
                     store.dispatch(actions.uiStopLoading());
                     sleep(500);
@@ -526,6 +535,23 @@ const apiInterceptor = store => next => async action => {
                 console.log(error);
                 store.dispatch(actions.uiStopLoading());
                 sleep(500);
+            }
+            break;
+        case actionTypes.GET_ALL_PROMO_COLLECTIONS:
+            try {
+                await axios.get(`https://giftwizitapi.azurewebsites.net/api/PromoCollections/getPromoCollections`).then((response) => {
+                    action.data = response.data
+                });
+            }catch(error) {
+                console.log(error);
+            }
+        case actionTypes.SET_IDEA_COLL_ITEMS:
+            try {
+                await axios.get(`https://giftwizitapi.azurewebsites.net/api/PromoCollections/GetPromoCollectionItems?collectionId=${action.collectionId}`).then((response) => {
+                    action.data = response.data;
+                });
+            }catch(error) {
+
             }
     }
     next(action);

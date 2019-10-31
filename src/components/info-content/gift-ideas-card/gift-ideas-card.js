@@ -1,23 +1,36 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ScrollView, Image, TouchableOpacity } from 'react-native';
 import * as ideas from '../../../resources/gift-idea-store';
+import { NavigationActions } from 'react-navigation';
+import { withNavigation } from 'react-navigation';
 
 class GiftIdeasCard extends Component {
+    navigateToIdeasStore = () => {
+        if(this.props.authed) {
+            this.props.navigation.navigate("GiftIdeasAuthed");
+        }else {
+            this.props.navigation.navigate("GiftIdeasNoAuth");
+        }
+    }
     render() {
         return (
-            <View style={styles.cardContainer}>
-                <Text style={styles.cardText}>Gift Ideas!</Text>
-                <ScrollView>
-                    <FlatList
-                        horizontal={true}
-                        data={ideas.introGiftIdeas}
-                        renderItem={(idea) => (
-                            <View style={styles.listItemContainer}>
-                                <Image source={idea.item.image} style={styles.listItemImage} />
-                            </View>
-                        )}
-                    />
-                </ScrollView>
+            <View>
+                <TouchableOpacity
+                    onPress={this.navigateToIdeasStore}
+                >
+                    <Text style={styles.cardText}>Gift Ideas!</Text>
+                    {/* <ScrollView>
+                        <FlatList
+                            horizontal={true}
+                            data={ideas.introGiftIdeas}
+                            renderItem={(idea) => (
+                                <View style={styles.listItemContainer}>
+                                    <Image source={idea.item.image} style={styles.listItemImage} />
+                                </View>
+                            )}
+                        />
+                    </ScrollView> */}
+                </TouchableOpacity>
             </View>
         )
     }
@@ -39,13 +52,10 @@ const styles = StyleSheet.create({
         width: 75,
         height: 75
     },
-    cardContainer: {
-        padding: 10
-    },
     cardText: {
         fontFamily: 'Graciela-Regular',
         fontSize: 22
     }
 });
 
-export default GiftIdeasCard;
+export default withNavigation(GiftIdeasCard);

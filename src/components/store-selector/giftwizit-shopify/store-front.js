@@ -19,8 +19,19 @@ import * as storeConstants from '../../../resources/storefront-store';
 import * as actions from '../../../store/actions/index';
 
 class StoreFront extends Component {
+    shouldGetPreviousCheckout = false;
     componentDidMount() {
-        this.props.initializeStore()
+        if(this.props.navigation.state.params != null) {
+            try {
+                const {getPrevCheckout} = this.props.navigation.state.params;
+                this.shouldGetPreviousCheckout = getPrevCheckout;
+                this.props.initializeStore(getPrevCheckout)
+            }catch(e) {
+                this.props.initializeStore(null);
+            }
+        }else {
+            this.props.initializeStore(null);
+        }
     }
     fetchCategoryProducts = async () => {
         await this.props.fetchCategoryProducts();
@@ -106,7 +117,7 @@ class StoreFront extends Component {
             product_Id: product.id
         }
         // Send the productId as well as the first variantId, because 'Products will be expecting it.
-        this.props.navigation.navigate("Products", productData);
+        this.props.navigation.navigate("Products", {...productData, enableWishListAdd: this.shouldGetPreviousCheckout});
     }
     fetchNextPageOfProducts = () => {
         let lastProductIndex = this.props.products.length - 1;
@@ -198,7 +209,7 @@ const styles = StyleSheet.create({
 
 mapDispatchToProps = dispatch => {
     return {
-        initializeStore: () => dispatch(actions.initializeStore()),
+        initializeStore: (getPrevCheckout) => dispatch(actions.initializeStore(getPrevCheckout)),
         fetchCategoryProducts: () => dispatch(actions.fetchCategoryProducts()),
         addItemToCart: (lineItems) => dispatch(actions.addItemToCart(lineItems)),
         addItemToWList: (item) => dispatch(actions.addWishListItem(item)),

@@ -9,11 +9,13 @@ import {
     TouchableOpacity, 
     StyleSheet
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
 import axios from 'axios';
 
 import * as actions from '../../store/actions/index';
+import GiftIdeasCard from '../../components/info-content/gift-ideas-card/gift-ideas-card';
 import storeConfiguration from '../../store/storeConfig';
 import InfoCard from '../../components/welcome/info-card';
 import Auxiliary from '../../hoc/auxiliary';
@@ -55,43 +57,45 @@ class Home extends Component {
         return (
             <Auxiliary>
                 <NavigationEvents onWillFocus={this.componentWillFocus} />
-                <View style={{padding: 10}}>
-                    <Text>Welcome Home!</Text>
+                <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={{padding: 10}}>
+                    <Text style={{color: 'white'}}>Welcome Home!</Text>
                     <Button onPress={this.logOut} title="Logout" />
-                </View>
-                <ScrollView style={{padding: 10}}>
-                    <InfoCard style={{backgroundColor: 'white'}}>
-                        <ImageBackground style={{width: '100%', resizeMode: 'contain'}} source={getShoppingBg}>
-                            <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
-                                <Text style={[styles.cardText]}>Get to Shopping!</Text>
+                </LinearGradient>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
+                    <ScrollView style={styles.contentContainer}>
+                        <InfoCard style={{backgroundColor: 'white'}}>
+                            <ImageBackground style={{width: '100%', resizeMode: 'contain'}} source={getShoppingBg}>
+                                <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
+                                    <Text style={[styles.cardText]}>Get to Shopping!</Text>
+                                </TouchableOpacity>
+                            </ImageBackground>
+                        </InfoCard>
+                        <InfoCard>
+                            <TouchableOpacity style={styles.infoCard}>
+                                <GiftIdeasCard authed={true} />
                             </TouchableOpacity>
-                        </ImageBackground>
-                    </InfoCard>
-                    <InfoCard>
-                        <TouchableOpacity style={styles.infoCard}>
-                            <Text style={[styles.cardText, {color: "black"}]}>Gift Ideas</Text>
-                        </TouchableOpacity>
-                    </InfoCard>
-                    <InfoCard>
-                        <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
-                            <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
-                        </TouchableOpacity>
-                    </InfoCard>
-                    <InfoCard>
-                        <TouchableOpacity style={styles.infoCard}>
-                            <Text style={[styles.cardText, {color: "black"}]}>Notifications</Text>
-                        </TouchableOpacity>
-                    </InfoCard>
-                </ScrollView>
+                        </InfoCard>
+                        <InfoCard>
+                            <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
+                                <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
+                            </TouchableOpacity>
+                        </InfoCard>
+                    </ScrollView>
+                </LinearGradient>
             </Auxiliary>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    contentContainer:{
+        flex: 1,
+        padding: 10
+    },
     infoCard: {
         width: '100%',
-        height: '100%'
+        height: '100%',
+        padding: 10
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,

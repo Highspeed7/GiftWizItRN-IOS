@@ -15,6 +15,7 @@ import contactsReducer from './reducers/contacts-reducer';
 import storeFrontReducer from './reducers/storefront-reducer';
 import searchListsReducer from './reducers/search-reducer';
 import notificationsReducer from './reducers/notifications-reducer';
+import giftIdeasReducer from './reducers/giftideas-reducer';
 import chatReducer from './reducers/chat-reducer';
 import uiReducer from './reducers/ui-reducer';
 
@@ -29,6 +30,7 @@ const appReducer = combineReducers({
     notificationsReducer: notificationsReducer,
     chatReducer: chatReducer,
     storeFrontReducer: storeFrontReducer,
+    giftIdeasReducer: giftIdeasReducer,
     uiReducer: uiReducer
 });
 

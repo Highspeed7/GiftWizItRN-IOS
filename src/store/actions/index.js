@@ -32,6 +32,13 @@ export {
 } from './giftLists';
 
 export {
+    getAllPromoCollections,
+    setIdeaCollectionActive,
+    setIdeaCollectionInactive,
+    setIdeaCollectionItems
+} from './giftIdeas';
+
+export {
     setWishList,
     setWishListActive,
     setWishListInactive,

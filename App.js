@@ -22,6 +22,7 @@ import StoreProductNavigator from './src/components/navigation/store-product-nav
 import StoreCart from './src/components/store/store-cart';
 
 import * as Sentry from '@sentry/react-native';
+import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
 
 Sentry.init({ 
   dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
@@ -47,6 +48,9 @@ const PostAuthStackNavigator = createStackNavigator({
     screen: StoreDrawerNavigator,
     path: 'test'
   },
+  GiftIdeasAuthed: {
+    screen: GiftIdeasStackNavigator
+  },
   Products: {
     screen: StoreProductNavigator
   },
@@ -55,8 +59,6 @@ const PostAuthStackNavigator = createStackNavigator({
     path: "cart"
   }
 });
-
-
 
 const startStackNavigator = createStackNavigator({
   Splash
@@ -74,6 +76,13 @@ const PreAuthStackNavigator = createBottomTabNavigator({
     navigationOptions: {
       tabBarLabel: "Get Started"
     }
+  }
+},{
+  tabBarOptions: {
+    activeBackgroundColor: '#4c669f',
+    inactiveBackgroundColor: '#7db9e8',
+    tabStyle: {borderTopColor: 'transparent', borderTopWidth: 0},
+    labelStyle: {color: 'white', borderTopWidth: 0},
   }
 });
 

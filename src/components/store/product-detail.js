@@ -32,15 +32,22 @@ class ProductDetail extends Component {
         activeVariant: null,
         cartActionEnabled: true,
         enableDiscussion: false,
+        enableWishListAdd: true
     }
     touchableRef = null;
     didFocus = () => {
         this.props.initializeStore();
-        const {product_Id, variant_Id, startDiscussion} = this.props.navigation.state.params;
+        const {product_Id, variant_Id, startDiscussion, enableWishListAdd} = this.props.navigation.state.params;
 
         if(startDiscussion) {
             this.setState({
                 enableDiscussion: true
+            });
+        }
+
+        if(enableWishListAdd == false) {
+            this.setState({
+                enableWishListAdd: false
             });
         }
 
@@ -252,19 +259,21 @@ class ProductDetail extends Component {
                         </View>
                         <View>
                             {
-                                (this.getFavorited().length > 0)
-                                    ? <Button
-                                        containerStyle={{marginBottom: 5}}
-                                        title="Remove from Wish List"
-                                        type="outline"
-                                        onPress={this.addItemToWishList}
-                                    />
-                                    : <Button
-                                        containerStyle={{marginBottom: 5}}
-                                        title="Add to Wish List"
-                                        type="outline"
-                                        onPress={this.addItemToWishList}
-                                    />
+                                (this.state.enableWishListAdd) 
+                                    ? (this.getFavorited().length > 0)
+                                            ? <Button
+                                                containerStyle={{marginBottom: 5}}
+                                                title="Remove from Wish List"
+                                                type="outline"
+                                                onPress={this.addItemToWishList}
+                                            />
+                                            : <Button
+                                                containerStyle={{marginBottom: 5}}
+                                                title="Add to Wish List"
+                                                type="outline"
+                                                onPress={this.addItemToWishList}
+                                            />
+                                    : null
                             }
                             {
                                 (this.state.enableDiscussion)

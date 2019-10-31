@@ -12,8 +12,13 @@ import NextHolidayCard from '../../components/info-content/next-holiday-card/nex
 import GiftIdeasCard from '../../components/info-content/gift-ideas-card/gift-ideas-card';
 import ListsViewed from '../../components/info-content/lists-viewed-card';
 import * as actions from '../../store/actions/index';
+import LinearGradient from 'react-native-linear-gradient';
 
 class Welcome extends Component {
+    openStoreFront = () => {
+        this.props.uiStartLoading();
+        this.props.navigation.navigate("Store");
+    }
     searchCardPressed = () => {
         this.props.navigation.navigate("SearchLists");
     }
@@ -29,37 +34,40 @@ class Welcome extends Component {
             }
         }
         return (
-            <ScrollView style={styles.scrollContainer}>
-                <InfoCard>
-                    <IntroductionCard />
-                </InfoCard>
-                <InfoCard>
-                    <NextHolidayCard />
-                </InfoCard>
-                <InfoCard>
-                    <GiftIdeasCard />
-                </InfoCard>
-                {/* <InfoCard>
-                    <ListsViewed />
-                </InfoCard> */}
-                <InfoCard>
-                    <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
-                        <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
-                    </TouchableOpacity>
-                </InfoCard>
-                {/* <Modal
-                    visible={this.props.introComplete === null}
-                >
-                    {renderModal()}
-                </Modal> */}
-            </ScrollView>
+            <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
+                <ScrollView style={styles.scrollContainer}>
+                    <InfoCard>
+                        <IntroductionCard />
+                    </InfoCard>
+                    <InfoCard>
+                        <NextHolidayCard />
+                    </InfoCard>
+                    <InfoCard>
+                        <TouchableOpacity style={styles.infoCard} onPress={this.openStoreFront}>
+                            <Text style={[styles.cardText, {color: "black"}]}>Shop Our Store</Text>
+                        </TouchableOpacity>
+                    </InfoCard>
+                    <InfoCard>
+                        <GiftIdeasCard authed={false} />
+                    </InfoCard>
+                    <InfoCard>
+                        <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
+                            <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
+                        </TouchableOpacity>
+                    </InfoCard>
+                    {/* <Modal
+                        visible={this.props.introComplete === null}
+                    >
+                        {renderModal()}
+                    </Modal> */}
+                </ScrollView>
+            </LinearGradient>
         )
     }
 }
 const styles = StyleSheet.create({
     scrollContainer: {
-        flex: 1,
-        backgroundColor: '#9FC8E8'
+        flex: 1
     },
     infoCard: {
         width: '100%',
@@ -82,7 +90,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onModalClosed: () => dispatch({type: "MODAL_CLOSED"})
+        onModalClosed: () => dispatch({type: "MODAL_CLOSED"}),
+        uiStartLoading: () => dispatch(actions.uiStartLoading())
     }
 }
 

@@ -10,7 +10,7 @@ class ListAction extends Component {
                 <Swatch> 
                     <View style={styles.iconContainer}>
                         {this.props.icon()}
-                        <Text>{this.props.title}</Text>
+                        <Text style={{color: "black"}}>{this.props.title}</Text>
                     </View>   
                     {this.props.children}                
                 </Swatch>
