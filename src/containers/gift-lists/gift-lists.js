@@ -223,7 +223,9 @@ class GiftLists extends Component {
                     }
                 </LinearGradient>
                 <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
-                    <ScrollView style={styles.listContainer}>
+                    <ScrollView
+                        keyboardShouldPersistTaps="always" 
+                        style={styles.listContainer}>
                         {giftLists}
                         <View style={styles.spacer}></View>
                     </ScrollView>

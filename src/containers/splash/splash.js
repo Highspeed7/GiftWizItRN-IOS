@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Image, StyleSheet, Linking } from 'react-native';
+import { View, Image, StyleSheet, Linking, Alert } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 import * as actions from '../../store/actions/index';
 import { connect } from 'react-redux';
@@ -16,6 +17,12 @@ class Splash extends Component {
             console.log(error.message);
         }
         
+        var state = await NetInfo.fetch();
+
+        // if(state.type != 'wifi') {
+        //     Alert.alert("This app runs best when connected to a wifi network.");
+        // }
+
         await Linking.getInitialURL().then((url) => {
             if(url != null) {
                 this.handleOpenURL(url);
@@ -31,6 +38,10 @@ class Splash extends Component {
                 }, 2000);
             }
         })
+    }
+
+    componentWillUnmount() {
+
     }
 
     handleOpenURL(url) {

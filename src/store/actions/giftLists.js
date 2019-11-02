@@ -115,5 +115,12 @@ export const setListMessages = (messageData) => {
     return {
         type: actionTypes.SET_LIST_MESSAGES,
         data: messageData
-    }
-}
+    };
+};
+
+export const getListMessageCount = (giftListId) => {
+    return {
+        type: actionTypes.GET_LIST_MESSAGE_COUNT,
+        data: giftListId
+    };
+};

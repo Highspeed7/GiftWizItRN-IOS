@@ -9,6 +9,7 @@ import {
     Image, 
     Modal
 } from 'react-native';
+import { Badge } from 'react-native-elements';
 
 import * as actions from '../../store/actions/index';
 import Swatch from '../../components/swatch/swatch';
@@ -24,6 +25,7 @@ class SharedListView extends Component {
     }
     componentDidMount = async () => {
         await this.props.connectToListChatChannel(this.props.list.giftListId);
+        await this.props.getListMessageCount(this.props.list.giftListId);
     }
     componentWillUnmount = () => {
         this.props.disconnectFromListChatChannel(this.props.list.giftListId);
@@ -33,18 +35,12 @@ class SharedListView extends Component {
             chatModalActive: true
         });
     }
-    setChatModalInactive = () => {
+    setChatModalInactive = async () => {
         this.props.clearChatMessages();
         this.setState({
             chatModalActive: null
         });
-    }
-    testChat = () => {
-        let chatContext = {
-            message: 'Hello World',
-            listId: this.props.list.giftListId
-        };
-        this.props.testChat(chatContext);
+        await this.props.getListMessageCount(this.props.list.giftListId);
     }
     render() {
         let {listItems} = this.props.list;
@@ -86,29 +82,16 @@ class SharedListView extends Component {
                             visible={this.state.chatModalActive != null}
                             onRequestClose={() => this.setChatModalInactive()}
                         >
-                            <ListChat 
+                            <ListChat
+                                listTitle={this.props.list.giftListName} 
                                 activeList={this.props.list}
                             />
                         </Modal>
+                        <Badge
+                            value={this.props.sessionListMessageCount}
+                            containerStyle={{position: 'absolute', top: 20, left: '53%'}}
+                        />
                     </ListAction>
-                    {/* <ListAction
-                        title="Test"
-                        icon={() => (
-                            <FontAwesome5
-                                name={'comment-alt'} solid
-                                color="black"
-                                size={25}
-                            />
-                        )}
-                        onPressed = {this.testChat}
-                    >
-                        <Modal
-                            visible={this.state.chatModalActive != null}
-                            onRequestClose={() => this.setChatModalInactive()}
-                        >
-                            <ListChat />
-                        </Modal>
-                    </ListAction> */}
                 </View>
                 <ScrollView
                     keyboardShouldPersistTaps='always'
@@ -151,8 +134,14 @@ mapDispatchToProps = dispatch => {
         clearChatMessages: () => dispatch(actions.clearChatMessages()),
         connectToListChatChannel: (list_id) => dispatch(actions.connectToListChat(list_id)),
         disconnectFromListChatChannel: (list_id) => dispatch(actions.disconnectFromListChat(list_id)),
-        testChat: (chatContext) => dispatch({type: "TEST_CHAT", data: chatContext})
+        getListMessageCount: (list_id) => dispatch(actions.getListMessageCount(list_id))
     }
 }
 
-export default connect(null, mapDispatchToProps)(SharedListView);
+mapStateToProps = state => {
+    return {
+        sessionListMessageCount: state.giftListsReducer.sessionListMessageCount
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SharedListView);
