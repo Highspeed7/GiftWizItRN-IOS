@@ -512,6 +512,28 @@ const apiInterceptor = store => next => async action => {
                 sleep(500);
             }
             break;
+        case actionTypes.GET_LIST_MESSAGE_COUNT:
+            try {
+                store.dispatch(actions.uiStartLoading());
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.get(`https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessageCount?giftListId=${action.data}`, config).then((response) => {
+                    action.data = response.data;
+                });
+
+            }catch(error) {
+                console.log(error);
+                store.dispatch(actions.uiStopLoading());
+                sleep(500);
+            }
         case actionTypes.GET_LIST_MESSAGES:
             try {
                 store.dispatch(actions.uiStartLoading());

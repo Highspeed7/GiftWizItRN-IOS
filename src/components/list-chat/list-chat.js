@@ -15,12 +15,14 @@ class ListChat extends Component {
         });
     }
     componentDidMount = async () => {
-        await this.props.getListMessages(this.props.activeList.giftListId);
+        var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
+        await this.props.getListMessages(giftListId);
     }
     sendMessage = async () => {
+        var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
         const messageData = {
             message: this.state.messageText,
-            giftListId: this.props.activeList.giftListId
+            giftListId: giftListId
         };
 
         await this.props.sendMessageToList(messageData)
@@ -46,7 +48,7 @@ class ListChat extends Component {
             <KeyboardAvoidingView style={styles.viewContainer}>
                 <View
                     style={{paddingBottom: 25, flex: 1, borderBottomWidth: 1, borderBottomColor: 'black', marginBottom: 10}}>
-                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>Let's talk about the list '{this.props.activeList.giftListName}'</Text>
+                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>Let's talk about the list '{this.props.listTitle}'</Text>
                     {messages}
                 </View>
                 <View style={styles.inputArea}>

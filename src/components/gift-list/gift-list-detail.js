@@ -21,6 +21,8 @@ import Auxiliary from '../../hoc/auxiliary';
 import GiftListEdit from './edit-modal/gift-list-edit';
 import * as actions from '../../store/actions/index';
 import { goclone } from '../../utils/utils';
+import ListChat from '../list-chat/list-chat';
+import { Badge } from 'react-native-elements';
 
 class GiftListDetail extends Component {
     state = {
@@ -30,7 +32,33 @@ class GiftListDetail extends Component {
         selectedGiftListId: null,
         seletedGiftListName: null,
         editModalOpen: null,
-        shareListModalOpen: null
+        shareListModalOpen: null,
+        chatModalActive: null
+    }
+    componentDidMount = async () => {
+        if(this.props.list.restrictChat == false) {
+            await this.props.connectToListChatChannel(this.props.list.id);
+            await this.props.getListMessageCount(this.props.list.id);
+        }
+    }
+    componentWillUnmount = () => {
+        if(this.props.list.restrictChat == false) {
+            this.props.disconnectFromListChatChannel(this.props.list.id);
+        }
+    }
+    setChatModalActive = () => {
+        this.setState({
+            chatModalActive: true
+        });
+    }
+    setChatModalInactive = async () => {
+        this.props.clearChatMessages();
+        this.setState({
+            chatModalActive: null
+        });
+        
+        // Update the message count after chat is closed
+        await this.props.getListMessageCount(this.props.list.id);
     }
     setMoveMode = async () => {
         if(this.props.editableSharedLists.length == 0) {
@@ -218,17 +246,56 @@ class GiftListDetail extends Component {
             <Auxiliary>
                 <View style={{padding: 10}}>
                     <Text>{this.props.list.name}</Text>
-                    <ScrollView horizontal={true} style={{width: '100%'}}>
-                        <ListAction
-                            title="Move"
-                            icon={() => (<FontAwesome5
-                                name="dolly"
-                                color="black"
-                                size={25}
-                            />)}
-                            onPressed={() => this.setMoveMode()}
-                        >
-                        </ListAction>
+                    <ScrollView 
+                        keyboardShouldPersistTaps="always"
+                        horizontal={true} style={{width: '100%'}}>
+                        {(this.state.moveMode == null)
+                            ? <ListAction
+                                    title="Move"
+                                    icon={() => (<FontAwesome5
+                                        name="dolly"
+                                        color="black"
+                                        size={25}
+                                    />)}
+                                    onPressed={() => this.setMoveMode()}
+                                >
+                                </ListAction>
+                            : <ListAction
+                                title="Cancel"
+                                icon={() => (<FontAwesome5
+                                    name="times"
+                                    color="black"
+                                    size={25}    
+                                />)}
+                                onPressed={() => this.cancelActions()}
+                            ></ListAction>
+                        }
+                        {(this.props.list.restrictChat == false)
+                            ? <ListAction
+                                    title="Messages"
+                                    icon={() => (<FontAwesome5
+                                        name={'comment-alt'} solid
+                                        color="black"
+                                        size={25}
+                                    />)}
+                                    onPressed={() => this.setChatModalActive()}
+                                >
+                                    <Modal
+                                        visible={this.state.chatModalActive != null}
+                                        onRequestClose={() => this.setChatModalInactive()}
+                                    >
+                                        <ListChat
+                                            listTitle={this.props.list.name} 
+                                            activeList={this.props.list}
+                                        />
+                                    </Modal>
+                                    <Badge
+                                        value={this.props.sessionListMessageCount}
+                                        containerStyle={{position: 'absolute', top: 20, left: '53%'}}
+                                    />
+                                </ListAction>
+                            : null
+                        }
                         <ListAction
                             title="Share"
                             icon={() => (<FontAwesome5
@@ -261,27 +328,26 @@ class GiftListDetail extends Component {
                             <GiftListEdit activeList={this.props.list} onListChanged={() => this.setState({editModalOpen: null})} />                           
                         </Modal>
                         </ListAction>
-                        <ListAction
-                            title="Delete"
-                            icon={() => (<FontAwesome5
-                                name="trash"
-                                color="black"
-                                size={25}    
-                            />)}
-                            onPressed={() => this.setDeleteMode()}
-                        >
-                        </ListAction>
-                        {(this.state.moveMode != null || this.state.deleteMode != null)
+                        {(this.state.deleteMode == null)
                             ? <ListAction
-                                    title="Cancel"
-                                    icon={() => (<FontAwesome5
-                                        name="times"
-                                        color="black"
-                                        size={25}    
-                                    />)}
-                                    onPressed={() => this.cancelActions()}
-                                ></ListAction>
-                            : null
+                                title="Delete"
+                                icon={() => (<FontAwesome5
+                                    name="trash"
+                                    color="black"
+                                    size={25}    
+                                />)}
+                                onPressed={() => this.setDeleteMode()}
+                            >
+                            </ListAction>
+                            : <ListAction
+                                title="Cancel"
+                                icon={() => (<FontAwesome5
+                                    name="times"
+                                    color="black"
+                                    size={25}    
+                                />)}
+                                onPressed={() => this.cancelActions()}
+                            ></ListAction>
                         }
                     </ScrollView>
                     {(this.state.moveMode != null)
@@ -353,16 +419,21 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
+        connectToListChatChannel: (list_id) => dispatch(actions.connectToListChat(list_id)),
+        disconnectFromListChatChannel: (list_id) => dispatch(actions.disconnectFromListChat(list_id)),
+        clearChatMessages: () => dispatch(actions.clearChatMessages()),
         moveGiftListItems: (itemData) => dispatch(actions.moveGiftListItems(itemData)),
         getEditableLists: () => dispatch(actions.getEditableSharedLists()),
-        deleteItemsFromList: (itemData) => dispatch(actions.deleteGiftItems(itemData))
+        deleteItemsFromList: (itemData) => dispatch(actions.deleteGiftItems(itemData)),
+        getListMessageCount: (list_id) => dispatch(actions.getListMessageCount(list_id))
     }
 };
 
 const mapStateToProps = state => {
     return {
         giftLists: state.giftListsReducer.giftLists,
-        editableSharedLists: state.wishListReducer.editableSharedLists
+        editableSharedLists: state.wishListReducer.editableSharedLists,
+        sessionListMessageCount: state.giftListsReducer.sessionListMessageCount
     }
 };
 

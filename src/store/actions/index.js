@@ -28,7 +28,8 @@ export {
     clearChatMessages,
     deleteGiftItems,
     getListMessages,
-    setListMessages
+    setListMessages,
+    getListMessageCount
 } from './giftLists';
 
 export {

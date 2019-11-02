@@ -3,7 +3,8 @@ import * as utils from '../../utils/utils';
 
 const initialState = {
     giftLists: [],
-    sessionChatMessages: []
+    sessionChatMessages: [],
+    sessionListMessageCount: null
 }
 
 const giftListsReducer = (state = initialState, action) => {
@@ -22,7 +23,8 @@ const giftListsReducer = (state = initialState, action) => {
         case actionTypes.SET_GLIST_INACTIVE:
             return {
                 ...state,
-                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: null}, key: action.key}, "id")
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: null}, key: action.key}, "id"),
+                sessionListMessageCount: null
             }
         case actionTypes.SET_GLIST_ITEMS:
             return {
@@ -48,6 +50,11 @@ const giftListsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 sessionChatMessages: []
+            }
+        case actionTypes.GET_LIST_MESSAGE_COUNT:
+            return {
+                ...state,
+                sessionListMessageCount: action.data
             }
         default: return state;
     }
