@@ -324,9 +324,9 @@ class WishList extends Component {
                         : <Text style={styles.listActionText}>There are no items to display... {'\n'}Add some above!</Text>
                     }
                 </LinearGradient>
-                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
-                    <ScrollView style={styles.listContainer}>
-                        <View style={styles.listsContainer}>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1, padding: 10}}>
+                    <ScrollView>
+                        <View style={styles.listContainer}>
                             {wishList}
                         </View>
                         <Modal
@@ -360,8 +360,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     listContainer: {
-        padding: 10,
-        flex: 1
+        marginBottom: 10,
+        flexDirection: 'row',
+        flexWrap: 'wrap'
     },
     listActionText: {
         color: 'white',
