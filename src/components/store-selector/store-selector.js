@@ -192,7 +192,7 @@ class StoreSelector extends Component {
                                     </Modal>
                                 </Swatch>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("BedBathBeyond")}>
+                            {/* <TouchableOpacity style={styles.touchableSwatch} onPress={() => this.openStoreModal("BedBathBeyond")}>
                                 <Swatch>
                                     <Text>Bed Bath and Beyond</Text>
                                     <Modal
@@ -208,7 +208,7 @@ class StoreSelector extends Component {
                                         />
                                     </Modal>
                                 </Swatch>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                     </ScrollView>
                 </View>
