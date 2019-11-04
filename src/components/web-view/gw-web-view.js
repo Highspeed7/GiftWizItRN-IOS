@@ -9,6 +9,7 @@ import Auxiliary from '../../hoc/auxiliary';
 import * as scripts from '../store-selector/scripts/scripts';
 import { Overlay } from 'react-native-elements';
 import { sleep } from '../../utils/utils';
+import Toaster from '../toast-notifications/toaster';
 
 class GWWebView extends Component {
     pageAlertIssued = false;
@@ -87,6 +88,7 @@ class GWWebView extends Component {
                         </View>
                     </View>
                 </Overlay>
+                <Toaster />
             </Auxiliary>
         )
     }

@@ -1,7 +1,8 @@
-import {UI_START_LOADING, UI_STOP_LOADING} from '../actions/actionTypes';
+import {UI_START_LOADING, UI_STOP_LOADING, POP_NOTIF_TOAST} from '../actions/actionTypes';
 
 const initialState = {
-    isLoading: false
+    isLoading: false,
+    shouldPop: null
 };
 
 const uiReducer = (state = initialState, action) => {
@@ -15,6 +16,11 @@ const uiReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: false
+            }
+        case POP_NOTIF_TOAST:
+            return {
+                ...state,
+                shouldPop: action.payload
             }
         default: return state;
     }

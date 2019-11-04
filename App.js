@@ -23,6 +23,7 @@ import StoreCart from './src/components/store/store-cart';
 
 import * as Sentry from '@sentry/react-native';
 import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
+import Toaster from './src/components/toast-notifications/toaster';
 
 Sentry.init({ 
   dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
@@ -102,7 +103,8 @@ class App extends Component {
     return (
       [
         <Spinner key="0" visible={this.props.loading} />,
-        <AppContainer key="1" />
+        <AppContainer key="1" />,
+        <Toaster />
       ]
     )
   }

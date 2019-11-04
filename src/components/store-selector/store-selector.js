@@ -135,6 +135,7 @@ class StoreSelector extends Component {
                                 <Swatch>
                                     <Text>Amazon</Text>
                                     <Modal
+                                        style={{position: 'relative'}}
                                         visible={this.state.amazonModalOpen}
                                         onRequestClose={this.closeModal}
                                     >

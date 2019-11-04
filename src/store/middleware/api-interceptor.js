@@ -76,16 +76,19 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.SET_WISH_LIST:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
                 }
                 await axios.get('http://giftwizitapi.azurewebsites.net/api/WishList', {headers: headerObj}).then((response) => {
                     action.wishList = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
                 console.log(error);
                 action.type = "SET_WISH_LIST_FAILED";
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.GET_EDITABLE_SHARED_LISTS:
@@ -105,6 +108,7 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.MOVE_WISH_LIST_ITEMS:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
@@ -117,9 +121,11 @@ const apiInterceptor = store => next => async action => {
                 };
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/MoveItems', body, config).then((response) => {
                     store.dispatch(actions.setWishList());
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
                 console.log(error);
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.ADD_NEW_GIFT_LIST:
@@ -145,6 +151,7 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.ADD_WISH_LIST_ITEM:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
@@ -158,9 +165,13 @@ const apiInterceptor = store => next => async action => {
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/Items', body, config).then((response) => {
                     store.dispatch(actions.setWishList());
+                    store.dispatch(actions.uiStopLoading());
+                    store.dispatch(actions.popToastNotification({message: 'Item Successfully Added!'}))
                 })
             }catch(error) {
                 console.log(error);
+                store.dispatch(actions.uiStopLoading());
+                store.dispatch(actions.popToastNotification({message: 'Item add failed; try via the item details page.'}))
             }
             break;
         case actionTypes.MOVE_GLIST_ITEMS:

@@ -88,7 +88,8 @@ export {
 
 export {
     uiStartLoading,
-    uiStopLoading
+    uiStopLoading,
+    popToastNotification
 } from './ui';
 
 export {
