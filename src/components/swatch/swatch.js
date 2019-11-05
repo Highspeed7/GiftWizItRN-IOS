@@ -3,9 +3,17 @@ import { View, Text, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 class Swatch extends Component {
+    getColorGradient = () => {
+        var defaultColors = ['#e6e6e6', '#ffffff', '#e6e6e6'];
+        if(this.props.gradientColorScheme) {
+            return this.props.gradientColorScheme
+        }else {
+            return defaultColors;
+        }
+    }
     render() {
         return (
-            <LinearGradient colors={['#e6e6e6', '#ffffff', '#e6e6e6']} style={[styles.swatchContainer, this.props.style]}>
+            <LinearGradient colors={this.getColorGradient()} style={{...styles.swatchContainer, ...this.props.style}}>
                 {this.props.children}
             </LinearGradient>
         )
