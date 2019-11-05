@@ -53,6 +53,7 @@ class ProductDetail extends Component {
 
         if(product_Id != null) {
             this.props.getProduct(product_Id);
+            this.setActiveVariant();
         }
         else return;
     }
@@ -160,12 +161,28 @@ class ProductDetail extends Component {
             viewDesc: true
         });
     };
-    setActiveVariant = () => {
-        let {variant_Id} = this.props.navigation.state.params;
+    getProductPrice = () => {
+        var variants = this.props.activeProduct.variants;
 
-        // If we aren't provided a variant_Id... assign the first one (This should never happen)
-        if(variant_Id == null) {
-            variant_Id = this.props.activeProduct.variants[0].id
+        variants.filter((variant) => {
+           return variant.id == this.state.activeVariant.id
+        });
+
+        return variants[0].price;
+    }
+    setActiveVariant = (chosenVariant = null) => {
+
+        let variant_Id = null
+
+        if(chosenVariant == null) {
+            variant_Id = this.props.navigation.state.params.variant_Id;
+
+            // If we aren't provided a variant_Id... assign the first one (This should never happen)
+            if(variant_Id == null) {
+                variant_Id = this.props.activeProduct.variants[0].id
+            }
+        }else {
+            variant_Id = chosenVariant.id;
         }
 
         this.props.activeProduct.variants.filter((variant) => {
@@ -182,6 +199,7 @@ class ProductDetail extends Component {
 
         if(available) {
             this.selectedVariant = chosenVariant;
+            this.setActiveVariant(chosenVariant);
             this.forceUpdate();
         }
     }
@@ -255,7 +273,7 @@ class ProductDetail extends Component {
                         }
                         
                         <View style={{marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee', justifyContent: 'center', alignItems: 'center', minHeight: 100}}>
-                            <Text style={{fontSize: 48, fontWeight: 'bold'}}>${this.props.activeProduct.variants[0].price}</Text>
+                            <Text style={{fontSize: 48, fontWeight: 'bold'}}>${(this.state.activeVariant != null) ? this.state.activeVariant.price : this.props.activeProduct.variants[0].price}</Text>
                         </View>
                         <View>
                             {
