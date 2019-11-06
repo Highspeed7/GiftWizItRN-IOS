@@ -28,6 +28,8 @@ class GiftLists extends Component {
         shareListModalOpen: null,
         selectedLists: [],
         newListName: null,
+        newListPass: null,
+        newListPublic: false,
         restrictChatFlag: false,
         allowAdds: true,
         deleteMode: null
@@ -120,6 +122,8 @@ class GiftLists extends Component {
         }else {
             var newGiftList = {
                 name: this.state.newListName,
+                password: this.state.newListPass,
+                isPublic: this.state.newListPublic,
                 restrictChat: this.state.restrictChatFlag,
                 allowItemAdds: this.state.allowAdds
             };
@@ -132,8 +136,25 @@ class GiftLists extends Component {
             newListName: val
         });
     }
+    addedGiftPassHandler = (val) => {
+        this.setState({
+            newListPass: val
+        });
+    }
     isListSelected = (listId) => {
         return this.state.selectedLists.indexOf(listId) != -1;
+    }
+    setListPublic = (val) => {
+        if(val) {
+            this.setState({
+                newListPublic: val,
+                newListPass: null
+            });
+        }else {
+            this.setState({
+                newListPublic: val
+            });
+        }
     }
     render() {
         const giftLists = (this.props.giftLists.length > 0) 
@@ -182,6 +203,8 @@ class GiftLists extends Component {
                             >
                                 <GiftListAdd
                                     addedGiftNameHandler={this.addedGiftNameHandler}
+                                    addedGiftPassHandler={this.addedGiftPassHandler}
+                                    listIsPublic={this.setListPublic}
                                     newGiftListAdded={this.newGiftListAdded}
                                     restrictChatFlag={this.setChatRestriction}
                                     allowItemAdds={this.setAllowAdds}

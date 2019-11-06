@@ -5,7 +5,8 @@ import {
     TextInput,
     Button,
     StyleSheet,
-    Picker
+    Picker,
+    Switch
 } from 'react-native';
 
 class GiftListAdd extends Component {
@@ -15,7 +16,15 @@ class GiftListAdd extends Component {
     ];
     state = {
         restrictChat: false,
-        allowAdds: true
+        allowAdds: true,
+        isPublic: false
+    }
+    setIsPublic = (value) => {
+        this.setState({
+            isPublic: value
+        });
+
+        this.props.listIsPublic(value);
     }
     setPickerValue = (value) => {
         this.setState({
@@ -38,7 +47,26 @@ class GiftListAdd extends Component {
                     placeholder="Name" 
                     onChangeText={this.props.addedGiftNameHandler} 
                 />
-
+                <View style={{marginBottom: 20, flexDirection: 'row', justifyContent: 'flex-end', width: '100%', alignItems: 'center'}}>
+                    <View style={{width: '50%'}}>
+                        <Text style={styles.formLabel}>Public</Text>
+                    </View>
+                    <View style={{width: '50%', justifyContent: 'flex-end'}}>
+                        <Switch
+                            onValueChange={this.setIsPublic}
+                            value={this.state.isPublic}
+                        />
+                    </View>
+                </View>
+                {(this.state.isPublic == false) 
+                    ? [<Text style={styles.formLabel}>Gift List Password: </Text>,
+                    <TextInput
+                        secureTextEntry={true}
+                        style={styles.input}
+                        onChangeText={this.props.addedGiftPassHandler}
+                        placeholder="Password"
+                    />]
+                    : null}
                 <Text style={styles.formLabel}>Will the items in this list be for you?</Text>
                 <Picker
                     selectedValue={this.state.restrictChat}
