@@ -538,6 +538,7 @@ const apiInterceptor = store => next => async action => {
 
                 await axios.get(`https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessageCount?giftListId=${action.data}`, config).then((response) => {
                     action.data = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
 
             }catch(error) {
@@ -545,20 +546,36 @@ const apiInterceptor = store => next => async action => {
                 store.dispatch(actions.uiStopLoading());
                 sleep(500);
             }
+            break;
         case actionTypes.GET_LIST_MESSAGES:
             try {
                 store.dispatch(actions.uiStartLoading());
+
+                let state = store.getState();
+                let currentChatMessages = state.giftListsReducer.sessionChatMessages;
+
                 token = await store.dispatch(actions.getAuthToken());
 
                 let headerObj = {
                     'Authorization': `bearer ${token}`
                 };
 
+                let skipCount = currentChatMessages.length;
+
+                if(skipCount == 0) {
+                    skipCount = null;
+                }
+
                 config = {
                     headers: headerObj
                 };
+                
+                let listUrl = (skipCount == null) 
+                    ? `https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20`
+                    : `https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20&skipCount=${skipCount}`
 
-                await axios.get(`https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20`, config).then((response) => {
+
+                await axios.get(listUrl, config).then((response) => {
                     store.dispatch(actions.setListMessages(response.data))
                     store.dispatch(actions.uiStopLoading());
                     sleep(500);

@@ -31,9 +31,15 @@ class ListChat extends Component {
             messageText: ""
         });
     }
+    fetchNextPage = async () => {
+        var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
+        await this.props.getListMessages(giftListId);
+    }
     render() {
         messages = (this.props.sessionChatMessages.length > 0) 
             ? <FlatList
+                onEndReached={this.fetchNextPage}
+                onEndReachedThreshold={1}
                 keyboardShouldPersistTaps="always"
                 inverted={true}
                 data={this.props.sessionChatMessages}
