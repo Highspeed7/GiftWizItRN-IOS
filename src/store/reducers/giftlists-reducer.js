@@ -4,7 +4,8 @@ import * as utils from '../../utils/utils';
 const initialState = {
     giftLists: [],
     sessionChatMessages: [],
-    sessionListMessageCount: null
+    sessionListMessageCount: null,
+    messagePagingData: null
 }
 
 const giftListsReducer = (state = initialState, action) => {
@@ -44,7 +45,8 @@ const giftListsReducer = (state = initialState, action) => {
         case actionTypes.SET_LIST_MESSAGES:
             return {
                 ...state,
-                sessionChatMessages: state.sessionChatMessages.concat(action.data.results)
+                sessionChatMessages: state.sessionChatMessages.concat(action.data.results),
+                messagePagingData: action.data
             }
         case actionTypes.CLEAR_MESSAGES:
             return {

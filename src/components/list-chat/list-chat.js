@@ -32,8 +32,11 @@ class ListChat extends Component {
         });
     }
     fetchNextPage = async () => {
-        var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
-        await this.props.getListMessages(giftListId);
+        if(this.props.messagePagingData.rowCount > this.props.sessionChatMessages.length) {
+            var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
+            await this.props.getListMessages(giftListId);
+        }
+        return;
     }
     render() {
         messages = (this.props.sessionChatMessages.length > 0) 
@@ -114,7 +117,8 @@ mapDispatchToProps = dispatch => {
 
 mapStateToProps = state => {
     return {
-        sessionChatMessages: state.giftListsReducer.sessionChatMessages
+        sessionChatMessages: state.giftListsReducer.sessionChatMessages,
+        messagePagingData: state.giftListsReducer.messagePagingData
     }
 }
 
