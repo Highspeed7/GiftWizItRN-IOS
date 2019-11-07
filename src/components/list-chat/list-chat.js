@@ -4,6 +4,7 @@ import {StyleSheet, TextInput, Button, View, Text, FlatList, ScrollView, Keyboar
 
 import * as actions from '../../store/actions/index';
 import { Card } from 'react-native-elements';
+import { timestampUTCToLocalReadable } from '../../utils/utils';
 
 class ListChat extends Component {
     state = {
@@ -36,12 +37,17 @@ class ListChat extends Component {
                 keyboardShouldPersistTaps="always"
                 inverted={true}
                 data={this.props.sessionChatMessages}
-                renderItem={(messageData, i) => (
-                    <Card key={i}>
-                            <Text style={{fontWeight: 'bold', marginBottom: 5}}>{(messageData.item.fromUser || messageData.item.userName) + ' said: '}</Text>
-                            <Text>{messageData.item.message}</Text>
-                    </Card>
-                )}
+                renderItem={(messageData, i) => {
+                    var timestamp = timestampUTCToLocalReadable(messageData.item.createdAt);
+                    return (<Card key={i}>
+                                <View>
+                                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>{(messageData.item.fromUser || messageData.item.userName) + ` said: (${timestamp})`}</Text>
+                                </View>
+                                <View>
+                                    <Text>{messageData.item.message}</Text>
+                                </View>
+                            </Card>)
+                    }}
             />
             : null
         return (
