@@ -21,6 +21,7 @@ import InfoCard from '../../components/welcome/info-card';
 import Auxiliary from '../../hoc/auxiliary';
 
 import getShoppingBg from '../../../assets/images/get-shopping-bg.png';
+import NextHolidayCard from '../../components/info-content/next-holiday-card/next-holiday-card';
 
 const store = storeConfiguration();
 
@@ -71,6 +72,9 @@ class Home extends Component {
                             </ImageBackground>
                         </InfoCard>
                         <InfoCard>
+                            <NextHolidayCard />
+                        </InfoCard>
+                        <InfoCard>
                             <TouchableOpacity style={styles.infoCard}>
                                 <GiftIdeasCard authed={true} />
                             </TouchableOpacity>
@@ -80,6 +84,7 @@ class Home extends Component {
                                 <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
                             </TouchableOpacity>
                         </InfoCard>
+                        <View style={{height: 40, width: '100%'}}></View>
                     </ScrollView>
                 </LinearGradient>
             </Auxiliary>
