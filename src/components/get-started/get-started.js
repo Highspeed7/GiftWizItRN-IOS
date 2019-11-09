@@ -30,11 +30,6 @@ class GetStarted extends Component {
                 <NavigationEvents onWillFocus={this.componentWillFocus} />
                 <Text style={{color: 'white'}}>Login to get started!</Text>
                 {
-                    this.props.authInProgress === true 
-                    ? <ActivityIndicator />
-                    : null
-                }
-                {
                     this.props.isAuthenticated === false 
                     ? <Button title="Login" onPress={this.props.onAuth} />
                     : <Button title="Logout" onPress={() => this.props.onRevoke(this.props.accessToken)} />
@@ -64,8 +59,7 @@ const mapStateToProps = state => {
     return {
         isAuthenticated: state.authReducer.isAuthenticated,
         accessToken: state.authReducer.accessToken,
-        accessTokenExpiration: state.authReducer.accessTokenExpiration,
-        authInProgress: state.authReducer.authInProgress
+        accessTokenExpiration: state.authReducer.accessTokenExpiration
     }
 }
 

@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import * as actions from './index';
 import {authorize, revoke, refresh, } from 'react-native-app-auth';
 import * as authCfg from './authConfig';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -22,6 +23,7 @@ export const authStoreToken = (authData, storeRefresh = true) => {
         }
         console.log("Calling authsuccess");
         dispatch(authSuccess(authData));
+        dispatch(actions.uiStopLoading());
     }
 }
 
@@ -144,6 +146,7 @@ const checkTokenExpiry = (token, storageType = "FromGlobal") => {
 
 export const registerUser = () => {
     return (dispatch, getState) => {
+        dispatch(actions.uiStartLoading());
         let promise = new Promise(async(resolve, reject) => {
             let token = await dispatch(getAuthToken());
     
@@ -157,8 +160,10 @@ export const registerUser = () => {
     
             axios.post("https://giftwizitapi.azurewebsites.net/api/Users", null, config).then(() => {
                 console.log("resolving from register user");
+                dispatch(actions.uiStopLoading());
                 resolve();
             }).catch((e) => {
+                dispatch(actions.uiStopLoading());
                 reject(e);
             })
         })
@@ -230,6 +235,7 @@ export const auth = () => {
     return async(dispatch) => {
         dispatch(authStart())
         try {
+            dispatch(actions.uiStartLoading());
             console.log("in auth function");
             let authState = null;
             await authorize(authCfg.config).then((authData) => {
@@ -248,6 +254,7 @@ export const auth = () => {
             // Store token info in asyncStorage
         }catch(error) {
             console.log(error);
+            dispatch(actions.uiStopLoading());
         }
     }
 }
