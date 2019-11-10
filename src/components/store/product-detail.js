@@ -69,7 +69,6 @@ class ProductDetail extends Component {
 
         if(product_Id != null) {
             this.props.getProduct(product_Id);
-            // this.setActiveVariant();
         }
         else return;
     }

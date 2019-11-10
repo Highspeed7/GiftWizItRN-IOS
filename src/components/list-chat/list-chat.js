@@ -20,6 +20,7 @@ class ListChat extends Component {
         await this.props.getListMessages(giftListId);
     }
     sendMessage = async () => {
+        var date = Date.now();
         var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
         const messageData = {
             message: this.state.messageText,
