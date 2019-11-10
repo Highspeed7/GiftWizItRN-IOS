@@ -26,6 +26,9 @@ class ProductVariants extends Component {
             pickerConfig: this.pickerObj
         })
     }
+    shouldComponentUpdate = (nextProps, nextState) => {
+        return shallowCompare(this, nextProps, nextState);
+    }
     variantChanged = (itemValue, option) => {
         this.pickerObj[option] = itemValue
 

@@ -26,6 +26,7 @@ class ProductDetail extends Component {
     // Gives access to variants selected
     variantRef = null;
     selectedVariant = null;
+    storeInitialized = false;
     state = {
         activeImage: null,
         viewDesc: null,
@@ -35,8 +36,23 @@ class ProductDetail extends Component {
         enableWishListAdd: true
     }
     touchableRef = null;
+    componentDidMount = () => {
+        if(!this.storeInitialized) {
+            this.setStoreExperience();
+        }
+    }
     didFocus = () => {
-        this.props.initializeStore();
+        if(!this.storeInitialized){
+            this.setStoreExperience();
+        }
+    }
+    setStoreExperience = () => {
+        try {
+            this.props.initializeStore();
+            this.storeInitialized = true;
+        }catch(err) {
+            this.storeInitialized = false;
+        }
         const {product_Id, variant_Id, startDiscussion, enableWishListAdd} = this.props.navigation.state.params;
 
         if(startDiscussion) {
@@ -53,10 +69,11 @@ class ProductDetail extends Component {
 
         if(product_Id != null) {
             this.props.getProduct(product_Id);
-            this.setActiveVariant();
+            // this.setActiveVariant();
         }
         else return;
     }
+    
     willBlur = () => {
         this.props.setProductInactive();
         this.setState({
@@ -207,6 +224,8 @@ class ProductDetail extends Component {
         let productImages = null;
         if(this.props.activeProduct != null) {
             productImages = this.props.activeProduct.images.map(i => i.src);
+        }else {
+            return null;
         }
         return (
             <Auxiliary>
