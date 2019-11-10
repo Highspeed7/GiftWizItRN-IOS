@@ -304,6 +304,7 @@ class ProductDetail extends Component {
                                                 onPress={this.addItemToWishList}
                                             />
                                             : <Button
+                                                disabled={!this.state.cartActionEnabled}
                                                 containerStyle={{marginBottom: 5}}
                                                 title="Add to Wish List"
                                                 type="outline"
