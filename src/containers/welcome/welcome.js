@@ -48,7 +48,9 @@ class Welcome extends Component {
                         </TouchableOpacity>
                     </InfoCard>
                     <InfoCard>
-                        <GiftIdeasCard authed={false} />
+                        <LinearGradient colors={['#ffffff', '#00ffff']} style={{flex: 1, height: 100, width: '100%'}}>
+                            <GiftIdeasCard authed={false} />
+                        </LinearGradient>
                     </InfoCard>
                     <InfoCard>
                         <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>

@@ -64,7 +64,7 @@ class Home extends Component {
                 </LinearGradient>
                 <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
                     <ScrollView style={styles.contentContainer}>
-                        <InfoCard style={{backgroundColor: 'white'}}>
+                        <InfoCard style={{backgroundColor: 'white', borderWidth: 2,  borderColor: 'red', width: '100%'}}>
                             <ImageBackground style={{width: '100%', resizeMode: 'contain'}} source={getShoppingBg}>
                                 <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
                                     <Text style={[styles.cardText]}>Get to Shopping!</Text>
@@ -75,9 +75,9 @@ class Home extends Component {
                             <NextHolidayCard />
                         </InfoCard>
                         <InfoCard>
-                            <TouchableOpacity style={styles.infoCard}>
+                            <LinearGradient colors={['#ffffff', '#00ffff']} style={{flex: 1, height: 100, width: '100%'}}>
                                 <GiftIdeasCard authed={true} />
-                            </TouchableOpacity>
+                            </LinearGradient>
                         </InfoCard>
                         <InfoCard>
                             <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
@@ -94,8 +94,7 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
     contentContainer:{
-        flex: 1,
-        padding: 10
+        flex: 1
     },
     infoCard: {
         width: '100%',
