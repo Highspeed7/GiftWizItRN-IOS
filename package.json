@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@aspnet/signalr": "^1.1.4",
+    "@bam.tech/react-native-make": "^1.0.3",
     "@microsoft/applicationinsights-react-native": "^2.0.0",
     "@microsoft/applicationinsights-web": "^2.2.4",
     "@react-native-community/netinfo": "^4.4.0",
