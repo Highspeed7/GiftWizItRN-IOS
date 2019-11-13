@@ -42,6 +42,20 @@ export const authSuccess = (authData) => {
     }
 }
 
+export const storeUserDataInAsyncStorage = (userData) => {
+    return async(dispatch) => {
+        await AsyncStorage.setItem("gw:auth:userdata", JSON.stringify(userData));
+        dispatch(registerSuccess(userData));
+    }
+}
+
+export const registerSuccess = (userData) => {
+    return {
+        type: actionTypes.REGISTER_SUCCESS,
+        userData: userData
+    };
+};
+
 // export const authFail = (error) => {
 //     return {
 //         type: actionTypes.AUTH_FAIL,
@@ -158,8 +172,9 @@ export const registerUser = () => {
                 headers: headerObj
             };
     
-            axios.post("https://giftwizitapi.azurewebsites.net/api/Users", null, config).then(() => {
+            axios.post("https://giftwizitapi.azurewebsites.net/api/Users", null, config).then((res) => {
                 console.log("resolving from register user");
+                dispatch(storeUserDataInAsyncStorage(res.data))
                 dispatch(actions.uiStopLoading());
                 resolve();
             }).catch((e) => {

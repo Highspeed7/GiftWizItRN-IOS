@@ -59,7 +59,7 @@ class Home extends Component {
             <Auxiliary>
                 <NavigationEvents onWillFocus={this.componentWillFocus} />
                 <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={{padding: 10}}>
-                    <Text style={{color: 'white'}}>Welcome Home!</Text>
+                    <Text style={{color: 'white'}}>{`Welcome ${this.props.userData.username}`}</Text>
                     <Button onPress={this.logOut} title="Logout" />
                 </LinearGradient>
                 <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
@@ -117,7 +117,8 @@ const mapStateToProps = state => {
     return {
         token: state.authReducer.accessToken,
         expiry: state.authReducer.accessTokenExpiration,
-        isAuthenticated: state.authReducer.isAuthenticated
+        isAuthenticated: state.authReducer.isAuthenticated,
+        userData: state.authReducer.userData
     }
 }
 

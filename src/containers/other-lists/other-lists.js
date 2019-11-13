@@ -23,16 +23,16 @@ class OtherLists extends Component {
     }
     onListItemPressed = (item) => {
         let itemId = item.item_Id;
-
+        let key = activeList.giftListId;
+        this.props.setUserSharedListItemActive(key, itemId);
+    }
+    navigateToStoreProduct = (item) => {
         if(item.afflt_Link == null) {
             const productData = JSON.parse(item.product_Id);
             this.props.setUserSharedListInactive(activeList.giftListId);
             this.props.navigation.navigate("Products", {...productData, startDiscussion: true});
             return;
         }
-
-        let key = activeList.giftListId;
-        this.props.setUserSharedListItemActive(key, itemId);
     }
     onListItemClosed = (itemId) => {
         let key = activeList.giftListId;
@@ -62,6 +62,7 @@ class OtherLists extends Component {
                     >
                         <SharedListView 
                             list={list}
+                            onStoreProductClicked={this.navigateToStoreProduct}
                             itemSelected={this.onListItemPressed}
                             itemClosed={this.onListItemClosed}
                         />

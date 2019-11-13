@@ -3,6 +3,7 @@ export const AUTH_SUCCESS = "AUTH_SUCCESS";
 export const AUTH_FAIL = "AUTH_FAIL";
 export const AUTH_REVOKE = "AUTH_REVOKE";
 export const USER_LOGOUT = "USER_LOGOUT";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 
 export const SET_GIFTLISTS = "SET_GIFTLISTS";
 export const SET_GLIST_ACTIVE = "SET_GLIST_ACTIVE";

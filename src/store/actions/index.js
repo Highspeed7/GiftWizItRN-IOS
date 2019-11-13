@@ -2,7 +2,8 @@ export {
     auth,
     logOut,
     getAuthToken,
-    registerUser
+    registerUser,
+    registerSuccess
 } from './auth';
 
 export {

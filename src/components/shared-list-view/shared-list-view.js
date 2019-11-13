@@ -9,7 +9,7 @@ import {
     Image, 
     Modal
 } from 'react-native';
-import { Badge } from 'react-native-elements';
+import { Badge, Overlay } from 'react-native-elements';
 
 import * as actions from '../../store/actions/index';
 import Swatch from '../../components/swatch/swatch';
@@ -42,21 +42,27 @@ class SharedListView extends Component {
         });
         await this.props.getListMessageCount(this.props.list.giftListId);
     }
+    itemLongPressed = (item) => {
+
+    }
     render() {
         let {listItems} = this.props.list;
         listItems = (listItems != null && listItems.length > 0)
             ? this.props.list.listItems.map((item) => 
                 (
-                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item)}}>
+                    <TouchableOpacity onLongPress={() => this.itemLongPressed(item)} key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item)}}>
                         <Swatch style={{justfiyContent: 'center'}}>
                             <Image style={styles.itemImage} source={{uri: item.image}} />
                         </Swatch>
-                        <Modal
-                            visible={item.active != null}
-                            onRequestClose={() => this.props.itemClosed(item.item_Id)}
+                        <Overlay
+                            overlayStyle={{height: '90%'}}
+                            isVisible={item.active != null}
+                            onBackdropPress={() => this.props.itemClosed(item.item_Id)}
                         >
-                            <SharedListItem item={item} />
-                        </Modal>
+                            <SharedListItem 
+                                onStoreProductClicked={this.props.onStoreProductClicked}
+                                item={item} />
+                        </Overlay>
                     </TouchableOpacity>
                 )
             )
