@@ -57,7 +57,9 @@ export {
     setUserSharedListInactive,
     setUserSharedListItems,
     setUserSharedListItemActive,
-    setUserSharedListItemInactive
+    setUserSharedListItemInactive,
+    claimListItem,
+    unclaimListItem
 } from './sharedLists';
 
 export {

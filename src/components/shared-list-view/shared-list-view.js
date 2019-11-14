@@ -42,17 +42,25 @@ class SharedListView extends Component {
         });
         await this.props.getListMessageCount(this.props.list.giftListId);
     }
-    itemLongPressed = (item) => {
-
-    }
     render() {
         let {listItems} = this.props.list;
         listItems = (listItems != null && listItems.length > 0)
             ? this.props.list.listItems.map((item) => 
                 (
-                    <TouchableOpacity onLongPress={() => this.itemLongPressed(item)} key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item)}}>
+                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item)}}>
                         <Swatch style={{justfiyContent: 'center'}}>
                             <Image style={styles.itemImage} source={{uri: item.image}} />
+                            {(item.claimedBy != null) 
+                                ? <View style={styles.swatchSelectedContainer}>
+                                        <FontAwesome5 
+                                            style={styles.swatchSelectedIcon}
+                                            name="question"
+                                            color="white"
+                                            size={25}
+                                        />
+                                    </View>
+                                : null    
+                            }
                         </Swatch>
                         <Overlay
                             overlayStyle={{height: '90%'}}
@@ -132,6 +140,18 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         flexDirection: 'row',
         flexWrap: 'wrap'
+    },
+    swatchSelectedIcon: {
+        position: 'absolute',
+        alignSelf: 'center'
+    },
+    swatchSelectedContainer: {
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        position: 'absolute',
+        width: '100%',
+        top: 4,
+        justifyContent: 'center'
     }
 });
 

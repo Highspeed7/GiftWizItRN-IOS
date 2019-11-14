@@ -597,6 +597,7 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+            break;
         case actionTypes.SET_IDEA_COLL_ITEMS:
             try {
                 await axios.get(`https://giftwizitapi.azurewebsites.net/api/PromoCollections/GetPromoCollectionItems?collectionId=${action.collectionId}`).then((response) => {
@@ -605,6 +606,53 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
 
             }
+            break;
+        case actionTypes.CLAIM_LIST_ITEM:
+            try {
+                store.dispatch(actions.uiStartLoading());
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.post(`https://giftwizitapi.azurewebsites.net/api/ItemClaims/ClaimItem?item_id=${action.data.item_Id}&list_id=${action.data.list_Id}`, null, config).then(async(res) => {
+                    store.dispatch(actions.uiStopLoading());
+                    sleep(500);
+                    await store.dispatch(actions.setUserSharedListItems(action.data.list_Id));
+                });
+            }catch(error) {
+                store.dispatch(actions.uiStopLoading())
+                sleep(500);
+            }
+            break;
+        case actionTypes.UNCLAIM_LIST_ITEM:
+            try {
+                store.dispatch(actions.uiStartLoading());
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.post(`https://giftwizitapi.azurewebsites.net/api/ItemClaims/UnclaimItem?item_id=${action.data.item_Id}&list_id=${action.data.list_Id}`, null, config).then(async(res) => {
+                    store.dispatch(actions.uiStopLoading());
+                    sleep(500);
+                    await store.dispatch(actions.setUserSharedListItems(action.data.list_Id));
+                });
+            }catch(error) {
+                store.dispatch(actions.uiStopLoading())
+                sleep(500);
+            }
+            break;
     }
     next(action);
 }
