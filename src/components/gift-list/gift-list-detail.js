@@ -24,6 +24,7 @@ import * as actions from '../../store/actions/index';
 import { goclone } from '../../utils/utils';
 import ListChat from '../list-chat/list-chat';
 import { Badge, Overlay } from 'react-native-elements';
+import GiftListItem from './gift-list-item';
 
 class GiftListDetail extends Component {
     state = {
@@ -231,6 +232,9 @@ class GiftListDetail extends Component {
                         isVisible={item.active != null}
                         onBackdropPress={() => this.props.setListItemInactive(this.props.list.id, item.item_Id)}
                     >
+                        <GiftListItem 
+                            item={item}
+                        />
                         {/* <SharedListItem 
                             onStoreProductClicked={this.props.onStoreProductClicked}
                             item={item} /> */}
