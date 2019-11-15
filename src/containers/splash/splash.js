@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Image, StyleSheet, Linking, Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 
 import * as actions from '../../store/actions/index';
@@ -23,10 +24,13 @@ class Splash extends Component {
         //     Alert.alert("This app runs best when connected to a wifi network.");
         // }
 
-        await Linking.getInitialURL().then((url) => {
+        await Linking.getInitialURL().then(async (url) => {
             if(url != null) {
                 this.handleOpenURL(url);
             }else {
+                await AsyncStorage.getItem("gw:auth:userdata").then((value) => {
+                    this.props.setUserData(JSON.parse(value));
+                });
                 // Wait 5 seconds for intro splash
                 this.timer = setTimeout(() => {
                     if(this.props.isAuthenticated) {
@@ -76,7 +80,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
-        getToken: () => dispatch(actions.getAuthToken())
+        getToken: () => dispatch(actions.getAuthToken()),
+        setUserData: (userData) => dispatch(actions.registerSuccess(userData))
     }
 }
 

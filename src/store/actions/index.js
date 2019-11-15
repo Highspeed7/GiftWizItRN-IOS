@@ -2,7 +2,8 @@ export {
     auth,
     logOut,
     getAuthToken,
-    registerUser
+    registerUser,
+    registerSuccess
 } from './auth';
 
 export {
@@ -29,7 +30,9 @@ export {
     deleteGiftItems,
     getListMessages,
     setListMessages,
-    getListMessageCount
+    getListMessageCount,
+    setGiftListItemActive,
+    setGiftListItemInactive
 } from './giftLists';
 
 export {
@@ -56,7 +59,9 @@ export {
     setUserSharedListInactive,
     setUserSharedListItems,
     setUserSharedListItemActive,
-    setUserSharedListItemInactive
+    setUserSharedListItemInactive,
+    claimListItem,
+    unclaimListItem
 } from './sharedLists';
 
 export {
@@ -88,7 +93,8 @@ export {
 
 export {
     uiStartLoading,
-    uiStopLoading
+    uiStopLoading,
+    popToastNotification
 } from './ui';
 
 export {

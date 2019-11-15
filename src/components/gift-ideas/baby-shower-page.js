@@ -13,7 +13,7 @@ class BabyShowerPage extends Component {
         return (
             [
                 <NavigationEvents onWillBlur={this.willBlur} />,
-                <GiftIdeasPage title="Baby Shower Ideas Page" />
+                <GiftIdeasPage title="Baby Shower Ideas Page" navigation={this.props.navigation} />
             ]
         )
     }

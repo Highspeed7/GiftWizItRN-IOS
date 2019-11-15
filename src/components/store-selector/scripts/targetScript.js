@@ -88,7 +88,7 @@ export const targetProductViewScript = `(
         let getListPageSelectedItemData = (button) => {
             let parentContainer = button.parentElement.parentElement;
             let name = parentContainer.querySelector("a[data-test='product-title']").textContent.trim();
-            let image = parentContainer.querySelector("picture > source[media='(min-width: 415px)']").srcset.trim();
+            let image = parentContainer.querySelector("div[data-test='product-image'] > picture > source[srcset]").srcset.trim();
             let itemUrl = parentContainer.querySelector("a[data-test='product-title']").href.trim();
 
             data.payload.name = name;

@@ -5,7 +5,7 @@ import GiftIdeasPage from './gift-ideas-page';
 class GentlemenGiftPage extends Component {
     render(){
         return (
-            <GiftIdeasPage title="Gentlemen Gift Ideas Page" />
+            <GiftIdeasPage navigation={this.props.navigation} title="Gentlemen Gift Ideas Page" />
         )
     }
 }

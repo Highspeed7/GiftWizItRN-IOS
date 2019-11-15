@@ -45,6 +45,11 @@ const authReducer = (state = initialState, action) => {
                 authInProgress: false,
                 isAuthenticated: true
             }
+        case actionTypes.REGISTER_SUCCESS:
+            return {
+                ...state,
+                userData: action.userData
+            }
         default:
             return state;
     }   

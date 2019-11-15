@@ -26,7 +26,6 @@ const giftIdeasReducer = (state = initialState, action) => {
         case actionTypes.SET_IDEA_COLL_INACTIVE:
             return {
                 ...state,
-                collectionItems: [],
                 activeCollection: null
             }
         default: return state;

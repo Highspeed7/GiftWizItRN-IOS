@@ -21,6 +21,8 @@ import InfoCard from '../../components/welcome/info-card';
 import Auxiliary from '../../hoc/auxiliary';
 
 import getShoppingBg from '../../../assets/images/get-shopping-bg.png';
+import NextHolidayCard from '../../components/info-content/next-holiday-card/next-holiday-card';
+import SearchCard from '../../components/search/search-card';
 
 const store = storeConfiguration();
 
@@ -58,12 +60,17 @@ class Home extends Component {
             <Auxiliary>
                 <NavigationEvents onWillFocus={this.componentWillFocus} />
                 <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={{padding: 10}}>
-                    <Text style={{color: 'white'}}>Welcome Home!</Text>
+                    <Text style={{color: 'white'}}>
+                        {(this.props.userData != null) 
+                            ? `Welcome ${this.props.userData.username}`
+                            : `Welcome guest!`
+                        }
+                    </Text>
                     <Button onPress={this.logOut} title="Logout" />
                 </LinearGradient>
                 <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
                     <ScrollView style={styles.contentContainer}>
-                        <InfoCard style={{backgroundColor: 'white'}}>
+                        <InfoCard style={{backgroundColor: 'white', width: '100%'}}>
                             <ImageBackground style={{width: '100%', resizeMode: 'contain'}} source={getShoppingBg}>
                                 <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
                                     <Text style={[styles.cardText]}>Get to Shopping!</Text>
@@ -71,15 +78,19 @@ class Home extends Component {
                             </ImageBackground>
                         </InfoCard>
                         <InfoCard>
-                            <TouchableOpacity style={styles.infoCard}>
-                                <GiftIdeasCard authed={true} />
-                            </TouchableOpacity>
+                            <NextHolidayCard />
                         </InfoCard>
                         <InfoCard>
-                            <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
-                                <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
-                            </TouchableOpacity>
+                            <LinearGradient colors={['#ffffff', '#00ffff']} style={{flex: 1, height: 100, width: '100%'}}>
+                                <GiftIdeasCard authed={true} />
+                            </LinearGradient>
                         </InfoCard>
+                        <InfoCard>
+                            <LinearGradient colors={['#e6e6e6', '#ffffff', '#e6e6e6']} style={{flex: 1, height: '100%', width: '100%'}}>
+                                <SearchCard searchCardPressed={this.searchCardPressed} />
+                            </LinearGradient>
+                        </InfoCard>
+                        <View style={{height: 40, width: '100%'}}></View>
                     </ScrollView>
                 </LinearGradient>
             </Auxiliary>
@@ -89,8 +100,7 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
     contentContainer:{
-        flex: 1,
-        padding: 10
+        flex: 1
     },
     infoCard: {
         width: '100%',
@@ -113,7 +123,8 @@ const mapStateToProps = state => {
     return {
         token: state.authReducer.accessToken,
         expiry: state.authReducer.accessTokenExpiration,
-        isAuthenticated: state.authReducer.isAuthenticated
+        isAuthenticated: state.authReducer.isAuthenticated,
+        userData: state.authReducer.userData
     }
 }
 

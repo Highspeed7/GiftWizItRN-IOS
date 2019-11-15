@@ -9,6 +9,7 @@ import Auxiliary from '../../hoc/auxiliary';
 import * as scripts from '../store-selector/scripts/scripts';
 import { Overlay } from 'react-native-elements';
 import { sleep } from '../../utils/utils';
+import Toaster from '../toast-notifications/toaster';
 
 class GWWebView extends Component {
     pageAlertIssued = false;
@@ -61,6 +62,7 @@ class GWWebView extends Component {
             <Auxiliary>
                 {(this.state.webRef != null) ? <WebViewNav onWebClose={this.props.onWebClose} onBack={this.state.webRef.goBack} onForward={this.state.webRef.goForward } /> : null}
                 <WebView
+                    userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"
                     ref={this.setWebRef}
                     source={this.props.url}
                     injectedJavaScript={this.INJECTED_JAVASCRIPT != null ? this.INJECTED_JAVASCRIPT : null}
@@ -87,6 +89,7 @@ class GWWebView extends Component {
                         </View>
                     </View>
                 </Overlay>
+                <Toaster />
             </Auxiliary>
         )
     }

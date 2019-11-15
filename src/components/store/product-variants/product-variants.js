@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { 
     Text,
-    TextInput,
     Picker,
-    View,
-    Alert
+    View
 } from 'react-native';
-
-import { shallowCompare, goclone } from '../../../utils/utils';
 
 class ProductVariants extends Component {
     pickerObj = {};

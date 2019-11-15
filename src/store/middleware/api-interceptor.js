@@ -76,16 +76,19 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.SET_WISH_LIST:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
                 }
                 await axios.get('http://giftwizitapi.azurewebsites.net/api/WishList', {headers: headerObj}).then((response) => {
                     action.wishList = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
                 console.log(error);
                 action.type = "SET_WISH_LIST_FAILED";
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.GET_EDITABLE_SHARED_LISTS:
@@ -105,6 +108,7 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.MOVE_WISH_LIST_ITEMS:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
@@ -117,9 +121,11 @@ const apiInterceptor = store => next => async action => {
                 };
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/MoveItems', body, config).then((response) => {
                     store.dispatch(actions.setWishList());
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
                 console.log(error);
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.ADD_NEW_GIFT_LIST:
@@ -145,6 +151,7 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.ADD_WISH_LIST_ITEM:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
@@ -158,9 +165,13 @@ const apiInterceptor = store => next => async action => {
 
                 await axios.post('http://giftwizitapi.azurewebsites.net/api/Items', body, config).then((response) => {
                     store.dispatch(actions.setWishList());
+                    store.dispatch(actions.uiStopLoading());
+                    store.dispatch(actions.popToastNotification({message: 'Item Successfully Added!'}))
                 })
             }catch(error) {
                 console.log(error);
+                store.dispatch(actions.uiStopLoading());
+                store.dispatch(actions.popToastNotification({message: 'Item add failed; try via the item details page.'}))
             }
             break;
         case actionTypes.MOVE_GLIST_ITEMS:
@@ -236,15 +247,17 @@ const apiInterceptor = store => next => async action => {
             break;
         case actionTypes.GET_SHARED_LISTS:
             try {
+                store.dispatch(actions.uiStartLoading());
                 token = await store.dispatch(actions.getAuthToken());
                 let headerObj = {
                     'Authorization': `bearer ${token}`
                 }
                 await axios.get('http://giftwizitapi.azurewebsites.net/api/SharedList/Contacts', {headers: headerObj}).then((response) => {
                     action.sharedLists = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
             }catch(error) {
-
+                store.dispatch(actions.uiStopLoading());
             }
             break;
         case actionTypes.SEARCH_PUBLIC_LISTS:
@@ -527,6 +540,7 @@ const apiInterceptor = store => next => async action => {
 
                 await axios.get(`https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessageCount?giftListId=${action.data}`, config).then((response) => {
                     action.data = response.data;
+                    store.dispatch(actions.uiStopLoading());
                 });
 
             }catch(error) {
@@ -534,20 +548,36 @@ const apiInterceptor = store => next => async action => {
                 store.dispatch(actions.uiStopLoading());
                 sleep(500);
             }
+            break;
         case actionTypes.GET_LIST_MESSAGES:
             try {
                 store.dispatch(actions.uiStartLoading());
+
+                let state = store.getState();
+                let currentChatMessages = state.giftListsReducer.sessionChatMessages;
+
                 token = await store.dispatch(actions.getAuthToken());
 
                 let headerObj = {
                     'Authorization': `bearer ${token}`
                 };
 
+                let skipCount = currentChatMessages.length;
+
+                if(skipCount == 0) {
+                    skipCount = null;
+                }
+
                 config = {
                     headers: headerObj
                 };
+                
+                let listUrl = (skipCount == null) 
+                    ? `https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20`
+                    : `https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20&skipCount=${skipCount}`
 
-                await axios.get(`https://giftwizitapi.azurewebsites.net/api/ItemChat/getListMessages?giftListId=${action.data}&pageSize=20`, config).then((response) => {
+
+                await axios.get(listUrl, config).then((response) => {
                     store.dispatch(actions.setListMessages(response.data))
                     store.dispatch(actions.uiStopLoading());
                     sleep(500);
@@ -567,6 +597,7 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
                 console.log(error);
             }
+            break;
         case actionTypes.SET_IDEA_COLL_ITEMS:
             try {
                 await axios.get(`https://giftwizitapi.azurewebsites.net/api/PromoCollections/GetPromoCollectionItems?collectionId=${action.collectionId}`).then((response) => {
@@ -575,6 +606,51 @@ const apiInterceptor = store => next => async action => {
             }catch(error) {
 
             }
+            break;
+        case actionTypes.CLAIM_LIST_ITEM:
+            try {
+                store.dispatch(actions.uiStartLoading());
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.post(`https://giftwizitapi.azurewebsites.net/api/ItemClaims/ClaimItem?item_id=${action.data.item_Id}&list_id=${action.data.list_Id}`, null, config).then(async(res) => {
+                    store.dispatch(actions.uiStopLoading());
+                    sleep(500);
+                });
+            }catch(error) {
+                store.dispatch(actions.uiStopLoading())
+                sleep(500);
+            }
+            break;
+        case actionTypes.UNCLAIM_LIST_ITEM:
+            try {
+                store.dispatch(actions.uiStartLoading());
+                token = await store.dispatch(actions.getAuthToken());
+
+                let headerObj = {
+                    'Authorization': `bearer ${token}`
+                };
+
+                config = {
+                    headers: headerObj
+                };
+
+                await axios.post(`https://giftwizitapi.azurewebsites.net/api/ItemClaims/UnclaimItem?item_id=${action.data.item_Id}&list_id=${action.data.list_Id}`, null, config).then(async(res) => {
+                    store.dispatch(actions.uiStopLoading());
+                    sleep(500);
+                });
+            }catch(error) {
+                store.dispatch(actions.uiStopLoading())
+                sleep(500);
+            }
+            break;
     }
     next(action);
 }

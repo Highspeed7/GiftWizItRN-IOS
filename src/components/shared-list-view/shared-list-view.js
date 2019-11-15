@@ -9,7 +9,7 @@ import {
     Image, 
     Modal
 } from 'react-native';
-import { Badge } from 'react-native-elements';
+import { Badge, Overlay } from 'react-native-elements';
 
 import * as actions from '../../store/actions/index';
 import Swatch from '../../components/swatch/swatch';
@@ -50,13 +50,27 @@ class SharedListView extends Component {
                     <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item)}}>
                         <Swatch style={{justfiyContent: 'center'}}>
                             <Image style={styles.itemImage} source={{uri: item.image}} />
+                            {(item.claimedBy != null) 
+                                ? <View style={styles.swatchSelectedContainer}>
+                                        <FontAwesome5 
+                                            style={styles.swatchSelectedIcon}
+                                            name="question"
+                                            color="white"
+                                            size={25}
+                                        />
+                                    </View>
+                                : null    
+                            }
                         </Swatch>
-                        <Modal
-                            visible={item.active != null}
-                            onRequestClose={() => this.props.itemClosed(item.item_Id)}
+                        <Overlay
+                            overlayStyle={{height: '90%'}}
+                            isVisible={item.active != null}
+                            onBackdropPress={() => this.props.itemClosed(item.item_Id)}
                         >
-                            <SharedListItem item={item} />
-                        </Modal>
+                            <SharedListItem 
+                                onStoreProductClicked={this.props.onStoreProductClicked}
+                                item={item} />
+                        </Overlay>
                     </TouchableOpacity>
                 )
             )
@@ -126,6 +140,18 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         flexDirection: 'row',
         flexWrap: 'wrap'
+    },
+    swatchSelectedIcon: {
+        position: 'absolute',
+        alignSelf: 'center'
+    },
+    swatchSelectedContainer: {
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        position: 'absolute',
+        width: '100%',
+        top: 4,
+        justifyContent: 'center'
     }
 });
 

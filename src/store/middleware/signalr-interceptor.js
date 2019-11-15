@@ -248,11 +248,6 @@ const signalRInterceptor = store => next => async (action) => {
                     headers: headersObj
                 };
 
-                // body = {
-                //     message: action.data.message,
-                //     giftListId: action.data.giftListId
-                // };
-
                 await axios.post(`https://giftwizitapi.azurewebsites.net/api/SendMessageToList?message=${action.data.message}&giftListId=${action.data.giftListId}`, null, config)
                     .then(() => {
                         console.log("Message sent");

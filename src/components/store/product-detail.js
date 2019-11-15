@@ -26,6 +26,7 @@ class ProductDetail extends Component {
     // Gives access to variants selected
     variantRef = null;
     selectedVariant = null;
+    storeInitialized = false;
     state = {
         activeImage: null,
         viewDesc: null,
@@ -35,8 +36,23 @@ class ProductDetail extends Component {
         enableWishListAdd: true
     }
     touchableRef = null;
+    componentDidMount = () => {
+        if(!this.storeInitialized) {
+            this.setStoreExperience();
+        }
+    }
     didFocus = () => {
-        this.props.initializeStore();
+        if(!this.storeInitialized){
+            this.setStoreExperience();
+        }
+    }
+    setStoreExperience = () => {
+        try {
+            this.props.initializeStore();
+            this.storeInitialized = true;
+        }catch(err) {
+            this.storeInitialized = false;
+        }
         const {product_Id, variant_Id, startDiscussion, enableWishListAdd} = this.props.navigation.state.params;
 
         if(startDiscussion) {
@@ -56,6 +72,7 @@ class ProductDetail extends Component {
         }
         else return;
     }
+    
     willBlur = () => {
         this.props.setProductInactive();
         this.setState({
@@ -160,12 +177,28 @@ class ProductDetail extends Component {
             viewDesc: true
         });
     };
-    setActiveVariant = () => {
-        let {variant_Id} = this.props.navigation.state.params;
+    getProductPrice = () => {
+        var variants = this.props.activeProduct.variants;
 
-        // If we aren't provided a variant_Id... assign the first one (This should never happen)
-        if(variant_Id == null) {
-            variant_Id = this.props.activeProduct.variants[0].id
+        variants.filter((variant) => {
+           return variant.id == this.state.activeVariant.id
+        });
+
+        return variants[0].price;
+    }
+    setActiveVariant = (chosenVariant = null) => {
+
+        let variant_Id = null
+
+        if(chosenVariant == null) {
+            variant_Id = this.props.navigation.state.params.variant_Id;
+
+            // If we aren't provided a variant_Id... assign the first one (This should never happen)
+            if(variant_Id == null) {
+                variant_Id = this.props.activeProduct.variants[0].id
+            }
+        }else {
+            variant_Id = chosenVariant.id;
         }
 
         this.props.activeProduct.variants.filter((variant) => {
@@ -182,6 +215,7 @@ class ProductDetail extends Component {
 
         if(available) {
             this.selectedVariant = chosenVariant;
+            this.setActiveVariant(chosenVariant);
             this.forceUpdate();
         }
     }
@@ -189,6 +223,8 @@ class ProductDetail extends Component {
         let productImages = null;
         if(this.props.activeProduct != null) {
             productImages = this.props.activeProduct.images.map(i => i.src);
+        }else {
+            return null;
         }
         return (
             <Auxiliary>
@@ -255,7 +291,7 @@ class ProductDetail extends Component {
                         }
                         
                         <View style={{marginBottom: 15, borderBottomWidth: 1, borderColor: '#eeeeee', justifyContent: 'center', alignItems: 'center', minHeight: 100}}>
-                            <Text style={{fontSize: 48, fontWeight: 'bold'}}>${this.props.activeProduct.variants[0].price}</Text>
+                            <Text style={{fontSize: 48, fontWeight: 'bold'}}>${(this.state.activeVariant != null) ? this.state.activeVariant.price : this.props.activeProduct.variants[0].price}</Text>
                         </View>
                         <View>
                             {
@@ -268,6 +304,7 @@ class ProductDetail extends Component {
                                                 onPress={this.addItemToWishList}
                                             />
                                             : <Button
+                                                disabled={!this.state.cartActionEnabled}
                                                 containerStyle={{marginBottom: 5}}
                                                 title="Add to Wish List"
                                                 type="outline"
