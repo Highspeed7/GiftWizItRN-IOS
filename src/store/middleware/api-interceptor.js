@@ -623,7 +623,6 @@ const apiInterceptor = store => next => async action => {
                 await axios.post(`https://giftwizitapi.azurewebsites.net/api/ItemClaims/ClaimItem?item_id=${action.data.item_Id}&list_id=${action.data.list_Id}`, null, config).then(async(res) => {
                     store.dispatch(actions.uiStopLoading());
                     sleep(500);
-                    await store.dispatch(actions.setUserSharedListItems(action.data.list_Id));
                 });
             }catch(error) {
                 store.dispatch(actions.uiStopLoading())
@@ -646,7 +645,6 @@ const apiInterceptor = store => next => async action => {
                 await axios.post(`https://giftwizitapi.azurewebsites.net/api/ItemClaims/UnclaimItem?item_id=${action.data.item_Id}&list_id=${action.data.list_Id}`, null, config).then(async(res) => {
                     store.dispatch(actions.uiStopLoading());
                     sleep(500);
-                    await store.dispatch(actions.setUserSharedListItems(action.data.list_Id));
                 });
             }catch(error) {
                 store.dispatch(actions.uiStopLoading())

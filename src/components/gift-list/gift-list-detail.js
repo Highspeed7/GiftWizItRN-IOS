@@ -9,7 +9,8 @@ import {
     Alert, 
     Picker, 
     Button,
-    Modal
+    Modal,
+    BackHandler
 } from 'react-native';
 import { connect } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -22,7 +23,8 @@ import GiftListEdit from './edit-modal/gift-list-edit';
 import * as actions from '../../store/actions/index';
 import { goclone } from '../../utils/utils';
 import ListChat from '../list-chat/list-chat';
-import { Badge } from 'react-native-elements';
+import { Badge, Overlay } from 'react-native-elements';
+import GiftListItem from './gift-list-item';
 
 class GiftListDetail extends Component {
     state = {
@@ -103,6 +105,10 @@ class GiftListDetail extends Component {
     }
     itemSwatchPressed = (itemId) => {
         if(this.state.moveMode == null && this.state.deleteMode == null) {
+            var listId = this.props.list.id;
+
+            // Set the gift list item active for viewing in the overlay.
+            this.props.setListItemActive(listId, itemId);
             return;
         }
         if(this.isItemSelected(itemId)) {
@@ -210,17 +216,43 @@ class GiftListDetail extends Component {
                     <Swatch>
                         <Image style={styles.itemImage} source={{uri: item.image}} />
                         {(this.isItemSelected(item.item_Id)) 
-                        ? <View style={styles.swatchSelectedContainer}>
-                                <FontAwesome5 
-                                    style={styles.swatchSelectedIcon}
-                                    name="check"
-                                    color="white"
-                                    size={25}
-                                />
-                            </View>
-                        : null    
-                    }
+                            ? <View style={styles.swatchSelectedContainer}>
+                                    <FontAwesome5 
+                                        style={styles.swatchSelectedIcon}
+                                        name="check"
+                                        color="white"
+                                        size={25}
+                                    />
+                                </View>
+                            : null    
+                        }
+                        {(this.props.list.restrictChat == false)
+                            ?(item.claimedBy != null) 
+                                ? <View style={styles.swatchSelectedContainer}>
+                                        <FontAwesome5 
+                                            style={styles.swatchSelectedIcon}
+                                            name="question"
+                                            color="white"
+                                            size={25}
+                                        />
+                                    </View>
+                                : null
+                            : null
+                        }
                     </Swatch>
+                    <Overlay
+                        overlayStyle={{height: '90%'}}
+                        isVisible={item.active != null}
+                        onBackdropPress={() => this.props.setListItemInactive(this.props.list.id, item.item_Id)}
+                    >
+                        <GiftListItem
+                            activeList={this.props.list} 
+                            item={item}
+                        />
+                        {/* <SharedListItem 
+                            onStoreProductClicked={this.props.onStoreProductClicked}
+                            item={item} /> */}
+                    </Overlay>
                 </TouchableOpacity>
             ))
             : null
@@ -425,7 +457,9 @@ const mapDispatchToProps = dispatch => {
         moveGiftListItems: (itemData) => dispatch(actions.moveGiftListItems(itemData)),
         getEditableLists: () => dispatch(actions.getEditableSharedLists()),
         deleteItemsFromList: (itemData) => dispatch(actions.deleteGiftItems(itemData)),
-        getListMessageCount: (list_id) => dispatch(actions.getListMessageCount(list_id))
+        getListMessageCount: (list_id) => dispatch(actions.getListMessageCount(list_id)),
+        setListItemActive: (key, itemId) => dispatch(actions.setGiftListItemActive(key, itemId)),
+        setListItemInactive: (key, itemId) => dispatch(actions.setGiftListItemInactive(key, itemId))
     }
 };
 

@@ -28,6 +28,22 @@ export const setGiftListItems = (key) => {
     };
 };
 
+export const setGiftListItemActive = (key, itemId) => {
+    return {
+        type: actionTypes.SET_GLIST_ITEM_ACTIVE,
+        key: key,
+        itemId: itemId
+    };
+};
+
+export const setGiftListItemInactive = (key, itemId) => {
+    return {
+        type: actionTypes.SET_GLIST_ITEM_INACTIVE,
+        key: key,
+        itemId: itemId
+    };
+};
+
 export const addNewGiftlist = (newGiftList) => {
     return {
         type: actionTypes.ADD_NEW_GIFT_LIST,

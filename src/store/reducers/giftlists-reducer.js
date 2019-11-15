@@ -32,6 +32,34 @@ const giftListsReducer = (state = initialState, action) => {
                 ...state,
                 giftLists: utils.updateObjectInArray(state.giftLists, {item: {itemsData: action.payload.giftItems}, key: action.key}, "id")
             }
+        case actionTypes.SET_GLIST_ITEM_ACTIVE:
+            var lists = (state.giftLists.map((list) => {
+                if(list["id"] != action.key){
+                    return list
+                }
+                return {
+                    ...list,
+                    itemsData: utils.updateObjectInArray(list.itemsData, {item: {active: true}, key: action.itemId}, "item_Id")
+                }
+            }))
+            return {
+                ...state,
+                giftLists: lists
+            }
+        case actionTypes.SET_GLIST_ITEM_INACTIVE:
+            var lists = (state.giftLists.map((list) => {
+                if(list["id"] != action.key){
+                    return list
+                }
+                return {
+                    ...list,
+                    itemsData: utils.updateObjectInArray(list.itemsData, {item: {active: null}, key: action.itemId}, "item_Id")
+                }
+            }))
+            return {
+                ...state,
+                giftLists: lists
+            }
         case actionTypes.EDIT_GIFT_LIST:
             return {
                 ...state,

@@ -30,7 +30,9 @@ export {
     deleteGiftItems,
     getListMessages,
     setListMessages,
-    getListMessageCount
+    getListMessageCount,
+    setGiftListItemActive,
+    setGiftListItemInactive
 } from './giftLists';
 
 export {
