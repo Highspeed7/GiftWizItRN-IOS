@@ -6,13 +6,22 @@ import {
     View, 
     TouchableOpacity, 
     Button,
-    Image
+    Image,
+    Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/index';
 
 class GiftListItem extends Component {
+    openModal = () => {
+        var item = this.props.item;
+        if(item.afflt_Link == null) {
+            this.props.onStoreProductClicked(item);
+        }else {
+            Linking.openURL(this.props.item.afflt_Link);
+        }
+    }
     claimItem = async() => {
         var item = this.props.item;
         var itemId = item.item_Id;

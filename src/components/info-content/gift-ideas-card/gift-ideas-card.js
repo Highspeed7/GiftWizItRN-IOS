@@ -5,6 +5,7 @@ import { NavigationActions } from 'react-navigation';
 import { withNavigation } from 'react-navigation';
 
 import wizardIdeasImage from '../../../../assets/images/gift-ideas-wizard.png';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 class GiftIdeasCard extends Component {
     navigateToIdeasStore = () => {
@@ -23,7 +24,14 @@ class GiftIdeasCard extends Component {
                 >
                     <Text style={styles.cardText}>Gift Ideas!</Text>
                     <Image source={wizardIdeasImage} resizeMode={'contain'} style={{position: 'absolute', width: 250, height: 160, top: -10, left: '10%'}} />
-                    <View style={styles.giftIdeaThoughtBubble}></View>
+                    <View style={styles.giftIdeaThoughtBubble}>
+                        <FontAwesome5Icon
+                            style={{left: '35%', top: '25%'}}
+                            name="question"
+                            color="black"
+                            size={50}
+                        />
+                    </View>
                 </TouchableOpacity>
             </View>
         )

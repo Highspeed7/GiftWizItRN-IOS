@@ -156,6 +156,14 @@ class GiftLists extends Component {
             });
         }
     }
+    navigateToStoreProduct = (item, list) => {
+        if(item.afflt_Link == null) {
+            const productData = JSON.parse(item.product_Id);
+            this.props.setListInactive(list.id);
+            this.props.navigation.navigate("Products", {...productData, startDiscussion: true});
+            return;
+        }
+    }
     render() {
         const giftLists = (this.props.giftLists.length > 0) 
         ? this.props.giftLists.map((list) => (
@@ -177,7 +185,10 @@ class GiftLists extends Component {
                     </View>
                     <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
                         {/* <Button title="Close" onPress={() => this.props.setListInactive(list.id)}/> */}
-                        <GiftListDetail list={list} />
+                        <GiftListDetail 
+                            list={list}
+                            onStoreProductClicked={(item) => this.navigateToStoreProduct(item, list)}
+                        />
                     </Modal>
                 </TouchableOpacity>
             </Card>

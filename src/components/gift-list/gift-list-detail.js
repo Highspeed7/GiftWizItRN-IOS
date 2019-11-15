@@ -246,6 +246,7 @@ class GiftListDetail extends Component {
                         onBackdropPress={() => this.props.setListItemInactive(this.props.list.id, item.item_Id)}
                     >
                         <GiftListItem
+                            onStoreProductClicked={this.props.onStoreProductClicked}
                             activeList={this.props.list} 
                             item={item}
                         />
