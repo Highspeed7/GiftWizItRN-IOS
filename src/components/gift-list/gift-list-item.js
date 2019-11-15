@@ -13,19 +13,21 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
 class GiftListItem extends Component {
-    claimItem = () => {
+    claimItem = async() => {
         var item = this.props.item;
         var itemId = item.item_Id;
         var listId = item.gift_List_Id
 
-        this.props.claimItem({item_Id: itemId, list_Id: listId});
+        await this.props.claimItem({item_Id: itemId, list_Id: listId});
+        await this.props.setListItems(listId);
     }
-    unclaimItem = () => {
+    unclaimItem = async() => {
         var item = this.props.item;
         var itemId = item.item_Id;
         var listId = item.gift_List_Id
 
-        this.props.unClaimItem({item_Id: itemId, list_Id: listId});
+        await this.props.unclaimItem({item_Id: itemId, list_Id: listId});
+        await this.props.setListItems(listId);
     }
     render() {
         return (
@@ -39,8 +41,8 @@ class GiftListItem extends Component {
                     </TouchableOpacity>
                 </View>
                     <View style={{marginTop: 35}}>
-                        {
-                            (this.props.item.claimedBy != null) 
+                        {(this.props.activeList.restrictChat == false)
+                            ?(this.props.item.claimedBy != null) 
                                 ? (this.props.userData.id == this.props.item.claimedById)
                                     ? [<Text>You've claimed you plan to buy this item...</Text>,
                                     <Button onPress={this.unclaimItem} title="Actually I've changed my mind" />]
@@ -48,6 +50,7 @@ class GiftListItem extends Component {
                                         {`${this.props.item.claimedBy} has indicated that they either have or intend to purchase this item.`}
                                     </Text>
                                 : <Button onPress={this.claimItem} title="I'm buying this... no touchy!" />
+                            : null
                         }
                     </View>
             </ScrollView>
@@ -83,7 +86,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        claimItem: (claimData) => dispatch(actions.claimListItem(claimData))
+        claimItem: (claimData) => dispatch(actions.claimListItem(claimData)),
+        unclaimItem: (claimData) => dispatch(actions.unclaimListItem(claimData)),
+        setListItems: (key) => dispatch(actions.setGiftListItems(key))
     }
 }
 

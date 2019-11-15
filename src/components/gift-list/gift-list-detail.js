@@ -216,23 +216,37 @@ class GiftListDetail extends Component {
                     <Swatch>
                         <Image style={styles.itemImage} source={{uri: item.image}} />
                         {(this.isItemSelected(item.item_Id)) 
-                        ? <View style={styles.swatchSelectedContainer}>
-                                <FontAwesome5 
-                                    style={styles.swatchSelectedIcon}
-                                    name="check"
-                                    color="white"
-                                    size={25}
-                                />
-                            </View>
-                        : null    
-                    }
+                            ? <View style={styles.swatchSelectedContainer}>
+                                    <FontAwesome5 
+                                        style={styles.swatchSelectedIcon}
+                                        name="check"
+                                        color="white"
+                                        size={25}
+                                    />
+                                </View>
+                            : null    
+                        }
+                        {(this.props.list.restrictChat == false)
+                            ?(item.claimedBy != null) 
+                                ? <View style={styles.swatchSelectedContainer}>
+                                        <FontAwesome5 
+                                            style={styles.swatchSelectedIcon}
+                                            name="question"
+                                            color="white"
+                                            size={25}
+                                        />
+                                    </View>
+                                : null
+                            : null
+                        }
                     </Swatch>
                     <Overlay
                         overlayStyle={{height: '90%'}}
                         isVisible={item.active != null}
                         onBackdropPress={() => this.props.setListItemInactive(this.props.list.id, item.item_Id)}
                     >
-                        <GiftListItem 
+                        <GiftListItem
+                            activeList={this.props.list} 
                             item={item}
                         />
                         {/* <SharedListItem 
