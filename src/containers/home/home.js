@@ -22,6 +22,7 @@ import Auxiliary from '../../hoc/auxiliary';
 
 import getShoppingBg from '../../../assets/images/get-shopping-bg.png';
 import NextHolidayCard from '../../components/info-content/next-holiday-card/next-holiday-card';
+import SearchCard from '../../components/search/search-card';
 
 const store = storeConfiguration();
 
@@ -69,7 +70,7 @@ class Home extends Component {
                 </LinearGradient>
                 <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
                     <ScrollView style={styles.contentContainer}>
-                        <InfoCard style={{backgroundColor: 'white', borderWidth: 2,  borderColor: 'red', width: '100%'}}>
+                        <InfoCard style={{backgroundColor: 'white', width: '100%'}}>
                             <ImageBackground style={{width: '100%', resizeMode: 'contain'}} source={getShoppingBg}>
                                 <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
                                     <Text style={[styles.cardText]}>Get to Shopping!</Text>
@@ -85,9 +86,9 @@ class Home extends Component {
                             </LinearGradient>
                         </InfoCard>
                         <InfoCard>
-                            <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
-                                <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
-                            </TouchableOpacity>
+                            <LinearGradient colors={['#e6e6e6', '#ffffff', '#e6e6e6']} style={{flex: 1, height: '100%', width: '100%'}}>
+                                <SearchCard searchCardPressed={this.searchCardPressed} />
+                            </LinearGradient>
                         </InfoCard>
                         <View style={{height: 40, width: '100%'}}></View>
                     </ScrollView>

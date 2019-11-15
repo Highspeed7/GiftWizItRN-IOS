@@ -13,6 +13,7 @@ import GiftIdeasCard from '../../components/info-content/gift-ideas-card/gift-id
 import ListsViewed from '../../components/info-content/lists-viewed-card';
 import * as actions from '../../store/actions/index';
 import LinearGradient from 'react-native-linear-gradient';
+import SearchCard from '../../components/search/search-card';
 
 class Welcome extends Component {
     openStoreFront = () => {
@@ -53,9 +54,7 @@ class Welcome extends Component {
                         </LinearGradient>
                     </InfoCard>
                     <InfoCard>
-                        <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
-                            <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
-                        </TouchableOpacity>
+                        <SearchCard searchCardPressed={this.searchCardPressed} />
                     </InfoCard>
                     {/* <Modal
                         visible={this.props.introComplete === null}
