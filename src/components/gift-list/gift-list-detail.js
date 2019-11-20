@@ -10,7 +10,8 @@ import {
     Picker, 
     Button,
     Modal,
-    BackHandler
+    BackHandler,
+    SafeAreaView
 } from 'react-native';
 import { connect } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -276,7 +277,7 @@ class GiftListDetail extends Component {
             ))
             : null
         return (
-            <Auxiliary>
+            <SafeAreaView>
                 <View style={{padding: 10}}>
                     <Text>{this.props.list.name}</Text>
                     <ScrollView 
@@ -414,7 +415,7 @@ class GiftListDetail extends Component {
                         {giftItems}
                     </View>
                 </ScrollView>
-            </Auxiliary>
+            </SafeAreaView>
         )
     }
 }
