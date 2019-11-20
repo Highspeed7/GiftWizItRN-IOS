@@ -25,9 +25,9 @@ import * as Sentry from '@sentry/react-native';
 import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
 import Toaster from './src/components/toast-notifications/toaster';
 
-Sentry.init({ 
-  dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
-});
+// Sentry.init({ 
+//   dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
+// });
 
 
 const store = storeConfiguration();

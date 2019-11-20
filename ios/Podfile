@@ -36,6 +36,12 @@ target 'giftwizitmobile' do
   end
 
   use_native_modules!
+
+  # Other pods
+  pod 'appcenter', :path => '../node_modules/appcenter/ios'
+  pod 'appcenter-auth', :path => '../node_modules/appcenter-auth/ios'
+  pod 'appcenter-analytics', :path => '../node_modules/appcenter-analytics/ios'
+  pod 'appcenter-crashes', :path => '../node_modules/appcenter-crashes/ios'
 end
 
 target 'giftwizitmobile-tvOS' do
