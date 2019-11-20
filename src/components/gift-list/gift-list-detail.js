@@ -5,7 +5,6 @@ import {
     ScrollView, 
     StyleSheet, 
     TouchableOpacity,
-    Image, 
     Alert, 
     Picker, 
     Button,
@@ -13,6 +12,7 @@ import {
     BackHandler,
     SafeAreaView
 } from 'react-native';
+import { Image } from 'react-native-elements';
 import { connect } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -106,7 +106,7 @@ class GiftListDetail extends Component {
     }
     itemSwatchPressed = (itemId) => {
         if(this.state.moveMode == null && this.state.deleteMode == null) {
-            var listId = this.props.list.id;
+            var listId = this.props.list[0].id;
 
             // Set the gift list item active for viewing in the overlay.
             this.props.setListItemActive(listId, itemId);

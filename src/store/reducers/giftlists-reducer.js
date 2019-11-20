@@ -3,6 +3,7 @@ import * as utils from '../../utils/utils';
 
 const initialState = {
     giftLists: [],
+    currentActiveGiftList: null,
     sessionChatMessages: [],
     sessionListMessageCount: null,
     messagePagingData: null
@@ -17,20 +18,29 @@ const giftListsReducer = (state = initialState, action) => {
             }
             return glists;
         case actionTypes.SET_GLIST_ACTIVE:
+            var list = state.giftLists.filter((list) => {
+                return list.id == action.key
+            });
             return {
                 ...state,
-                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: true}, key: action.key}, "id")
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: true}, key: action.key}, "id"),
+                currentActiveGiftList: list
             }
         case actionTypes.SET_GLIST_INACTIVE:
             return {
                 ...state,
                 giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: null}, key: action.key}, "id"),
+                currentActiveGiftList: null,
                 sessionListMessageCount: null
             }
         case actionTypes.SET_GLIST_ITEMS:
             return {
                 ...state,
-                giftLists: utils.updateObjectInArray(state.giftLists, {item: {itemsData: action.payload.giftItems}, key: action.key}, "id")
+                giftLists: utils.updateObjectInArray(state.giftLists, {item: {itemsData: action.payload.giftItems}, key: action.key}, "id"),
+                currentActiveGiftList: {
+                    ...state.currentActiveGiftList,
+                    itemsData: action.payload.giftItems
+                }
             }
         case actionTypes.SET_GLIST_ITEM_ACTIVE:
             var lists = (state.giftLists.map((list) => {
@@ -40,11 +50,16 @@ const giftListsReducer = (state = initialState, action) => {
                 return {
                     ...list,
                     itemsData: utils.updateObjectInArray(list.itemsData, {item: {active: true}, key: action.itemId}, "item_Id")
+
                 }
             }))
             return {
                 ...state,
-                giftLists: lists
+                giftLists: lists,
+                currentActiveGiftList: {
+                    ...state.currentActiveGiftList,
+                    active: true
+                }
             }
         case actionTypes.SET_GLIST_ITEM_INACTIVE:
             var lists = (state.giftLists.map((list) => {
@@ -58,7 +73,11 @@ const giftListsReducer = (state = initialState, action) => {
             }))
             return {
                 ...state,
-                giftLists: lists
+                giftLists: lists,
+                currentActiveGiftList: {
+                    ...state.currentActiveGiftList,
+                    active: null
+                }
             }
         case actionTypes.EDIT_GIFT_LIST:
             return {

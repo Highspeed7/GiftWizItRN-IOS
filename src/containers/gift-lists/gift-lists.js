@@ -44,12 +44,13 @@ class GiftLists extends Component {
             allowAdds: value
         });
     };
-    onSwatchPress(list) {
+    onSwatchPress = async (list) => {
         var listId = list.id;
         if(this.state.deleteMode == null) {
             // Call to get the selected list's items.
-            this.props.setListItems(listId);
-            this.props.setListActive(listId)
+            await this.props.setListActive(listId)
+            await this.props.setListItems(listId);
+            this.props.navigation.navigate("GiftListDetailModal", {list});
             return;
         }
         if(this.isListSelected(listId)) {
@@ -183,13 +184,12 @@ class GiftLists extends Component {
                             <Text>{list.name}</Text>
                         </View>
                     </View>
-                    <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
-                        {/* <Button title="Close" onPress={() => this.props.setListInactive(list.id)}/> */}
+                    {/* <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
                         <GiftListDetail 
                             list={list}
                             onStoreProductClicked={(item) => this.navigateToStoreProduct(item, list)}
                         />
-                    </Modal>
+                    </Modal> */}
                 </TouchableOpacity>
             </Card>
         ))

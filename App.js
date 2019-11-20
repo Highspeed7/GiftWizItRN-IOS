@@ -24,6 +24,7 @@ import StoreCart from './src/components/store/store-cart';
 import * as Sentry from '@sentry/react-native';
 import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
 import Toaster from './src/components/toast-notifications/toaster';
+import GiftListsModal from './src/components/navigation/modal-screens/gift-lists-modal';
 
 // Sentry.init({ 
 //   dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
@@ -35,7 +36,7 @@ const store = storeConfiguration();
 // TODO: Move routing info to a seperate file.
 // TODO: Maybe move the header image to a seperate file
 
-const PostAuthStackNavigator = createStackNavigator({
+const MainAppStackNavigator = createStackNavigator({
   Home: {
     screen: PostAuthTabNavigator,
     navigationOptions: {
@@ -59,6 +60,19 @@ const PostAuthStackNavigator = createStackNavigator({
     screen: StoreCart,
     path: "cart"
   }
+});
+
+const PostAuthStackNavigator = createStackNavigator({
+  MainApp: {
+    screen: MainAppStackNavigator
+  },
+  GiftListDetailModal: {
+    screen: GiftListsModal
+  }
+},
+{
+  headerMode: 'none',
+  mode: 'modal'
 });
 
 const startStackNavigator = createStackNavigator({
