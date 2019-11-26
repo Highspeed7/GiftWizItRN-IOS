@@ -10,9 +10,9 @@ import {
     Button,
     Modal,
     BackHandler,
-    SafeAreaView
+    SafeAreaView,
+    Image
 } from 'react-native';
-import { Image } from 'react-native-elements';
 import { connect } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -39,14 +39,14 @@ class GiftListDetail extends Component {
         chatModalActive: null
     }
     componentDidMount = async () => {
-        if(this.props.list.restrictChat == false) {
-            await this.props.connectToListChatChannel(this.props.list.id);
-            await this.props.getListMessageCount(this.props.list.id);
+        if(this.props.activeList.restrictChat == false) {
+            await this.props.connectToListChatChannel(this.props.activeList.id);
+            await this.props.getListMessageCount(this.props.activeList.id);
         }
     }
     componentWillUnmount = () => {
-        if(this.props.list.restrictChat == false) {
-            this.props.disconnectFromListChatChannel(this.props.list.id);
+        if(this.props.activeList.restrictChat == false) {
+            this.props.disconnectFromListChatChannel(this.props.activeList.id);
         }
     }
     setChatModalActive = () => {
@@ -61,7 +61,7 @@ class GiftListDetail extends Component {
         });
         
         // Update the message count after chat is closed
-        await this.props.getListMessageCount(this.props.list.id);
+        await this.props.getListMessageCount(this.props.activeList.id);
     }
     setMoveMode = async () => {
         if(this.props.editableSharedLists.length == 0) {
@@ -106,7 +106,7 @@ class GiftListDetail extends Component {
     }
     itemSwatchPressed = (itemId) => {
         if(this.state.moveMode == null && this.state.deleteMode == null) {
-            var listId = this.props.list[0].id;
+            var listId = this.props.activeList.id;
 
             // Set the gift list item active for viewing in the overlay.
             this.props.setListItemActive(listId, itemId);
@@ -147,7 +147,7 @@ class GiftListDetail extends Component {
                     }
                 }, () => {
                     this.state.selectedItems.forEach((item) => {
-                        movedItemObj["g_List_Id"] = this.props.list.id;
+                        movedItemObj["g_List_Id"] = this.props.activeList.id;
                         movedItemObj["item_Id"] = item;
                         movedItemObj["to_Glist_Id"] = this.state.selectedGiftListId
             
@@ -164,7 +164,7 @@ class GiftListDetail extends Component {
             }
         }else {
             this.state.selectedItems.forEach((item) => {
-                movedItemObj["g_List_Id"] = this.props.list.id;
+                movedItemObj["g_List_Id"] = this.props.activeList.id;
                 movedItemObj["item_Id"] = item;
                 movedItemObj["to_Glist_Id"] = this.state.selectedGiftListId;
     
@@ -204,15 +204,15 @@ class GiftListDetail extends Component {
 
         this.state.selectedItems.forEach((item) => {
             deletedItemObj["item_Id"] = item;
-            deletedItemObj["gift_List_Id"] = this.props.list.id;
+            deletedItemObj["gift_List_Id"] = this.props.activeList.id;
             deletedItemsArr.push(goclone(deletedItemObj));
         });
         this.cancelActions();
         this.props.deleteItemsFromList(deletedItemsArr);
     }
     render(){
-        const giftItems = (this.props.list.itemsData != null && this.props.list.itemsData.length > 0) 
-            ? this.props.list.itemsData.map((item) => (
+        const giftItems = (this.props.activeList.itemsData != null && this.props.activeList.itemsData.length > 0) 
+            ? this.props.activeList.itemsData.map((item) => (
                 <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => this.itemSwatchPressed(item.item_Id)}>
                     <Swatch>
                         <Image style={styles.itemImage} source={{uri: item.image}} />
@@ -227,7 +227,7 @@ class GiftListDetail extends Component {
                                 </View>
                             : null    
                         }
-                        {(this.props.list.restrictChat == false)
+                        {(this.props.activeList.restrictChat == false)
                             ?(item.claimedBy != null) 
                                 ? <View style={styles.swatchSelectedContainer}>
                                         <FontAwesome5 
@@ -243,12 +243,12 @@ class GiftListDetail extends Component {
                     </Swatch>
                     <Overlay
                         overlayStyle={{height: '90%'}}
-                        isVisible={item.active != null}
-                        onBackdropPress={() => this.props.setListItemInactive(this.props.list.id, item.item_Id)}
+                        isVisible={item.active == true}
+                        onBackdropPress={() => this.props.setListItemInactive(this.props.activeList.id, item.item_Id)}
                     >
                         <GiftListItem
                             onStoreProductClicked={this.props.onStoreProductClicked}
-                            activeList={this.props.list} 
+                            activeList={this.props.activeList} 
                             item={item}
                         />
                         {/* <SharedListItem 
@@ -279,7 +279,7 @@ class GiftListDetail extends Component {
         return (
             <SafeAreaView>
                 <View style={{padding: 10}}>
-                    <Text>{this.props.list.name}</Text>
+                    <Text>{this.props.activeList.name}</Text>
                     <ScrollView 
                         keyboardShouldPersistTaps="always"
                         horizontal={true} style={{width: '100%'}}>
@@ -304,7 +304,7 @@ class GiftListDetail extends Component {
                                 onPressed={() => this.cancelActions()}
                             ></ListAction>
                         }
-                        {(this.props.list.restrictChat == false)
+                        {(this.props.activeList.restrictChat == false)
                             ? <ListAction
                                     title="Messages"
                                     icon={() => (<FontAwesome5
@@ -319,8 +319,8 @@ class GiftListDetail extends Component {
                                         onRequestClose={() => this.setChatModalInactive()}
                                     >
                                         <ListChat
-                                            listTitle={this.props.list.name} 
-                                            activeList={this.props.list}
+                                            listTitle={this.props.activeList.name} 
+                                            activeList={this.props.activeList}
                                         />
                                     </Modal>
                                     <Badge
@@ -343,7 +343,7 @@ class GiftListDetail extends Component {
                                 visible={this.state.shareListModalOpen != null}
                                 onRequestClose={() => this.closeShareListModal()}
                             >
-                                <ShareGiftList activeList={this.props.list} />
+                                <ShareGiftList activeList={this.props.activeList} />
                             </Modal>
                         </ListAction>
                         <ListAction
@@ -359,7 +359,7 @@ class GiftListDetail extends Component {
                             visible={this.state.editModalOpen != null}
                             onRequestClose={this.closeEditModal}
                         >
-                            <GiftListEdit activeList={this.props.list} onListChanged={() => this.setState({editModalOpen: null})} />                           
+                            <GiftListEdit activeList={this.props.activeList} onListChanged={() => this.setState({editModalOpen: null})} />                           
                         </Modal>
                         </ListAction>
                         {(this.state.deleteMode == null)
@@ -468,6 +468,7 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         giftLists: state.giftListsReducer.giftLists,
+        activeList: state.giftListsReducer.currentActiveGiftList,
         editableSharedLists: state.wishListReducer.editableSharedLists,
         sessionListMessageCount: state.giftListsReducer.sessionListMessageCount
     }

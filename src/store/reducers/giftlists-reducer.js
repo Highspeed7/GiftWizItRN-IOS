@@ -24,7 +24,9 @@ const giftListsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 giftLists: utils.updateObjectInArray(state.giftLists, {item: {active: true}, key: action.key}, "id"),
-                currentActiveGiftList: list
+                currentActiveGiftList: {
+                    ...list[0]
+                }
             }
         case actionTypes.SET_GLIST_INACTIVE:
             return {
@@ -50,15 +52,25 @@ const giftListsReducer = (state = initialState, action) => {
                 return {
                     ...list,
                     itemsData: utils.updateObjectInArray(list.itemsData, {item: {active: true}, key: action.itemId}, "item_Id")
-
                 }
             }))
+
+            var items = (state.currentActiveGiftList.itemsData.map((item) => {
+                if(item.item_Id != action.itemId) {
+                    return item;
+                }
+                return {
+                    ...item,
+                    active: true
+                }
+            }));
+
             return {
                 ...state,
                 giftLists: lists,
                 currentActiveGiftList: {
                     ...state.currentActiveGiftList,
-                    active: true
+                    itemsData: items
                 }
             }
         case actionTypes.SET_GLIST_ITEM_INACTIVE:
@@ -70,13 +82,24 @@ const giftListsReducer = (state = initialState, action) => {
                     ...list,
                     itemsData: utils.updateObjectInArray(list.itemsData, {item: {active: null}, key: action.itemId}, "item_Id")
                 }
-            }))
+            }));
+
+            var items = (state.currentActiveGiftList.itemsData.map((item) => {
+                if(item.item_Id != action.itemId) {
+                    return item;
+                }
+                return {
+                    ...item,
+                    active: false
+                }
+            }));
+
             return {
                 ...state,
                 giftLists: lists,
                 currentActiveGiftList: {
                     ...state.currentActiveGiftList,
-                    active: null
+                    itemsData: items
                 }
             }
         case actionTypes.EDIT_GIFT_LIST:

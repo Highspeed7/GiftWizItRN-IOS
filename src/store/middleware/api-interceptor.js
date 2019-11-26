@@ -50,11 +50,11 @@ const apiInterceptor = store => next => async action => {
                     store.dispatch(actions.uiStopLoading()); 
                     sleep(500);
                 });
-                break;
             }catch(error) {
                 store.dispatch(actions.uiStopLoading()); 
                 sleep(500);
             }
+            break;
         case actionTypes.SET_CONTACTS:
             try {
                 store.dispatch(actions.uiStartLoading());

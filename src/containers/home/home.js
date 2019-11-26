@@ -7,7 +7,8 @@ import {
     ImageBackground, 
     FlatList, 
     TouchableOpacity, 
-    StyleSheet
+    StyleSheet,
+    SafeAreaView
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
@@ -57,7 +58,7 @@ class Home extends Component {
     }
     render() {
         return (
-            <Auxiliary>
+            <SafeAreaView style={{flex: 1}}>
                 <NavigationEvents onWillFocus={this.componentWillFocus} />
                 <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={{padding: 10}}>
                     <Text style={{color: 'white'}}>
@@ -93,7 +94,7 @@ class Home extends Component {
                         <View style={{height: 40, width: '100%'}}></View>
                     </ScrollView>
                 </LinearGradient>
-            </Auxiliary>
+            </SafeAreaView>
         )
     }
 }

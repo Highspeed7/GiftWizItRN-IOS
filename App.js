@@ -24,7 +24,9 @@ import StoreCart from './src/components/store/store-cart';
 import * as Sentry from '@sentry/react-native';
 import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
 import Toaster from './src/components/toast-notifications/toaster';
+// import { GiftListsModal, GiftListChatModal } from './src/components/navigation/modal-screens/index';
 import GiftListsModal from './src/components/navigation/modal-screens/gift-lists-modal';
+import GiftListChatModal from './src/components/navigation/modal-screens/gift-list-chat-modal';
 
 // Sentry.init({ 
 //   dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
@@ -68,6 +70,9 @@ const PostAuthStackNavigator = createStackNavigator({
   },
   GiftListDetailModal: {
     screen: GiftListsModal
+  },
+  GiftListChatModal: {
+    screen: GiftListChatModal
   }
 },
 {

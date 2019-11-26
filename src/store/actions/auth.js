@@ -15,7 +15,7 @@ export const authStart = () => {
 export const authStoreToken = (authData) => {
     return async(dispatch) => {
         await AsyncStorage.setItem("gw:auth:token", authData.accessToken);
-        
+        await AsyncStorage.setItem("gw:auth:doLogin", true);
         // if(storeRefresh) {
         //     await AsyncStorage.setItem("gw:auth:token_expires_on", authData.tokenAdditionalParameters.expires_on);
         //     await AsyncStorage.setItem("gw:auth:refresh_token", authData.refreshToken);
@@ -31,6 +31,7 @@ export const authStoreToken = (authData) => {
 export const authClearStorage = () => {
     return async dispatch => {
         await AsyncStorage.removeItem("gw:auth:token");
+        await AsyncStorage.removeItem("gw:auth:doLogin");
         // await AsyncStorage.removeItem("gw:auth:token_expires_on");
         // await AsyncStorage.removeItem("gw:auth:refresh_token");
     }
@@ -105,12 +106,9 @@ export const logOut = (tokenToRevoke) => {
     return async(dispatch) => {
         try {
             Auth.signOut();
-            // await revoke(authCfg.config, {
-            //     tokenToRevoke
-            // });
-            // await dispatch(authClearStorage());
-            // dispatch(authRevoke());
-            // dispatch(userLogout());
+            await dispatch(authClearStorage());
+            dispatch(userLogout());
+            dispatch(authRevoke());
         }catch(error) {
             // Do nothing yet...
         }
@@ -192,9 +190,11 @@ export const getAuthToken = () => {
     console.log("retrieving token");
     return (dispatch, getState) => {
         const promise = new Promise(async(resolve, reject) => {
-            let token = getState().authReducer.accessToken;
-            console.log(token);
-            if(!token) {
+            let token = null;
+            // console.log(token);
+            let doLogin = await AsyncStorage.getItem("gw:auth:doLogin");
+            console.log(doLogin);
+            if(doLogin) {
                 // Get token from async storage.
                 // token = await AsyncStorage.getItem("gw:auth:token");
                 token = await dispatch(auth());
@@ -215,6 +215,7 @@ export const getAuthToken = () => {
                 return;
             }
             // let authObj = await dispatch(checkTokenExpiry(token, "FromLocal"));
+            // resolve(token);
             resolve(token);
         })
         return promise;
