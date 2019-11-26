@@ -30,6 +30,8 @@ target 'giftwizitmobile' do
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
+  pod 'AppAuth'
+
   target 'giftwizitmobileTests' do
     inherit! :search_paths
     # Pods for testing

@@ -220,8 +220,8 @@ export const getAuthToken = () => {
 export const authFail = (error) => {
     return (dispatch) => {
         const promise = new Promise(async (resolve, reject) => {
-            var resetEndpoint = "https://login.microsoftonline.com/giftwizit.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_secretreset1";
-            var newTokenEndpoint = "https://login.microsoftonline.com/giftwizit.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1_secretreset1";
+            var resetEndpoint = "https://giftwizit.b2clogin.com/giftwizit.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_secretreset1";
+            var newTokenEndpoint = "https://giftwizit.b2clogin.com/giftwizit.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1_secretreset1";
             if(error.message.indexOf("AADB2C90118") !== -1){
                 await authorize({
                     ...authCfg.config,
