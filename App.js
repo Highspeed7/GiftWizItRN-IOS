@@ -14,6 +14,7 @@ import storeConfiguration from './src/store/storeConfig';
 import PostAuthTabNavigator from './src/components/navigation/post-auth-tab-navigation';
 import SearchTabNavigation from './src/components/navigation/search-tab-navigation';
 import WelcomeStackNavigator from './src/components/navigation/welcome-stack-navigation';
+import GiftListModalStackNavigator from './src/components/navigation/gift-list-stack-navigation';
 import Splash from './src/containers/splash/splash';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -25,7 +26,6 @@ import * as Sentry from '@sentry/react-native';
 import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
 import Toaster from './src/components/toast-notifications/toaster';
 // import { GiftListsModal, GiftListChatModal } from './src/components/navigation/modal-screens/index';
-import GiftListsModal from './src/components/navigation/modal-screens/gift-lists-modal';
 import GiftListChatModal from './src/components/navigation/modal-screens/gift-list-chat-modal';
 
 // Sentry.init({ 
@@ -68,16 +68,12 @@ const PostAuthStackNavigator = createStackNavigator({
   MainApp: {
     screen: MainAppStackNavigator
   },
-  GiftListDetailModal: {
-    screen: GiftListsModal
+  GiftListsModalStack: {
+    screen: GiftListModalStackNavigator
   },
   GiftListChatModal: {
     screen: GiftListChatModal
   }
-},
-{
-  headerMode: 'none',
-  mode: 'modal'
 });
 
 const startStackNavigator = createStackNavigator({

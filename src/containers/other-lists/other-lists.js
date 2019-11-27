@@ -61,6 +61,7 @@ class OtherLists extends Component {
                         onRequestClose={() => this.onListModalClosed(list.giftListId)}
                     >
                         <SharedListView 
+                            onListModalClosed={() => this.onListModalClosed(list.giftListId)}
                             list={list}
                             onStoreProductClicked={this.navigateToStoreProduct}
                             itemSelected={this.onListItemPressed}

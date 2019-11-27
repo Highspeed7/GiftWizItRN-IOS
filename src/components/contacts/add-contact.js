@@ -5,7 +5,8 @@ import {
     Text,
     TextInput,
     Button,
-    StyleSheet
+    StyleSheet,
+    SafeAreaView
  } from 'react-native';
  import { connect } from 'react-redux';
 
@@ -37,7 +38,7 @@ class AddContactModal extends Component {
     }
     render() {
         return (
-            <View style={styles.viewContainer}>
+            <SafeAreaView style={styles.viewContainer}>
                 <View style={styles.header}>
                     <Text style={styles.addContactHeading}>Add a Contact</Text>
                 </View>
@@ -54,7 +55,7 @@ class AddContactModal extends Component {
                 <View style={styles.btnContainer}>
                     <Button title="Add" onPress={this.confirmContactAdd} />
                 </View>
-            </View>
+            </SafeAreaView>
         )
     }
 }

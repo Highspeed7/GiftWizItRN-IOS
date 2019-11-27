@@ -7,7 +7,9 @@ import {
     ScrollView, 
     TouchableOpacity, 
     Image, 
-    Modal
+    Modal,
+    SafeAreaView,
+    Button
 } from 'react-native';
 import { Badge, Overlay } from 'react-native-elements';
 
@@ -76,8 +78,9 @@ class SharedListView extends Component {
             )
             : null
         return (
-            <View style={styles.viewContainer}>
+            <SafeAreaView style={styles.viewContainer}>
                 <View>
+                    <Button title="Go Back" onPress={this.props.onListModalClosed} />
                     <Text style={styles.listTitleHeader}>{this.props.list.giftListName}</Text>
                 </View>
                 <View style={styles.listsContainer}>
@@ -97,6 +100,7 @@ class SharedListView extends Component {
                             onRequestClose={() => this.setChatModalInactive()}
                         >
                             <ListChat
+                                onCloseChat={this.setChatModalInactive}
                                 listTitle={this.props.list.giftListName} 
                                 activeList={this.props.list}
                             />
@@ -114,7 +118,7 @@ class SharedListView extends Component {
                         {listItems}
                     </View>
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         )
     }
 }

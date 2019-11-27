@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, ActivityIndicator, Platform, BackHandler, Modal, Text, View, TouchableOpacity, Button } from 'react-native';
+import { Alert, ActivityIndicator, Platform, BackHandler, Modal, Text, View, TouchableOpacity, Button, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { connect } from 'react-redux';
 
@@ -59,7 +59,7 @@ class GWWebView extends Component {
     }
     render() {
         return (
-            <Auxiliary>
+            <SafeAreaView style={{flex: 1}}>
                 {(this.state.webRef != null) ? <WebViewNav onWebClose={this.props.onWebClose} onBack={this.state.webRef.goBack} onForward={this.state.webRef.goForward } /> : null}
                 <WebView
                     userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"
@@ -90,7 +90,7 @@ class GWWebView extends Component {
                     </View>
                 </Overlay>
                 <Toaster />
-            </Auxiliary>
+            </SafeAreaView>
         )
     }
     onMessageFromView = (event) => {

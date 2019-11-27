@@ -6,7 +6,8 @@ import {
     FlatList,
     StyleSheet,
     Button,
-    Modal } from 'react-native';
+    Modal, 
+    SafeAreaView} from 'react-native';
 import { Card } from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
@@ -119,7 +120,7 @@ class Contacts extends Component {
             </LinearGradient>
             : <Text>There are no contacts yet...</Text>
         return (
-            <Auxiliary>
+            <SafeAreaView style={{flex: 1}}>
                 <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.viewContainer}>
                     <View>
                         <Text style={styles.contactHeading}>Your Contacts</Text>
@@ -173,7 +174,7 @@ class Contacts extends Component {
                 </LinearGradient>
                 {contactsList}
                 <View style={{...styles.spacer, backgroundColor: '#7db9e8'}}></View>
-            </Auxiliary>
+            </SafeAreaView>
         )
     }
 }

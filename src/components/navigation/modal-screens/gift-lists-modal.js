@@ -7,7 +7,6 @@ class GiftListsModal extends Component {
     render() {
         return (
             <SafeAreaView>
-                <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
                 <GiftListDetail
                     list={this.props.activeList}
                 />

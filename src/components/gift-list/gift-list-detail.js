@@ -319,6 +319,7 @@ class GiftListDetail extends Component {
                                         onRequestClose={() => this.setChatModalInactive()}
                                     >
                                         <ListChat
+                                            onCloseChat={this.setChatModalInactive}
                                             listTitle={this.props.activeList.name} 
                                             activeList={this.props.activeList}
                                         />

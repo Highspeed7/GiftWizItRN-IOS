@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {StyleSheet, TextInput, Button, View, Text, FlatList, ScrollView, Keyboard, Alert, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import {StyleSheet, TextInput, Button, View, Text, FlatList, ScrollView, Keyboard, Alert, TouchableOpacity, KeyboardAvoidingView, SafeAreaView } from 'react-native';
 
 import * as actions from '../../store/actions/index';
 import { Card } from 'react-native-elements';
@@ -61,33 +61,36 @@ class ListChat extends Component {
             />
             : null
         return (
-            <KeyboardAvoidingView style={styles.viewContainer}>
-                <View
-                    style={{paddingBottom: 25, flex: 1, borderBottomWidth: 1, borderBottomColor: 'black', marginBottom: 10}}>
-                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>Let's talk about the list '{this.props.listTitle}'</Text>
-                    {messages}
-                </View>
-                <View style={styles.inputArea}>
-                    <View style={{flex: 3}}>
-                        <TextInput
-                            blurOnSubmit={false}
-                            style={{minWidth: '85%', maxWidth: '85%', maxHeight: 150, textAlignVertical: "top"}} 
-                            placeholder="Enter your message..."
-                            onChangeText={this.textEntered} 
-                            multiline={true}
-                            value={this.state.messageText}
-                        />
+            <SafeAreaView style={{flex: 1}}>
+                <KeyboardAvoidingView style={styles.viewContainer}>
+                    <View
+                        style={{paddingBottom: 25, flex: 1, borderBottomWidth: 1, borderBottomColor: 'black', marginBottom: 10}}>
+                        <Button title="Leave" onPress={() => this.props.onCloseChat()} />
+                        <Text style={{fontWeight: 'bold', marginBottom: 5}}>Let's talk about the list '{this.props.listTitle}'</Text>
+                        {messages}
                     </View>
-                    <View style={{flex: 1}}>
-                        <Button 
-                            disabled={this.state.messageText.length == 0} 
-                            style={{justifyContent: 'center'}} 
-                            title="Send" 
-                            onPress={this.sendMessage}
-                        />
+                    <View style={styles.inputArea}>
+                        <View style={{flex: 3}}>
+                            <TextInput
+                                blurOnSubmit={false}
+                                style={{minWidth: '85%', maxWidth: '85%', maxHeight: 150, textAlignVertical: "top"}} 
+                                placeholder="Enter your message..."
+                                onChangeText={this.textEntered} 
+                                multiline={true}
+                                value={this.state.messageText}
+                            />
+                        </View>
+                        <View style={{flex: 1}}>
+                            <Button 
+                                disabled={this.state.messageText.length == 0} 
+                                style={{justifyContent: 'center'}} 
+                                title="Send" 
+                                onPress={this.sendMessage}
+                            />
+                        </View>
                     </View>
-                </View>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
         )
     }
 }
