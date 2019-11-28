@@ -7,7 +7,8 @@ import {
     TextInput,
     Switch,
     Button,
-    Picker
+    Picker,
+    SafeAreaView
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -59,7 +60,7 @@ class GiftListEdit extends Component {
         }
 
         this.props.editGiftList(listData);
-        this.props.onListChanged();
+        this.props.navigation.goBack();
     }
     setChatRestrict = (value) => {
         this.setState((prevState, props) => {
@@ -79,8 +80,11 @@ class GiftListEdit extends Component {
     }
     render() {
         return (
-            <View style={styles.viewContainer}>
+            <SafeAreaView style={styles.viewContainer}>
                 <View>
+                    <View>
+                        <Button title="Back to List" onPress={() => this.props.navigation.goBack()} />
+                    </View>
                     <View style={{width: '100%'}}>
                         <Text style={styles.headerTitle}>Edit {this.props.activeList.name}</Text>
                     </View>
@@ -140,14 +144,15 @@ class GiftListEdit extends Component {
                     </Picker>
                     <Button title="Save" onPress={this.saveListUpdates} />
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         )
     }
 }
 
 const styles = StyleSheet.create({
     viewContainer: {
-        padding: 10
+        padding: 10,
+        flex: 1
     },
     headerTitle: {
         fontSize: 25
@@ -169,4 +174,10 @@ mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(GiftListEdit);
+mapStateToProps = state => {
+    return {
+        activeList: state.giftListsReducer.currentActiveGiftList
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GiftListEdit);

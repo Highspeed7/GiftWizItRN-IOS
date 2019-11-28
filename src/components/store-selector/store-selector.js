@@ -10,8 +10,10 @@ import {
     Modal, 
     StyleSheet, 
     ImageBackground,
-    Linking
+    Linking,
+    SafeAreaView
 } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 
 import * as actions from '../../store/actions/index';
 import Swatch from '../swatch/swatch';
@@ -112,13 +114,19 @@ class StoreSelector extends Component {
     }
     openStoreFront = () => {
         this.props.uiStartSpinner();
-        this.props.openStoreFront();
+        // this.props.openStoreFront();
+        if(this.props.isAuthed) {
+            this.props.navigation.navigate("Store", {getPrevCheckout: true});
+        }else {
+            this.props.navigation.navigate("Store");
+        }
     }
     render() {
         return (
-            <Auxiliary>
+            <SafeAreaView style={{flex: 1}}>
+                <NavigationEvents onDidFocus={this.onFocused} />
                 <View>
-                    <Button title="Close" onPress={this.props.onClose} />
+                    <Button title="Close" onPress={() => this.props.navigation.navigate("WishList")} />
                 </View>
                 <View>
                     <Card>
@@ -213,7 +221,7 @@ class StoreSelector extends Component {
                         </View>
                     </ScrollView>
                 </View>
-            </Auxiliary>
+            </SafeAreaView>
         )
     }
 }
@@ -241,4 +249,10 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(StoreSelector);
+const mapStateToProps = state => {
+    return {
+        isAuthed: state.authReducer.isAuthenticated
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StoreSelector);

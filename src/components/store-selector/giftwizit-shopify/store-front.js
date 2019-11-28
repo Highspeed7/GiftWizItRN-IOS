@@ -125,6 +125,13 @@ class StoreFront extends Component {
             this.props.fetchNextPage();
         }
     }
+    leaveStore = () => {
+        if(this.shouldGetPreviousCheckout) {
+            this.props.navigation.navigate("WishList");
+        }else {
+            this.props.navigation.navigate("Welcome");
+        }
+    }
     render() {
         if(this.props.activeCategory != null && this.props.products.length == 0) {
             this.fetchCategoryProducts();
@@ -187,6 +194,7 @@ class StoreFront extends Component {
             : null;
         return (
             <View style={{padding: 10, flex: 1}}>
+                <Button title="Exit" onPress={this.leaveStore} />
                 <Text style={{fontSize: 24, fontWeight: 'bold'}}>{this.props.activeCategory != null ? this.props.activeCategory.title : null}</Text>
                 <View style={{flex: 1}}>
                     {productsList}

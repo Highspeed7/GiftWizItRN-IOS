@@ -213,6 +213,7 @@ class GiftLists extends Component {
                                 onRequestClose={() => this.closeNewListModal()}
                             >
                                 <GiftListAdd
+                                    onCancel={() => this.closeNewListModal()}
                                     addedGiftNameHandler={this.addedGiftNameHandler}
                                     addedGiftPassHandler={this.addedGiftPassHandler}
                                     listIsPublic={this.setListPublic}

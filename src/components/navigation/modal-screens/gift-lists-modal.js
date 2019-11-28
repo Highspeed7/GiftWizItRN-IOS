@@ -8,6 +8,7 @@ class GiftListsModal extends Component {
         return (
             <SafeAreaView>
                 <GiftListDetail
+                    navigation={this.props.navigation}
                     list={this.props.activeList}
                 />
             </SafeAreaView>

@@ -6,7 +6,8 @@ import {
     Button,
     StyleSheet,
     Picker,
-    Switch
+    Switch,
+    SafeAreaView
 } from 'react-native';
 
 class GiftListAdd extends Component {
@@ -40,7 +41,8 @@ class GiftListAdd extends Component {
     };
     render() {
         return (
-            <View style={{padding: 10}}>
+            <SafeAreaView style={{padding: 10, flex: 1}}>
+                <Button title="Cancel" onPress={() => this.props.onCancel()} />
                 <Text style={styles.pageHeader}>Add a gift list!</Text>
                 <TextInput
                     style={{borderBottomWidth: 1, borderBottomColor: '#eeeeee', marginBottom: 15}} 
@@ -95,7 +97,7 @@ class GiftListAdd extends Component {
                     ))}
                 </Picker>
                 <Button title="Submit" onPress={this.props.newGiftListAdded} />
-            </View>
+            </SafeAreaView>
         )
     }
 }

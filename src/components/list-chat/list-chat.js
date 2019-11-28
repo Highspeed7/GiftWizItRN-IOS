@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {StyleSheet, TextInput, Button, View, Text, FlatList, ScrollView, Keyboard, Alert, TouchableOpacity, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 
 import * as actions from '../../store/actions/index';
 import { Card } from 'react-native-elements';
 import { timestampUTCToLocalReadable } from '../../utils/utils';
 
 class ListChat extends Component {
+    activeListId = null;
     state = {
-        messageText: ""
+        messageText: "",
     }
     textEntered = (value) => {
         this.setState({
@@ -16,15 +18,21 @@ class ListChat extends Component {
         });
     }
     componentDidMount = async () => {
-        var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
-        await this.props.getListMessages(giftListId);
+        if(this.props.activeList != null) {
+            this.activeListId = this.props.activeList.giftListId || this.props.activeList.id
+        }else {
+            this.activeListId = this.props.activeSharedList.giftListId;
+        }
+        await this.props.getListMessages(this.activeListId);
+    }
+    componentFocused = () => {
+
     }
     sendMessage = async () => {
         var date = Date.now();
-        var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
         const messageData = {
             message: this.state.messageText,
-            giftListId: giftListId
+            giftListId: this.activeListId
         };
 
         await this.props.sendMessageToList(messageData)
@@ -34,8 +42,7 @@ class ListChat extends Component {
     }
     fetchNextPage = async () => {
         if(this.props.messagePagingData.rowCount > this.props.sessionChatMessages.length) {
-            var giftListId = this.props.activeList.giftListId || this.props.activeList.id;
-            await this.props.getListMessages(giftListId);
+            await this.props.getListMessages(this.activeListId);
         }
         return;
     }
@@ -62,10 +69,11 @@ class ListChat extends Component {
             : null
         return (
             <SafeAreaView style={{flex: 1}}>
+                <NavigationEvents onDidFocus={this.componentFocused} />
                 <KeyboardAvoidingView style={styles.viewContainer}>
                     <View
                         style={{paddingBottom: 25, flex: 1, borderBottomWidth: 1, borderBottomColor: 'black', marginBottom: 10}}>
-                        <Button title="Leave" onPress={() => this.props.onCloseChat()} />
+                        <Button title="Leave" onPress={() => this.props.navigation.goBack()} />
                         <Text style={{fontWeight: 'bold', marginBottom: 5}}>Let's talk about the list '{this.props.listTitle}'</Text>
                         {messages}
                     </View>
@@ -122,7 +130,9 @@ mapDispatchToProps = dispatch => {
 mapStateToProps = state => {
     return {
         sessionChatMessages: state.giftListsReducer.sessionChatMessages,
-        messagePagingData: state.giftListsReducer.messagePagingData
+        messagePagingData: state.giftListsReducer.messagePagingData,
+        activeList: state.giftListsReducer.currentActiveGiftList,
+        activeSharedList: state.sharedListsReducer.currentActiveSharedList
     }
 }
 

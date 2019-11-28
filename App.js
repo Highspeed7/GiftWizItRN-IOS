@@ -27,6 +27,8 @@ import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navi
 import Toaster from './src/components/toast-notifications/toaster';
 // import { GiftListsModal, GiftListChatModal } from './src/components/navigation/modal-screens/index';
 import GiftListChatModal from './src/components/navigation/modal-screens/gift-list-chat-modal';
+import OtherListsStackNavigation from './src/components/navigation/other-lists-stack-navigation';
+import WishListStackNavigation from './src/components/navigation/wish-list-stack-navigation';
 
 // Sentry.init({ 
 //   dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
@@ -68,12 +70,18 @@ const PostAuthStackNavigator = createStackNavigator({
   MainApp: {
     screen: MainAppStackNavigator
   },
+  WishListsModalStack: {
+    screen: WishListStackNavigation
+  },
   GiftListsModalStack: {
     screen: GiftListModalStackNavigator
   },
-  GiftListChatModal: {
-    screen: GiftListChatModal
+  OtherListsModalStack: {
+    screen: OtherListsStackNavigation
   }
+},
+{
+  headerMode: 'none'
 });
 
 const startStackNavigator = createStackNavigator({

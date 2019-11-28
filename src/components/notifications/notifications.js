@@ -6,7 +6,8 @@ import {
     View,
     FlatList,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    SafeAreaView
 } from 'react-native';
 import { Card } from 'react-native-elements';
 
@@ -39,42 +40,44 @@ class Notifications extends Component {
     }
     render() {
         return (
-            <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{padding: 10, flex: 1}}>
-                {this.props.notifications != null
-                    ? <FlatList
-                        ListFooterComponent={() => <View style={{height: 40}}></View>}
-                        data={this.props.notifications.results}
-                        extraData={this.props.notifications}
-                        onEndReached={this.fetchNextPage}
-                        onEndReachedThreshold={1}
-                        keyExtractor = {(item, index) => index.toString() }
-                        renderItem={({item}) => {
-                            const cardColor = this.getCardColor(item)
-                            return (
-                            <Card containerStyle={{backgroundColor: cardColor}}>
-                                <TouchableOpacity>
-                                    <View>
-                                        <Text style={styles.notificationText}>{timestampUTCToLocalReadable(item.createdOn)}</Text>
-                                    </View>
-                                    <View style={{borderBottom: 1}}>
-                                        <Text style={styles.notificationText}>{item.title}</Text>
-                                    </View>
-                                    {
-                                        false 
-                                        ? <View>
-                                            <Text style={styles.notificationText}>{item.message}</Text>
+            <SafeAreaView style={{flex: 1}}>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{padding: 10, flex: 1}}>
+                    {this.props.notifications != null
+                        ? <FlatList
+                            ListFooterComponent={() => <View style={{height: 40}}></View>}
+                            data={this.props.notifications.results}
+                            extraData={this.props.notifications}
+                            onEndReached={this.fetchNextPage}
+                            onEndReachedThreshold={1}
+                            keyExtractor = {(item, index) => index.toString() }
+                            renderItem={({item}) => {
+                                const cardColor = this.getCardColor(item)
+                                return (
+                                <Card containerStyle={{backgroundColor: cardColor}}>
+                                    <TouchableOpacity>
+                                        <View>
+                                            <Text style={styles.notificationText}>{timestampUTCToLocalReadable(item.createdOn)}</Text>
                                         </View>
-                                        : null                                
-                                    }
-                                    
-                                </TouchableOpacity>
-                            </Card>)
-                        }}
-                    />
-                    : null
-                }
-               
-            </LinearGradient>
+                                        <View style={{borderBottom: 1}}>
+                                            <Text style={styles.notificationText}>{item.title}</Text>
+                                        </View>
+                                        {
+                                            false 
+                                            ? <View>
+                                                <Text style={styles.notificationText}>{item.message}</Text>
+                                            </View>
+                                            : null                                
+                                        }
+                                        
+                                    </TouchableOpacity>
+                                </Card>)
+                            }}
+                        />
+                        : null
+                    }
+                
+                </LinearGradient>
+            </SafeAreaView>
         )
     }
 }

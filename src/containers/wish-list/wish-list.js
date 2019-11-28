@@ -52,9 +52,7 @@ class WishList extends Component {
         }
     }
     addNewItemPressed = () => {
-        this.setState({
-            openStoreSelector: true
-        });
+        this.props.navigation.navigate("StoreSelector");
     }
     setMoveMode = async () => {
         // TODO: Return to determine whether or not to update giftLists.

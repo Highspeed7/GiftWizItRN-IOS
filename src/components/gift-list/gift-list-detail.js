@@ -50,9 +50,10 @@ class GiftListDetail extends Component {
         }
     }
     setChatModalActive = () => {
-        this.setState({
-            chatModalActive: true
-        });
+        // this.setState({
+        //     chatModalActive: true
+        // });
+        this.props.navigation.navigate("ChatScreen");
     }
     setChatModalInactive = async () => {
         this.props.clearChatMessages();
@@ -179,9 +180,10 @@ class GiftListDetail extends Component {
         return this.state.selectedItems.indexOf(itemId) != -1;
     }
     editActionPressed = () => {
-        this.setState({
-            editModalOpen: true
-        });
+        // this.setState({
+        //     editModalOpen: true
+        // });
+        this.props.navigation.navigate("EditScreen");
     }
     closeEditModal = () => {
         this.setState({
@@ -189,9 +191,10 @@ class GiftListDetail extends Component {
         });
     }
     shareListPressed = async () => {
-        this.setState({
-            shareListModalOpen: true
-        });
+        // this.setState({
+        //     shareListModalOpen: true
+        // });
+        this.props.navigation.navigate("ShareScreen");
     }
     closeShareListModal = () => {
         this.setState({
@@ -279,6 +282,7 @@ class GiftListDetail extends Component {
         return (
             <SafeAreaView>
                 <View style={{padding: 10}}>
+                    <Button title="Go Back" onPress={() => this.props.navigation.navigate("GiftLists")} />
                     <Text>{this.props.activeList.name}</Text>
                     <ScrollView 
                         keyboardShouldPersistTaps="always"

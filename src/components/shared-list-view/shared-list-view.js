@@ -12,6 +12,7 @@ import {
     Button
 } from 'react-native';
 import { Badge, Overlay } from 'react-native-elements';
+import { StackActions } from 'react-navigation';
 
 import * as actions from '../../store/actions/index';
 import Swatch from '../../components/swatch/swatch';
@@ -21,6 +22,9 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ListChat from '../list-chat/list-chat';
 
 class SharedListView extends Component {
+    popAction = StackActions.pop({
+        n: 1
+    });
     state = {
         activeItem: null,
         chatModalActive: null
@@ -33,9 +37,10 @@ class SharedListView extends Component {
         this.props.disconnectFromListChatChannel(this.props.list.giftListId);
     }
     setChatModalActive = () => {
-        this.setState({
-            chatModalActive: true
-        });
+        // this.setState({
+        //     chatModalActive: true
+        // });
+        this.props.navigation.navigate("ChatScreen");
     }
     setChatModalInactive = async () => {
         this.props.clearChatMessages();
@@ -44,12 +49,24 @@ class SharedListView extends Component {
         });
         await this.props.getListMessageCount(this.props.list.giftListId);
     }
+    goBack = () => {
+        this.props.navigation.navigate("OtherLists")
+    }
+    itemClosed = (itemId) => {
+        let key = this.props.list.giftListId;
+        this.props.setUserSharedListItemInactive(key, itemId);
+    }
+    itemSelected = (item) => {
+        let itemId = item.item_Id;
+        let key = this.props.list.giftListId;
+        this.props.setUserSharedListItemActive(key, itemId);
+    }
     render() {
         let {listItems} = this.props.list;
         listItems = (listItems != null && listItems.length > 0)
             ? this.props.list.listItems.map((item) => 
                 (
-                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item)}}>
+                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.itemSelected(item)}}>
                         <Swatch style={{justfiyContent: 'center'}}>
                             <Image style={styles.itemImage} source={{uri: item.image}} />
                             {(item.claimedBy != null) 
@@ -66,8 +83,8 @@ class SharedListView extends Component {
                         </Swatch>
                         <Overlay
                             overlayStyle={{height: '90%'}}
-                            isVisible={item.active != null}
-                            onBackdropPress={() => this.props.itemClosed(item.item_Id)}
+                            isVisible={item.active == true}
+                            onBackdropPress={() => this.itemClosed(item.item_Id)}
                         >
                             <SharedListItem 
                                 onStoreProductClicked={this.props.onStoreProductClicked}
@@ -80,7 +97,9 @@ class SharedListView extends Component {
         return (
             <SafeAreaView style={styles.viewContainer}>
                 <View>
-                    <Button title="Go Back" onPress={this.props.onListModalClosed} />
+                    <Button title="Go Back" onPress={this.goBack} />
+                </View>
+                <View>
                     <Text style={styles.listTitleHeader}>{this.props.list.giftListName}</Text>
                 </View>
                 <View style={styles.listsContainer}>
@@ -163,6 +182,8 @@ mapDispatchToProps = dispatch => {
     return {
         clearChatMessages: () => dispatch(actions.clearChatMessages()),
         connectToListChatChannel: (list_id) => dispatch(actions.connectToListChat(list_id)),
+        setUserSharedListItemActive: (key, itemId) => dispatch(actions.setUserSharedListItemActive(key, itemId)),
+        setUserSharedListItemInactive: (key, itemId) => dispatch(actions.setUserSharedListItemInactive(key, itemId)),
         disconnectFromListChatChannel: (list_id) => dispatch(actions.disconnectFromListChat(list_id)),
         getListMessageCount: (list_id) => dispatch(actions.getListMessageCount(list_id))
     }
@@ -170,7 +191,8 @@ mapDispatchToProps = dispatch => {
 
 mapStateToProps = state => {
     return {
-        sessionListMessageCount: state.giftListsReducer.sessionListMessageCount
+        sessionListMessageCount: state.giftListsReducer.sessionListMessageCount,
+        list: state.sharedListsReducer.currentActiveSharedList
     }
 }
 

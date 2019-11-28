@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {authorize, revoke} from 'react-native-app-auth';
 import { connect } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
-import { View, Text, Alert, Button, ActivityIndicator } from 'react-native';
+import { View, Text, Alert, Button, ActivityIndicator, SafeAreaView } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
 import * as actions from '../../store/actions/index';
@@ -26,15 +26,17 @@ class GetStarted extends Component {
     }
     render() {
         return (
-            <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
-                <NavigationEvents onWillFocus={this.componentWillFocus} />
-                <Text style={{color: 'white'}}>Login to get started!</Text>
-                {
-                    this.props.isAuthenticated === false 
-                    ? <Button title="Login" onPress={this.props.onAuth} />
-                    : <Button title="Logout" onPress={() => this.props.onRevoke(this.props.accessToken)} />
-                }
-            </LinearGradient>
+            <SafeAreaView style={{flex: 1}}>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
+                    <NavigationEvents onWillFocus={this.componentWillFocus} />
+                    <Text style={{color: 'white'}}>Login to get started!</Text>
+                    {
+                        this.props.isAuthenticated === false 
+                        ? <Button title="Login" onPress={this.props.onAuth} />
+                        : <Button title="Logout" onPress={() => this.props.onRevoke(this.props.accessToken)} />
+                    }
+                </LinearGradient>
+            </SafeAreaView>
         )
     }
     authCheck = async() => {

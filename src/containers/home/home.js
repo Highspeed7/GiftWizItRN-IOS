@@ -45,9 +45,11 @@ class Home extends Component {
         }
     }
     shopCardPressed = () => {
-        this.props.navigation.navigate("WishList", {
-            storeSelectorOpen: true
-        });
+        // this.props.navigation.navigate("WishList", {
+        //     storeSelectorOpen: true
+        // });
+
+        this.props.navigation.navigate("StoreSelector");
     }
     searchCardPressed = () => {
         this.props.navigation.navigate("SearchLists");

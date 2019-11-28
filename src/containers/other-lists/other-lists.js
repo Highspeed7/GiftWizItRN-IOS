@@ -17,9 +17,10 @@ class OtherLists extends Component {
             }
         });
     }
-    onListPressed = (listId) => {
-        this.props.setListItems(listId);
+    onListPressed = async (listId) => {
+        await this.props.setListItems(listId);
         this.props.setUserSharedListActive(listId);
+        this.props.navigation.navigate("SharedLists")
     }
     onListItemPressed = (item) => {
         let itemId = item.item_Id;
@@ -57,7 +58,7 @@ class OtherLists extends Component {
                         <Text style={{fontWeight: 'bold'}}>{list.giftListName}</Text><Text>shared by: {list.fromUser}</Text>
                     </Card>
                     <Modal
-                        visible={list.active != null}
+                        visible={false}
                         onRequestClose={() => this.onListModalClosed(list.giftListId)}
                     >
                         <SharedListView 

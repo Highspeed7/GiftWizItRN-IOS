@@ -54,6 +54,7 @@ class AddContactModal extends Component {
                 />
                 <View style={styles.btnContainer}>
                     <Button title="Add" onPress={this.confirmContactAdd} />
+                    <Button title="Cancel" onPress={this.props.onCancel} />
                 </View>
             </SafeAreaView>
         )
@@ -72,6 +73,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     textInput: {
+        height: 40,
         borderBottomWidth: 1,
         borderBottomColor: '#eeeeee'
     },
