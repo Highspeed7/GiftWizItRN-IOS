@@ -418,6 +418,7 @@ class GiftListDetail extends Component {
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.listsContainer}>
                         {giftItems}
+                        <View style={{height: 50}}></View>
                     </View>
                 </ScrollView>
             </SafeAreaView>

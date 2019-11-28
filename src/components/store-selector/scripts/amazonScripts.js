@@ -294,21 +294,22 @@ export const amazonProductView1Script = `
                 case "LIST_PAGE_2":
                 case "LIST_PAGE_1":
                     containerStyle = "height: 40px; width: 40px; position: absolute; z-index: 9999; bottom: 5px; right: 5px;";
-                    btnStyle = "box-shadow: 3px 3px 10px grey; height: 40px; width: 40px; border-radius: 5px; background: white url('https://gwresourceblob.blob.core.windows.net/images/gw_tm.png') no-repeat fixed center; background-size: 40px 40px;";
+                    btnStyle = "background-color: white; box-shadow: 3px 3px 10px grey; height: 40px; width: 40px; border-radius: 5px;";
                 break;
                 case "DETAIL_PAGE_1":
                     containerStyle = "height: 40px; width: 40px; position: absolute; z-index: 9999; top: 45px; right: 5px;";
-                    btnStyle = "box-shadow: 1px 1px 15px skyblue; height: 40px; width: 40px; border-radius: 5px; background: white url('https://gwresourceblob.blob.core.windows.net/images/gw_tm.png') no-repeat fixed center; background-size: 40px 40px;";
+                    btnStyle = "background-color: white; box-shadow: 1px 1px 15px skyblue; height: 40px; width: 40px; border-radius: 5px;";
                 break;
                 case "DETAIL_PAGE_2":
                     containerStyle = "height: 40px; width: 40px; position: absolute; z-index: 9999; top: 45px; right: 5px;";
-                    btnStyle = "box-shadow: 1px 1px 15px skyblue; height: 40px; width: 40px; border-radius: 5px; background: white url('https://gwresourceblob.blob.core.windows.net/images/gw_tm.png') no-repeat fixed center; background-size: 40px 40px;";
+                    btnStyle = "background-color: white; box-shadow: 1px 1px 15px skyblue; height: 40px; width: 40px; border-radius: 5px;";
                 break;
             }
             
             gw_btn_container.style = containerStyle;
 
             let gw_btn = document.createElement("button");
+            gw_btn.textContent = "+";
             gw_btn.addEventListener("click", (e) => {
                 e.stopImmediatePropagation();
                 let button = e.currentTarget;
