@@ -15,7 +15,7 @@ export const authStart = () => {
 export const authStoreToken = (authData) => {
     return async(dispatch) => {
         await AsyncStorage.setItem("gw:auth:token", authData.accessToken);
-        await AsyncStorage.setItem("gw:auth:doLogin", true);
+        await AsyncStorage.setItem("gw:auth:doLogin", "true");
         // if(storeRefresh) {
         //     await AsyncStorage.setItem("gw:auth:token_expires_on", authData.tokenAdditionalParameters.expires_on);
         //     await AsyncStorage.setItem("gw:auth:refresh_token", authData.refreshToken);
@@ -194,7 +194,7 @@ export const getAuthToken = () => {
             // console.log(token);
             let doLogin = await AsyncStorage.getItem("gw:auth:doLogin");
             console.log(doLogin);
-            if(doLogin) {
+            if(doLogin == "true") {
                 // Get token from async storage.
                 // token = await AsyncStorage.getItem("gw:auth:token");
                 token = await dispatch(auth());
