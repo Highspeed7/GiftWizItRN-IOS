@@ -2,12 +2,14 @@ export {
     auth,
     logOut,
     getAuthToken,
-    registerUser
+    registerUser,
+    registerSuccess
 } from './auth';
 
 export {
     setContacts,
-    addContact
+    addContact,
+    deleteContacts
 } from './contacts';
 
 export {
@@ -19,8 +21,26 @@ export {
     moveGiftListItems,
     editGiftList,
     shareGiftList,
-    deleteGiftLists
+    deleteGiftLists,
+    connectToListChat,
+    disconnectFromListChat,
+    sendMessageToList,
+    appendChatMessage,
+    clearChatMessages,
+    deleteGiftItems,
+    getListMessages,
+    setListMessages,
+    getListMessageCount,
+    setGiftListItemActive,
+    setGiftListItemInactive
 } from './giftLists';
+
+export {
+    getAllPromoCollections,
+    setIdeaCollectionActive,
+    setIdeaCollectionInactive,
+    setIdeaCollectionItems
+} from './giftIdeas';
 
 export {
     setWishList,
@@ -28,7 +48,8 @@ export {
     setWishListInactive,
     moveWishListItems,
     addWishListItem,
-    deleteWishListItems
+    deleteWishListItems,
+    getEditableSharedLists
 } from './wishLists';
 
 export {
@@ -38,19 +59,57 @@ export {
     setUserSharedListInactive,
     setUserSharedListItems,
     setUserSharedListItemActive,
-    setUserSharedListItemInactive
+    setUserSharedListItemInactive,
+    claimListItem,
+    unclaimListItem
 } from './sharedLists';
 
 export {
     searchPublicLists,
     searchPrivateLists,
     clearSearchState,
-    setListActive,
-    setListInactive,
-    setPublicListItems
+    setPublicListActive,
+    setPublicListInactive,
+    setPublicListItems,
+    setPrivateListItems,
+    setPrivateListActive,
+    setPrivateListInactive
 } from './search';
 
 export {
     setNotificationsCount,
-    beginNotifications
+    beginNotifications,
+    notificationRecieved,
+    getNotifications,
+    fetchNextNotificationsPage,
+    setNotificationsConnectionId,
+    setNotificationsConnection
 } from './notifications';
+
+export {
+    setChatConnectionId,
+    setChatConnection
+} from './chat';
+
+export {
+    uiStartLoading,
+    uiStopLoading,
+    popToastNotification
+} from './ui';
+
+export {
+    initializeStore,
+    setCategoryActive,
+    fetchCategoryProducts,
+    clearCategoryProducts,
+    addItemToCart,
+    removeItemFromCart,
+    updateItemInCart,
+    itemAddedToCart,
+    setCheckout,
+    getCheckout,
+    getProduct,
+    setProductInactive,
+    getClient,
+    fetchNextPageOfProducts
+} from './storefront';

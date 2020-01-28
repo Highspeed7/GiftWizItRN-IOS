@@ -8,7 +8,7 @@ class WebViewNav extends Component {
     render() {
         return (
             <View style={styles.browserActionContainer}>
-                <TouchableOpacity onPress={() => this.props.onBack()}>
+                <TouchableOpacity style={styles.browserAction} onPress={() => this.props.onBack()}>
                     <Swatch>
                         <FontAwesome5
                             name="chevron-left"
@@ -17,7 +17,16 @@ class WebViewNav extends Component {
                         />
                     </Swatch>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.props.onForward()}>
+                <TouchableOpacity style={styles.browserAction} onPress={this.props.onWebClose}>
+                    <Swatch>
+                        <FontAwesome5
+                            name="times"
+                            color="black"
+                            size={25}
+                        />
+                    </Swatch>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.browserAction} onPress={() => this.props.onForward()}>
                     <Swatch>
                         <FontAwesome5
                             name="chevron-right"
@@ -35,6 +44,9 @@ const styles = StyleSheet.create({
     browserActionContainer: {
         flexDirection: 'row',
         maxHeight: 40
+    },
+    browserAction: {
+        flex: 1
     }
 })
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBottomTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Home from '../../containers/home/home';
@@ -40,7 +40,7 @@ export default PostAuthTabNavigator = createBottomTabNavigator({
                         color="black"
                         size={25}
                     />,
-        tabBarLabel: "Contacts"
+        tabBarLabel: "Contacts",
       }
     },
     Notifications: {
@@ -51,4 +51,13 @@ export default PostAuthTabNavigator = createBottomTabNavigator({
         )
       })
     }
-  });
+  },
+  {
+    tabBarOptions: {
+      activeBackgroundColor: '#4c669f',
+      inactiveBackgroundColor: '#7db9e8',
+      tabStyle: {borderTopColor: 'transparent', borderTopWidth: 0},
+      labelStyle: {color: 'white', borderTopWidth: 0},
+    }
+  }
+  );

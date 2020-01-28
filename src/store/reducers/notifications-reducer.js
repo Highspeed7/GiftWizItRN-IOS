@@ -1,5 +1,9 @@
 const initialState = {
-    notificationCount: 0
+    notificationsConnection: null,
+    notificationsConnectionId: null,
+    notificationCount: 0,
+    notifications: null,
+    notificationToast: []
 };
 
 const notificationsReducer = (state = initialState, action) => {
@@ -9,8 +13,39 @@ const notificationsReducer = (state = initialState, action) => {
                 ...state,
                 notificationCount: action.value
             }
-        default: return state
+        case "NOTIFICATION_RECIEVED":
+            {
+                switch(action.data.type) {
+                    case "ListShared":
+                        console.log("******NOTIFICATION*****", action.data.notificationTitle)
+                }
+            }
+            break;
+        case "GET_NOTIFICATIONS":
+            return {
+                ...state,
+                notifications: action.payload
+            }
+        case "FETCH_NEXT_NOTIF_PAGE":
+            return {
+                ...state,
+                notifications: {
+                    ...action.payload,
+                    results: state.notifications.results.concat(action.payload.results)
+                }
+            }
+        case "SET_CURRENT_NOTIFICATIONS_CONN":
+            return {
+                ...state,
+                notificationsConnection: action.data
+            }
+        case "SET_NOTIFICATIONS_CONNECTION_ID":
+            return {
+                ...state,
+                notificationsConnectionId: action.data
+            }
     }
+    return state;
 }
 
 export default notificationsReducer;

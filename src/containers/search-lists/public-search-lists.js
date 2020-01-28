@@ -28,7 +28,7 @@ class SearchPublicLists extends Component {
     screenWillBlur = (e) => {
         this.setState({
             searchTerm: null,
-            searchFilter: null
+            emailFilter: null
         });
         this.props.clearSearchResults();
     }
@@ -62,11 +62,14 @@ class SearchPublicLists extends Component {
         // Get the list items
         this.props.setPublicListItems(key);
         // Set the list item active
-        this.props.setListActive(key);
+        this.props.setPublicListActive(key);
     }
     closeItemModal = (key) => {
-        this.props.setListInactive(key);
+        this.props.setPublicListInactive(key);
     } 
+    storeProductClicked = (productData) => {
+        this.props.navigation.navigate("Products", {...productData, startDiscussion: false});
+    }
     render() {
         const availableLists = (this.props.searchedPublicLists.length > 0) 
             ? this.props.searchedPublicLists.map((list) => (
@@ -82,6 +85,7 @@ class SearchPublicLists extends Component {
                     >
                         <PublicSearchItems
                             activeList={list}
+                            storeProductClicked={this.storeProductClicked}
                         />
                     </Modal>
                 </Auxiliary>
@@ -123,8 +127,8 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => {
     return {
         setPublicListItems: (key) => dispatch(actions.setPublicListItems(key)),
-        setListInactive: (key) => dispatch(actions.setListInactive(key)),
-        setListActive: (key) => dispatch(actions.setListActive(key)),
+        setPublicListInactive: (key) => dispatch(actions.setPublicListInactive(key)),
+        setPublicListActive: (key) => dispatch(actions.setPublicListActive(key)),
         clearSearchResults: () => dispatch(actions.clearSearchState()),
         searchPublicLists: (search) => dispatch(actions.searchPublicLists(search))
     }

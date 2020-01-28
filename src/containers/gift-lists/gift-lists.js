@@ -19,6 +19,8 @@ import GiftListDetail from '../../components/gift-list/gift-list-detail';
 import Auxiliary from '../../hoc/auxiliary';
 import { goclone } from '../../utils/utils';
 import Checkbox from '../../components/checkbox/checkbox';
+import GiftListAdd from '../../components/gift-list/add-modal/gift-list-add';
+import LinearGradient from 'react-native-linear-gradient';
 
 class GiftLists extends Component {
     state = {
@@ -26,14 +28,29 @@ class GiftLists extends Component {
         shareListModalOpen: null,
         selectedLists: [],
         newListName: null,
+        newListPass: null,
+        newListPublic: false,
+        restrictChatFlag: false,
+        allowAdds: true,
         deleteMode: null
     }
-    onSwatchPress(list) {
+    setChatRestriction = (value) => {
+        this.setState({
+            restrictChatFlag: value
+        });
+    };
+    setAllowAdds = (value) => {
+        this.setState({
+            allowAdds: value
+        });
+    };
+    onSwatchPress = async (list) => {
         var listId = list.id;
         if(this.state.deleteMode == null) {
             // Call to get the selected list's items.
-            this.props.setListItems(listId);
-            this.props.setListActive(listId)
+            await this.props.setListActive(listId)
+            await this.props.setListItems(listId);
+            this.props.navigation.navigate("GiftListDetailModal", {list});
             return;
         }
         if(this.isListSelected(listId)) {
@@ -104,7 +121,14 @@ class GiftLists extends Component {
         if(existingList.length > 0) {
             Alert.alert("Name already in use, please enter a different name.");
         }else {
-            await this.props.addNewGiftList(this.state.newListName);
+            var newGiftList = {
+                name: this.state.newListName,
+                password: this.state.newListPass,
+                isPublic: this.state.newListPublic,
+                restrictChat: this.state.restrictChatFlag,
+                allowItemAdds: this.state.allowAdds
+            };
+            await this.props.addNewGiftList(newGiftList);
             this.closeNewListModal();
         }
     }
@@ -113,8 +137,33 @@ class GiftLists extends Component {
             newListName: val
         });
     }
+    addedGiftPassHandler = (val) => {
+        this.setState({
+            newListPass: val
+        });
+    }
     isListSelected = (listId) => {
         return this.state.selectedLists.indexOf(listId) != -1;
+    }
+    setListPublic = (val) => {
+        if(val) {
+            this.setState({
+                newListPublic: val,
+                newListPass: null
+            });
+        }else {
+            this.setState({
+                newListPublic: val
+            });
+        }
+    }
+    navigateToStoreProduct = (item, list) => {
+        if(item.afflt_Link == null) {
+            const productData = JSON.parse(item.product_Id);
+            this.props.setListInactive(list.id);
+            this.props.navigation.navigate("Products", {...productData, startDiscussion: true});
+            return;
+        }
     }
     render() {
         const giftLists = (this.props.giftLists.length > 0) 
@@ -135,10 +184,12 @@ class GiftLists extends Component {
                             <Text>{list.name}</Text>
                         </View>
                     </View>
-                    <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
-                        {/* <Button title="Close" onPress={() => this.props.setListInactive(list.id)}/> */}
-                        <GiftListDetail list={list} />
-                    </Modal>
+                    {/* <Modal visible={list.active != null} onRequestClose={() => this.props.setListInactive(list.id)}>
+                        <GiftListDetail 
+                            list={list}
+                            onStoreProductClicked={(item) => this.navigateToStoreProduct(item, list)}
+                        />
+                    </Modal> */}
                 </TouchableOpacity>
             </Card>
         ))
@@ -146,8 +197,8 @@ class GiftLists extends Component {
         // TODO: Make add gift list into it's own component.
         return (
             <Auxiliary>
-                <View style={styles.actionContainer}>
-                    <View style={styles.listsContainer}>
+                <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.actionContainer}>
+                    <View style={styles.listActionsContainer}>
                         <ListAction 
                             title="Add"
                             icon={() => (<FontAwesome5 
@@ -161,11 +212,15 @@ class GiftLists extends Component {
                                 visible={this.state.addListModalOpen != null}
                                 onRequestClose={() => this.closeNewListModal()}
                             >
-                                <View style={{padding: 10}}>
-                                    <Text>Hello!</Text>
-                                    <TextInput placeholder="Name" onChangeText={this.addedGiftNameHandler} />
-                                    <Button title="Submit" onPress={this.newGiftListAdded} />
-                                </View>
+                                <GiftListAdd
+                                    onCancel={() => this.closeNewListModal()}
+                                    addedGiftNameHandler={this.addedGiftNameHandler}
+                                    addedGiftPassHandler={this.addedGiftPassHandler}
+                                    listIsPublic={this.setListPublic}
+                                    newGiftListAdded={this.newGiftListAdded}
+                                    restrictChatFlag={this.setChatRestriction}
+                                    allowItemAdds={this.setAllowAdds}
+                                />
                             </Modal>
                         </ListAction>
                         <ListAction 
@@ -201,25 +256,29 @@ class GiftLists extends Component {
                         </View>
                         : null
                     }
-                </View>
-                <ScrollView style={styles.scrollView}>
-                    {giftLists}
-                    <View style={styles.spacer}></View>
-                </ScrollView>
+                </LinearGradient>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
+                    <ScrollView
+                        keyboardShouldPersistTaps="always" 
+                        style={styles.listContainer}>
+                        {giftLists}
+                        <View style={styles.spacer}></View>
+                    </ScrollView>
+                </LinearGradient>
             </Auxiliary>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
-        padding: 10
-    },
     touchableSwatch: {
         width: '100%',
         margin: 1
     },
-    listsContainer: {
+    listContainer: {
+        padding: 10
+    },
+    listActionsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
@@ -234,7 +293,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => {
     return {
         getLists: () => dispatch(actions.setGiftLists()),
-        addNewGiftList: (name) => dispatch(actions.addNewGiftlist(name)),
+        addNewGiftList: (newGiftList) => dispatch(actions.addNewGiftlist(newGiftList)),
         setListActive: (key) => dispatch(actions.setGiftListActive(key)),
         setListInactive: (key) => dispatch(actions.setGiftListInactive(key)),
         setListItems: (key) => dispatch(actions.setGiftListItems(key)),

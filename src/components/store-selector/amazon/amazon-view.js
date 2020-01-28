@@ -20,6 +20,7 @@ class AmazonView extends Component {
                 canGoBack={this.props.canGoBack}
                 config={config}
                 url={{uri: 'https://www.amazon.com'}}
+                onWebClose={this.props.onWebClose}
             />
         )
     }

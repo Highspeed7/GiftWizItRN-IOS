@@ -1,43 +1,143 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
+import { connect } from 'react-redux';
+import { 
+    View, 
+    Text, 
+    StyleSheet, 
+    ScrollView, 
+    TouchableOpacity, 
+    Image, 
+    Modal,
+    SafeAreaView,
+    Button
+} from 'react-native';
+import { Badge, Overlay } from 'react-native-elements';
+import { StackActions } from 'react-navigation';
 
+import * as actions from '../../store/actions/index';
 import Swatch from '../../components/swatch/swatch';
 import SharedListItem from './shared-list-item';
+import ListAction from '../list-actions/list-action';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import ListChat from '../list-chat/list-chat';
 
 class SharedListView extends Component {
+    popAction = StackActions.pop({
+        n: 1
+    });
     state = {
-        activeItem: null
+        activeItem: null,
+        chatModalActive: null
+    }
+    componentDidMount = async () => {
+        await this.props.connectToListChatChannel(this.props.list.giftListId);
+        await this.props.getListMessageCount(this.props.list.giftListId);
+    }
+    componentWillUnmount = () => {
+        this.props.disconnectFromListChatChannel(this.props.list.giftListId);
+    }
+    setChatModalActive = () => {
+        // this.setState({
+        //     chatModalActive: true
+        // });
+        this.props.navigation.navigate("ChatScreen");
+    }
+    setChatModalInactive = async () => {
+        this.props.clearChatMessages();
+        this.setState({
+            chatModalActive: null
+        });
+        await this.props.getListMessageCount(this.props.list.giftListId);
+    }
+    goBack = () => {
+        this.props.navigation.navigate("OtherLists")
+    }
+    itemClosed = (itemId) => {
+        let key = this.props.list.giftListId;
+        this.props.setUserSharedListItemInactive(key, itemId);
+    }
+    itemSelected = (item) => {
+        let itemId = item.item_Id;
+        let key = this.props.list.giftListId;
+        this.props.setUserSharedListItemActive(key, itemId);
     }
     render() {
         let {listItems} = this.props.list;
         listItems = (listItems != null && listItems.length > 0)
             ? this.props.list.listItems.map((item) => 
                 (
-                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.props.itemSelected(item.item_Id)}}>
+                    <TouchableOpacity key={item.item_Id} style={styles.touchableSwatch} onPress={() => {this.itemSelected(item)}}>
                         <Swatch style={{justfiyContent: 'center'}}>
                             <Image style={styles.itemImage} source={{uri: item.image}} />
+                            {(item.claimedBy != null) 
+                                ? <View style={styles.swatchSelectedContainer}>
+                                        <FontAwesome5 
+                                            style={styles.swatchSelectedIcon}
+                                            name="question"
+                                            color="white"
+                                            size={25}
+                                        />
+                                    </View>
+                                : null    
+                            }
                         </Swatch>
-                        <Modal
-                            visible={item.active != null}
-                            onRequestClose={() => this.props.itemClosed(item.item_Id)}
+                        <Overlay
+                            overlayStyle={{height: '90%'}}
+                            isVisible={item.active == true}
+                            onBackdropPress={() => this.itemClosed(item.item_Id)}
                         >
-                            <SharedListItem item={item} />
-                        </Modal>
+                            <SharedListItem 
+                                onStoreProductClicked={this.props.onStoreProductClicked}
+                                item={item} />
+                        </Overlay>
                     </TouchableOpacity>
                 )
             )
             : null
         return (
-            <View style={styles.viewContainer}>
+            <SafeAreaView style={styles.viewContainer}>
+                <View>
+                    <Button title="Go Back" onPress={this.goBack} />
+                </View>
                 <View>
                     <Text style={styles.listTitleHeader}>{this.props.list.giftListName}</Text>
                 </View>
-                <ScrollView>
+                <View style={styles.listsContainer}>
+                    <ListAction
+                        title="Message"
+                        icon={() => (
+                            <FontAwesome5
+                                name={'comment-alt'} solid
+                                color="black"
+                                size={25}
+                            />
+                        )}
+                        onPressed = {this.setChatModalActive}
+                    >
+                        <Modal
+                            visible={this.state.chatModalActive != null}
+                            onRequestClose={() => this.setChatModalInactive()}
+                        >
+                            <ListChat
+                                onCloseChat={this.setChatModalInactive}
+                                listTitle={this.props.list.giftListName} 
+                                activeList={this.props.list}
+                            />
+                        </Modal>
+                        <Badge
+                            value={this.props.sessionListMessageCount}
+                            containerStyle={{position: 'absolute', top: 20, left: '53%'}}
+                        />
+                    </ListAction>
+                </View>
+                <ScrollView
+                    keyboardShouldPersistTaps='always'
+                >
                     <View style={styles.listsContainer}>
                         {listItems}
                     </View>
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         )
     }
 }
@@ -63,7 +163,37 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         flexDirection: 'row',
         flexWrap: 'wrap'
+    },
+    swatchSelectedIcon: {
+        position: 'absolute',
+        alignSelf: 'center'
+    },
+    swatchSelectedContainer: {
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        position: 'absolute',
+        width: '100%',
+        top: 4,
+        justifyContent: 'center'
     }
 });
 
-export default SharedListView;
+mapDispatchToProps = dispatch => {
+    return {
+        clearChatMessages: () => dispatch(actions.clearChatMessages()),
+        connectToListChatChannel: (list_id) => dispatch(actions.connectToListChat(list_id)),
+        setUserSharedListItemActive: (key, itemId) => dispatch(actions.setUserSharedListItemActive(key, itemId)),
+        setUserSharedListItemInactive: (key, itemId) => dispatch(actions.setUserSharedListItemInactive(key, itemId)),
+        disconnectFromListChatChannel: (list_id) => dispatch(actions.disconnectFromListChat(list_id)),
+        getListMessageCount: (list_id) => dispatch(actions.getListMessageCount(list_id))
+    }
+}
+
+mapStateToProps = state => {
+    return {
+        sessionListMessageCount: state.giftListsReducer.sessionListMessageCount,
+        list: state.sharedListsReducer.currentActiveSharedList
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SharedListView);

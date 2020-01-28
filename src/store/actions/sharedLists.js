@@ -48,3 +48,17 @@ export const setUserSharedListItemInactive = (key, itemId) => {
         itemId: itemId
     }
 }
+
+export const claimListItem = (claimData) => {
+    return {
+        type: actionTypes.CLAIM_LIST_ITEM,
+        data: claimData
+    };
+};
+
+export const unclaimListItem = (claimData) => {
+    return {
+        type: actionTypes.UNCLAIM_LIST_ITEM,
+        data: claimData
+    };
+};

@@ -6,27 +6,64 @@ import {
     ScrollView, 
     Image, 
     StyleSheet, 
-    Linking } from 'react-native';
+    Linking, 
+    Button} from 'react-native';
+import {connect} from 'react-redux';
 
 import Auxiliary from '../../hoc/auxiliary';
-
+import * as actions from '../../store/actions/index';
 
 class SharedListItem extends Component {
     openModal = () => {
-        Linking.openURL(this.props.item.afflt_Link);
+        var item = this.props.item;
+        if(item.afflt_Link == null) {
+            this.props.onStoreProductClicked(item);
+        }else {
+            Linking.openURL(this.props.item.afflt_Link);
+        }
+    }
+    claimItem = async() => {
+        var item = this.props.item;
+        var itemId = item.item_Id;
+        var listId = item.gift_List_Id
+
+        await this.props.claimItem({item_Id: itemId, list_Id: listId});
+        await this.props.fetchListItems(listId);
+    }
+    unclaimItem = async() => {
+        var item = this.props.item;
+        var itemId = item.item_Id;
+        var listId = item.gift_List_Id
+
+        await this.props.unClaimItem({item_Id: itemId, list_Id: listId});
+        await this.props.fetchListItems(listId);
     }
     render() {
         return (
             <Auxiliary>
-            <ScrollView style={styles.scrollView}>
-                <TouchableOpacity onPress={this.openModal}>
-                    <View style={styles.listImageContainer}>
-                        <Image style={styles.listImage} source={{uri: this.props.item.image}} />
+                <ScrollView style={styles.scrollView}>
+                    <View>
+                        <TouchableOpacity onPress={this.openModal}>
+                            <View style={styles.listImageContainer}>
+                                <Image style={styles.listImage} source={{uri: this.props.item.image}} />
+                            </View>
+                            <Text style={styles.itemText}>{this.props.item.itm_Name}</Text> 
+                        </TouchableOpacity>
                     </View>
-                    <Text style={styles.itemText}>{this.props.item.itm_Name}</Text> 
-                </TouchableOpacity>
-            </ScrollView>
-        </Auxiliary>
+                        <View style={{marginTop: 35}}>
+                            {
+                                (this.props.item.claimedBy != null) 
+                                    ? (this.props.userData.id == this.props.item.claimedById)
+                                        ? [<Text>You've claimed you plan to buy this item...</Text>,
+                                        <Button onPress={this.unclaimItem} title="Actually I've changed my mind" />]
+                                        : <Text>
+                                            {`${this.props.item.claimedBy} has indicated that they either have or intend to purchase this item.`}
+                                        </Text>
+                                    : <Button onPress={this.claimItem} title="I'm buying this... no touchy!" />
+                            }
+                        </View>
+                </ScrollView>
+            </Auxiliary>
         )
     }
 }
@@ -36,18 +73,33 @@ const styles = StyleSheet.create({
         padding: 10
     },
     itemText: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: 'bold'
     },
     listImageContainer: {
         minHeight: 250
     },
     listImage: {
-        width: '100%',
-        height: '100%',
+        width: 150,
+        height: 'auto',
         flex: 1,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        alignSelf: 'center'
     }
 });
 
-export default SharedListItem;
+mapStateToProps = state => {
+    return {
+        userData: state.authReducer.userData
+    }
+}
+
+mapDispatchToProps = dispatch => {
+    return {
+        claimItem: (claimData) => dispatch(actions.claimListItem(claimData)),
+        unClaimItem: (claimData) => dispatch(actions.unclaimListItem(claimData)),
+        fetchListItems: (listId) => dispatch(actions.setUserSharedListItems(listId))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SharedListItem);

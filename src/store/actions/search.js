@@ -20,16 +20,30 @@ export const clearSearchState = () => {
     }
 }
 
-export const setListActive = (key) => {
+export const setPublicListActive = (key) => {
     return {
-        type: actionTypes.SET_LIST_ACTIVE,
+        type: actionTypes.SET_PUBLIC_LIST_ACTIVE,
         key: key
     }
 }
 
-export const setListInactive = (key) => {
+export const setPublicListInactive = (key) => {
     return {
-        type: actionTypes.SET_LIST_INACTIVE,
+        type: actionTypes.SET_PUBLIC_LIST_INACTIVE,
+        key: key
+    }
+}
+
+export const setPrivateListActive = (key) => {
+    return {
+        type: actionTypes.SET_PRIVATE_LIST_ACTIVE,
+        key: key
+    }
+}
+
+export const setPrivateListInactive = (key) => {
+    return {
+        type: actionTypes.SET_PRIVATE_LIST_INACTIVE,
         key: key
     }
 }
@@ -37,6 +51,13 @@ export const setListInactive = (key) => {
 export const setPublicListItems = (key) => {
     return {
         type: actionTypes.SET_PUBLIC_LIST_ITEMS,
+        key: key
+    }
+}
+
+export const setPrivateListItems = (key) => {
+    return {
+        type: actionTypes.SET_PRIVATE_LIST_ITEMS,
         key: key
     }
 }

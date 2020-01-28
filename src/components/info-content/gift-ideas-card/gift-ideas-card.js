@@ -1,29 +1,55 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ScrollView, Image, TouchableOpacity } from 'react-native';
 import * as ideas from '../../../resources/gift-idea-store';
+import { NavigationActions } from 'react-navigation';
+import { withNavigation } from 'react-navigation';
+
+import wizardIdeasImage from '../../../../assets/images/gift-ideas-wizard.png';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 class GiftIdeasCard extends Component {
+    navigateToIdeasStore = () => {
+        if(this.props.authed) {
+            this.props.navigation.navigate("GiftIdeasAuthed");
+        }else {
+            this.props.navigation.navigate("GiftIdeasNoAuth");
+        }
+    }
     render() {
         return (
-            <View style={styles.cardContainer}>
-                <Text style={styles.cardText}>Gift Ideas!</Text>
-                <ScrollView>
-                    <FlatList
-                        horizontal={true}
-                        data={ideas.introGiftIdeas}
-                        renderItem={(idea) => (
-                            <View style={styles.listItemContainer}>
-                                <Image source={idea.item.image} style={styles.listItemImage} />
-                            </View>
-                        )}
-                    />
-                </ScrollView>
+            <View style={{padding: 10}}>
+                <TouchableOpacity
+
+                    onPress={this.navigateToIdeasStore}
+                >
+                    <Text style={styles.cardText}>Gift Ideas!</Text>
+                    <Image source={wizardIdeasImage} resizeMode={'contain'} style={{position: 'absolute', width: 250, height: 160, top: -10, left: '10%'}} />
+                    <View style={styles.giftIdeaThoughtBubble}>
+                        <FontAwesome5Icon
+                            style={{left: '35%', top: '25%'}}
+                            name="question"
+                            color="black"
+                            size={50}
+                        />
+                    </View>
+                </TouchableOpacity>
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    giftIdeaThoughtBubble: {
+        borderRadius: 50,
+        backgroundColor: 'white', 
+        borderWidth: 1, 
+        borderColor: 'black', 
+        width: 150, 
+        top: -30 , 
+        height: '85%', 
+        left: -20, 
+        alignSelf: 'flex-end'
+    },
     listItemContainer: {
         marginRight: 5,
         flexDirection: 'row',
@@ -39,13 +65,10 @@ const styles = StyleSheet.create({
         width: 75,
         height: 75
     },
-    cardContainer: {
-        padding: 10
-    },
     cardText: {
         fontFamily: 'Graciela-Regular',
         fontSize: 22
     }
 });
 
-export default GiftIdeasCard;
+export default withNavigation(GiftIdeasCard);

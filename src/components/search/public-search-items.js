@@ -55,7 +55,13 @@ class PublicSearchItems extends Component {
                         visible={this.state.productWebViewOpen != null}
                         onRequestClose={() => this.closeProductView()}
                     >
-                        <PublicSearchItemModal item={this.state.selectedItem} />
+                        <PublicSearchItemModal 
+                            item={this.state.selectedItem}
+                            storeProductClicked={(productData) => {
+                                this.closeProductView();
+                                this.props.storeProductClicked(productData)
+                            }}
+                        />
                     </Modal>
                 </ScrollView>
             </Auxiliary>

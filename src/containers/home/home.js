@@ -1,14 +1,29 @@
 import React, {Component} from 'react';
-import { View, Text, Button, ScrollView, ImageBackground, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { 
+    View, 
+    Text, 
+    Button, 
+    ScrollView, 
+    ImageBackground, 
+    FlatList, 
+    TouchableOpacity, 
+    StyleSheet,
+    SafeAreaView
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
 import axios from 'axios';
 
 import * as actions from '../../store/actions/index';
+import GiftIdeasCard from '../../components/info-content/gift-ideas-card/gift-ideas-card';
 import storeConfiguration from '../../store/storeConfig';
 import InfoCard from '../../components/welcome/info-card';
 import Auxiliary from '../../hoc/auxiliary';
 
 import getShoppingBg from '../../../assets/images/get-shopping-bg.png';
+import NextHolidayCard from '../../components/info-content/next-holiday-card/next-holiday-card';
+import SearchCard from '../../components/search/search-card';
 
 const store = storeConfiguration();
 
@@ -18,9 +33,11 @@ class Home extends Component {
     componentDidMount = () => {
         this.props.setNotificationsCount();
         this.props.beginNotifications();
-        // this.timer = setInterval(() => {
-        //     this.props.setNotificationsCount();
-        // }, 2000);        
+    }
+    componentWillFocus = () => {
+        if(!this.props.isAuthenticated) {
+            this.props.navigation.navigate("preAuth");
+        }
     }
     componentDidUpdate() {
         if(!this.props.isAuthenticated) {
@@ -28,9 +45,11 @@ class Home extends Component {
         }
     }
     shopCardPressed = () => {
-        this.props.navigation.navigate("WishList", {
-            storeSelectorOpen: true
-        });
+        // this.props.navigation.navigate("WishList", {
+        //     storeSelectorOpen: true
+        // });
+
+        this.props.navigation.navigate("StoreSelector");
     }
     searchCardPressed = () => {
         this.props.navigation.navigate("SearchLists");
@@ -41,44 +60,55 @@ class Home extends Component {
     }
     render() {
         return (
-            <Auxiliary>
-                <View style={{padding: 10}}>
-                    <Text>Welcome Home!</Text>
+            <SafeAreaView style={{flex: 1}}>
+                <NavigationEvents onWillFocus={this.componentWillFocus} />
+                <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={{padding: 10}}>
+                    <Text style={{color: 'white'}}>
+                        {(this.props.userData != null) 
+                            ? `Welcome ${this.props.userData.username}`
+                            : `Welcome guest!`
+                        }
+                    </Text>
                     <Button onPress={this.logOut} title="Logout" />
-                </View>
-                <ScrollView style={{padding: 10}}>
-                    <InfoCard style={{backgroundColor: 'white'}}>
-                        <ImageBackground style={{width: '100%', resizeMode: 'contain'}} source={getShoppingBg}>
-                            <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
-                                <Text style={[styles.cardText]}>Get to Shopping!</Text>
-                            </TouchableOpacity>
-                        </ImageBackground>
-                    </InfoCard>
-                    <InfoCard>
-                        <TouchableOpacity style={styles.infoCard}>
-                            <Text style={[styles.cardText, {color: "black"}]}>Gift Ideas</Text>
-                        </TouchableOpacity>
-                    </InfoCard>
-                    <InfoCard>
-                        <TouchableOpacity style={styles.infoCard} onPress={this.searchCardPressed}>
-                            <Text style={[styles.cardText, {color: "black"}]}>Search Lists</Text>
-                        </TouchableOpacity>
-                    </InfoCard>
-                    <InfoCard>
-                        <TouchableOpacity style={styles.infoCard}>
-                            <Text style={[styles.cardText, {color: "black"}]}>Notifications</Text>
-                        </TouchableOpacity>
-                    </InfoCard>
-                </ScrollView>
-            </Auxiliary>
+                </LinearGradient>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
+                    <ScrollView style={styles.contentContainer}>
+                        <InfoCard style={{backgroundColor: 'white', width: '100%'}}>
+                            <ImageBackground style={{width: '100%', resizeMode: 'contain'}} source={getShoppingBg}>
+                                <TouchableOpacity style={styles.infoCard} onPress={this.shopCardPressed}>
+                                    <Text style={[styles.cardText]}>Get to Shopping!</Text>
+                                </TouchableOpacity>
+                            </ImageBackground>
+                        </InfoCard>
+                        <InfoCard>
+                            <NextHolidayCard />
+                        </InfoCard>
+                        <InfoCard>
+                            <LinearGradient colors={['#ffffff', '#00ffff']} style={{flex: 1, height: 100, width: '100%'}}>
+                                <GiftIdeasCard authed={true} />
+                            </LinearGradient>
+                        </InfoCard>
+                        <InfoCard>
+                            <LinearGradient colors={['#e6e6e6', '#ffffff', '#e6e6e6']} style={{flex: 1, height: '100%', width: '100%'}}>
+                                <SearchCard searchCardPressed={this.searchCardPressed} />
+                            </LinearGradient>
+                        </InfoCard>
+                        <View style={{height: 40, width: '100%'}}></View>
+                    </ScrollView>
+                </LinearGradient>
+            </SafeAreaView>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    contentContainer:{
+        flex: 1
+    },
     infoCard: {
         width: '100%',
-        height: '100%'
+        height: '100%',
+        padding: 10
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,
@@ -96,7 +126,8 @@ const mapStateToProps = state => {
     return {
         token: state.authReducer.accessToken,
         expiry: state.authReducer.accessTokenExpiration,
-        isAuthenticated: state.authReducer.isAuthenticated
+        isAuthenticated: state.authReducer.isAuthenticated,
+        userData: state.authReducer.userData
     }
 }
 

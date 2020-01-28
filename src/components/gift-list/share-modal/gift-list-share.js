@@ -12,44 +12,58 @@ import Checkbox from '../../checkbox/checkbox';
 import * as actions from '../../../store/actions/index';
 
 class ShareGiftList extends Component {
+    shouldReloadContacts = true;
     state = {
         selectedContacts: [],
         shareableContacts: []
     }
     componentDidMount = async () => {
-        this.props.getContacts();
         await this.props.getSharedLists();
-        this.setShareableContacts();
+        await this.props.getContacts();
+    }
+    componentDidUpdate = () => {
+        if(this.props.contacts.length > 0 && this.shouldReloadContacts) {
+            this.setShareableContacts();
+            this.shouldReloadContacts = false;
+            this.props.stopUiLoading();
+        }
+    }
+    componentWillUnmount = () => {
+        this.shouldReloadContacts = true;
     }
     setShareableContacts = () => {
-        console.log(this.props);
-
-        let listSharedContacts = this.props.sharedLists.map((sharedList) => {
+        
+        try {
             const activeListId = this.props.activeList.id
-            if(sharedList.giftListId == activeListId) {
-                return sharedList.contact
-            }
-        }).filter((el) => {
-            return el != null;
-        });
+            let listSharedContacts = this.props.sharedLists.map((sharedList) => {
+                if(sharedList.giftListId == activeListId) {
+                    return sharedList.contact
+                }
+            }).filter((el) => {
+                return el != null;
+            });
 
-        let filteredListContacts = this.props.contacts.slice(0);
+            let filteredListContacts = this.props.contacts.slice(0);
 
-        if(listSharedContacts.length > 0) {
-            for(var i = 0; i < filteredListContacts.length; i++) {
+            if(listSharedContacts.length > 0) {
                 listSharedContacts.forEach((listContact) => {
-                    if(listContact.email == filteredListContacts[i].contact.email) {
-                        filteredListContacts.splice(i, 1);
+                    for(var i = 0; i < filteredListContacts.length; i++) {
+                        if(listContact.email == filteredListContacts[i].contact.email) {
+                            filteredListContacts.splice(i, 1);
+                        }
                     }
-                })
+                });
             }
-        }
 
-        this.setState({
-            shareableContacts: filteredListContacts
-        });
+            this.setState({
+                shareableContacts: filteredListContacts
+            });
+        }catch(err) {
+            alert(err);
+        }
     }
     onContactSelected = (contact) => {
+        console.log(this.state.selectedContacts);
         let contactId = contact.contact.contactId;
         let contactIndex = this.isContactSelected(contactId);
         if(contactIndex != -1) {
@@ -78,6 +92,12 @@ class ShareGiftList extends Component {
         await this.props.shareGiftList(shareData);
         await this.props.getSharedLists();
         this.setShareableContacts();
+        this.props.stopUiLoading();
+
+        // After we've shared the gift list clear the selected contacts.
+        this.setState({
+            selectedContacts: []
+        });
     }
     isContactSelected = (contactId) => {
         return this.state.selectedContacts.indexOf(contactId);
@@ -119,7 +139,8 @@ const mapDispatchToProps = dispatch => {
     return {
         getContacts: () => dispatch(actions.setContacts()),
         getSharedLists: () => dispatch(actions.getSharedLists()),
-        shareGiftList: (shareData) => dispatch(actions.shareGiftList(shareData))
+        shareGiftList: (shareData) => dispatch(actions.shareGiftList(shareData)),
+        stopUiLoading: () => dispatch(actions.uiStopLoading())
     }
 }
 

@@ -1,32 +1,46 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Image
-} from 'react-native';
+import { Linking } from 'react-native';
 import { Provider } from 'react-redux';
-
 import {
-  createStackNavigator, 
   createSwitchNavigator, 
-  createAppContainer, 
-  createBottomTabNavigator
+  createAppContainer
  } from 'react-navigation';
-import Welcome from './src/containers/welcome/welcome';
+
+import { createStackNavigator } from 'react-navigation-stack';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import GetStarted from './src/components/get-started/get-started';
-import Facts from './src/components/info-content/introduction-card/facts';
 import storeConfiguration from './src/store/storeConfig';
-import PasswordReset from './src/containers/auth/pass-reset';
 
 import PostAuthTabNavigator from './src/components/navigation/post-auth-tab-navigation';
 import SearchTabNavigation from './src/components/navigation/search-tab-navigation';
 import WelcomeStackNavigator from './src/components/navigation/welcome-stack-navigation';
+import GiftListModalStackNavigator from './src/components/navigation/gift-list-stack-navigation';
+import Splash from './src/containers/splash/splash';
+import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import StoreDrawerNavigator from './src/components/navigation/store-drawer-navigation';
+import StoreProductNavigator from './src/components/navigation/store-product-navigation';
+import StoreCart from './src/components/store/store-cart';
+
+import * as Sentry from '@sentry/react-native';
+import GiftIdeasStackNavigator from './src/components/navigation/gift-ideas-navigation';
+import Toaster from './src/components/toast-notifications/toaster';
+// import { GiftListsModal, GiftListChatModal } from './src/components/navigation/modal-screens/index';
+import GiftListChatModal from './src/components/navigation/modal-screens/gift-list-chat-modal';
+import OtherListsStackNavigation from './src/components/navigation/other-lists-stack-navigation';
+import WishListStackNavigation from './src/components/navigation/wish-list-stack-navigation';
+
+// Sentry.init({ 
+//   dsn: 'https://ffc091a0db47471facafaf3fade97fea@sentry.io/1778392', 
+// });
+
 
 const store = storeConfiguration();
 
 // TODO: Move routing info to a seperate file.
 // TODO: Maybe move the header image to a seperate file
 
-const PostAuthStackNavigator = createStackNavigator({
+const MainAppStackNavigator = createStackNavigator({
   Home: {
     screen: PostAuthTabNavigator,
     navigationOptions: {
@@ -35,7 +49,46 @@ const PostAuthStackNavigator = createStackNavigator({
   },
   SearchLists: {
     screen: SearchTabNavigation
+  },
+  Store: {
+    screen: StoreDrawerNavigator,
+    path: 'test'
+  },
+  GiftIdeasAuthed: {
+    screen: GiftIdeasStackNavigator
+  },
+  Products: {
+    screen: StoreProductNavigator
+  },
+  StoreCart: {
+    screen: StoreCart,
+    path: "cart"
   }
+});
+
+const PostAuthStackNavigator = createStackNavigator({
+  MainApp: {
+    screen: MainAppStackNavigator
+  },
+  WishListsModalStack: {
+    screen: WishListStackNavigation
+  },
+  GiftListsModalStack: {
+    screen: GiftListModalStackNavigator
+  },
+  OtherListsModalStack: {
+    screen: OtherListsStackNavigation
+  }
+},
+{
+  headerMode: 'none'
+});
+
+const startStackNavigator = createStackNavigator({
+  Splash
+}, {
+  initialRouteName: "Splash",
+  headerMode: "none"
 });
 
 const PreAuthStackNavigator = createBottomTabNavigator({
@@ -48,11 +101,22 @@ const PreAuthStackNavigator = createBottomTabNavigator({
       tabBarLabel: "Get Started"
     }
   }
+},{
+  tabBarOptions: {
+    activeBackgroundColor: '#4c669f',
+    inactiveBackgroundColor: '#7db9e8',
+    tabStyle: {borderTopColor: 'transparent', borderTopWidth: 0},
+    labelStyle: {color: 'white', borderTopWidth: 0},
+  }
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
+  start: startStackNavigator,
   preAuth: PreAuthStackNavigator,
-  postAuth: PostAuthStackNavigator
+  postAuth: {
+    screen: PostAuthStackNavigator,
+    path: ''
+  }
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
@@ -60,11 +124,31 @@ const AppContainer = createAppContainer(AppSwitchNavigator);
 class App extends Component {
   render() {
     return (
-      <Provider store={store}>
-        <AppContainer />
-      </Provider>
+      [
+        <Spinner key="0" visible={this.props.loading} />,
+        <AppContainer key="1" />,
+        <Toaster />
+      ]
     )
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    loading: state.uiReducer.isLoading
+  }
+}
+
+const ConnectedRootContainer = connect(mapStateToProps)(App);
+
+export default function Root() {
+  try {
+    return (
+      <Provider store={store}>
+        <ConnectedRootContainer />
+      </Provider>
+    )
+  }catch(error) {
+    console.log(error);
+  }
+};

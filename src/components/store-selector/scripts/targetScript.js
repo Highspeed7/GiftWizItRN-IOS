@@ -10,7 +10,16 @@ export const targetProductViewScript = `(
             payload: {},
             case: null
         };        
+        const xPaths = {
+            "DETAIL_PAGE": {
+                carouselWrapper: "//div[contains(@class, 'CarouselStageGridWrapper')][//div[@class='slide--active']]",
+                productTitle: "//h1[@data-test='product-title']/span",
+                productImage: "//div[contains(@class, 'slide--active')]//img"
+            },
+            "LIST_PAGE": {
 
+            }
+        }
         const elementsToSearch = [
             {
                 type: "LIST_PAGE",
@@ -18,13 +27,26 @@ export const targetProductViewScript = `(
             },
             {
                 type: "DETAIL_PAGE",
-                selector: "div.CarouselWrapper-sc-9zgt9n-0"
+                selector: "styles__CarouselWrapper-sc-1cf0wdc-6"
             }
         ];
-
+        let getSingleXPathElement = (xPathResult) => {
+            return xPathResult.iterateNext();
+        }
+        let xPathToArray = (xPathResult) => {
+            let node, nodes = []
+            while(node = xPathResult.iterateNext()) {
+                nodes.push(node);
+            }
+            return nodes;
+        }
         let setupNewPage = () => {
             getPageType();
-            setPageExperience();
+            if(pageType != null) {
+                setPageExperience();
+            }else {
+                window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
+            }
         }
         let setPageExperience = () => {
             switch(pageType) {
@@ -32,9 +54,11 @@ export const targetProductViewScript = `(
                     wrappers = null;
                     setListButtonElements();
                     setListPageScrollEvent();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
                 case "DETAIL_PAGE":
                     setDetailButtonElement();
+                    window.ReactNativeWebView.postMessage(JSON.stringify({stopSpinner: true}));
                     break;
             }
         }
@@ -64,7 +88,7 @@ export const targetProductViewScript = `(
         let getListPageSelectedItemData = (button) => {
             let parentContainer = button.parentElement.parentElement;
             let name = parentContainer.querySelector("a[data-test='product-title']").textContent.trim();
-            let image = parentContainer.querySelector("picture > source[media='(min-width: 415px)']").srcset.trim();
+            let image = parentContainer.querySelector("div[data-test='product-image'] > picture > source[srcset]").srcset.trim();
             let itemUrl = parentContainer.querySelector("a[data-test='product-title']").href.trim();
 
             data.payload.name = name;
@@ -74,13 +98,17 @@ export const targetProductViewScript = `(
             return true;
         }
         let getDetailPageSelectedItemData = (button) => {
-            let parentContainer = button.parentElement.parentElement;
-            let name = parentContainer.previousElementSibling.querySelector("h1 > span").textContent.trim();
-            let image = (parentContainer.querySelector("div.slide--active")).querySelector("img").src.trim();
-
-            data.payload.name = name;
-            data.payload.image = image;
-
+            try {
+                let root = document.evaluate("./ancestor-or-self::div", button).iterateNext();
+                let name = document.evaluate(xPaths[pageType].productTitle, document).iterateNext();
+                let image = document.evaluate(xPaths[pageType].productImage, root).iterateNext();
+                
+                data.payload.name = name.textContent;
+                data.payload.image = image.src;
+            }
+            catch(e) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({debug: e}));
+            }
             return true;
         }
         let listScrollHandler = () => {
@@ -102,9 +130,11 @@ export const targetProductViewScript = `(
                 alert(e);
             }
         }
+        let getXPathResult = (xpath) => {
+            return document.evaluate(xpath, document);
+        }
         let setDetailButtonElement = () => {
-            let containerElement = document.querySelector("div.CarouselWrapper-sc-9zgt9n-0");
-            // window.reactNativeWebView.postMessage(JSON.stringify(containerElement));
+            let containerElement = getSingleXPathElement((getXPathResult(xPaths[pageType].carouselWrapper)));
             containerElement.append(getButton());
         }
         let setListButtonElements = () => {
@@ -122,15 +152,17 @@ export const targetProductViewScript = `(
                 pageType = undefined;
                 let elements;
                 elementsToSearch.forEach((elem) => {
-                    elements = document.querySelectorAll(elem.selector);
+                    if(elem.type == "DETAIL_PAGE") {
+                        let result = document.evaluate("//div[contains(@class, 'CarouselStageGridWrapper')][//div[@class='slide--active']]", document);
+                        elements = xPathToArray(result);
+                    }else {
+                        elements = document.querySelectorAll(elem.selector);
+                    }
+
                     if(elements.length != 0) {
                         pageType = elem.type;
                     }
                 })
-
-                if(pageType == null) {
-                    alert("No page type");
-                }
             }catch(err) {
                 alert(err);
             }
@@ -150,7 +182,7 @@ export const targetProductViewScript = `(
         }
         let getButton = () => {
             let gw_btn_container = document.createElement("div");
-            gw_btn_container.style = "position: absolute; z-index: 9999; top: 2px; left: 12px;";
+            gw_btn_container.style = "height: 40px; width: 40px; position: absolute; z-index: 9999; top: 20px; left: 12px;";
             
             let gw_btn = document.createElement("button");
             gw_btn.addEventListener("click", (e) => {
@@ -176,9 +208,10 @@ export const targetProductViewScript = `(
                 }
             });
             
-            gw_btn.innerText = "+GW";
+            // gw_btn.innerText = "+GW";
             gw_btn.id = "gw_add_btn";
-            gw_btn.style = "min-height: 50px; border-radius: 5px;"
+            // gw_btn.innerText = "Hi";
+            gw_btn.style = "box-shadow: 3px 3px 10px grey; height: 40px; width: 40px; border-radius: 5px; background: white url('https://gwresourceblob.blob.core.windows.net/images/gw_tm.png') no-repeat fixed center; background-size: 40px 40px;"
 
             gw_btn_container.append(gw_btn);
 

@@ -9,11 +9,11 @@ import {
     Image, 
     Picker, 
     Alert,
+    Linking,
     Button,
     BackHandler
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-// import iconSet from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
 
@@ -24,6 +24,7 @@ import WishListItemModal from '../../components/wish-list/wish-list-item-modal';
 import Auxiliary from '../../hoc/auxiliary';
 import ListAction from '../../components/list-actions/list-action';
 import { goclone } from '../../utils/utils';
+import LinearGradient from 'react-native-linear-gradient';
 
 class WishList extends Component {
     state = {
@@ -32,7 +33,8 @@ class WishList extends Component {
         deleteMode: null,
         selectedItems: [],
         selectedGiftListId: null,
-        selectedGiftListName: null
+        selectedGiftListName: null,
+        combinedGiftLists: []
     }
     componentDidMount = () => {
         this.props.getWishList();
@@ -50,19 +52,24 @@ class WishList extends Component {
         }
     }
     addNewItemPressed = () => {
-        this.setState({
-            openStoreSelector: true
-        });
+        this.props.navigation.navigate("StoreSelector");
     }
-    setMoveMode = () => {
+    setMoveMode = async () => {
         // TODO: Return to determine whether or not to update giftLists.
         if(this.props.giftLists.length == 0) {
-            this.props.getGiftLists();
+            await this.props.getGiftLists();
+        }
+
+        if(this.props.editableSharedLists.length == 0) {
+            await this.props.getEditableLists();
         }
         this.setState({
             moveMode: true,
             deleteMode: null
         })
+    }
+    componentDidUpdate = (prevProps, prevState) => {
+        console.log(prevProps);
     }
     cancelActions = () => {
         const nowSelectedArr = [];
@@ -83,9 +90,15 @@ class WishList extends Component {
     }
     onGListSelected = (glistId, position) => {
         // Get the list name from gift lists
-        const selectedList = goclone(this.props.giftLists.find((list) => {
+        var selectedList = goclone(this.props.giftLists.find((list) => {
             return list.id == glistId
         }));
+
+        if(selectedList == null) {
+            selectedList = goclone(this.props.editableSharedLists.find((list) => {
+                return list.id == glistId
+            }));
+        }
 
         this.setState({
             selectedGiftListId: glistId,
@@ -144,8 +157,14 @@ class WishList extends Component {
             this.props.moveWishListItems(movedItemsArr);
         }
     }
-    itemSwatchPressed = (itemId) => {
+    itemSwatchPressed = (item) => {
+        const itemId = item.item_Id;
         if(this.state.moveMode == null && this.state.deleteMode == null) {
+            if(item.afflt_Link == null) {
+                const productData = JSON.parse(item.product_Id);
+                this.props.navigation.navigate("Products", productData);
+                return;
+            }
             this.props.setWishListActive(itemId);
             return;
         }
@@ -171,10 +190,18 @@ class WishList extends Component {
         this.props.navigation.setParams({"storeSelectorOpen": null});
         this.setState({openStoreSelector: null})
     }
+    openStoreFront = () => {
+        // Close the store selector modal
+        this.setState({
+            openStoreSelector: null
+        }, () => {
+            this.props.navigation.navigate("Store", {getPrevCheckout: true});
+        });
+    }
     render() {
         const wishList = (this.props.wishList.length > 0)
         ? this.props.wishList.map((list) => (
-            <TouchableOpacity key={list.item_Id} style={styles.touchableSwatch} onPress={() => {this.itemSwatchPressed(list.item_Id)}}>
+            <TouchableOpacity key={list.item_Id} style={styles.touchableSwatch} onPress={() => {this.itemSwatchPressed(list)}}>
                 <Swatch style={{justfiyContent: 'center'}}>
                     <Image style={styles.itemImage} source={{uri: list.image}} />
                     {(this.isItemSelected(list.item_Id)) 
@@ -198,6 +225,15 @@ class WishList extends Component {
             </TouchableOpacity>
         ))
         : null
+        const sharedGiftLists = (this.props.editableSharedLists.length > 0 && this.state.moveMode)
+        ? this.props.editableSharedLists.map((glist) => (
+            <Picker.Item
+                key={glist.id}
+                label={glist.name}
+                value={glist.id}
+            />
+        ))
+        : null
         const giftLists = (this.props.giftLists.length > 0 && this.state.moveMode)
         ? this.props.giftLists.map((glist) => (
             <Picker.Item
@@ -210,9 +246,9 @@ class WishList extends Component {
         return (
             <Auxiliary>
                 <NavigationEvents onWillFocus={this.componentWillFocus} />
-                <View style={styles.actionContainer}>
-                    <Text style={{fontSize: 20, textDecorationLine:"underline"}}>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
-                    <View style={styles.listsContainer}>
+                <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.actionContainer}>
+                    <Text style={{...styles.listActionText, textDecorationLine: "underline"}}>{(this.props.wishList[0] != null) ? this.props.wishList[0].wlst_Name: null}</Text>
+                    <View style={styles.listActionsContainer}>
                         <ListAction 
                             title="Add"
                             icon={() => (<FontAwesome5 
@@ -260,10 +296,12 @@ class WishList extends Component {
                     {(this.state.selectedItems.length > 0 && this.state.moveMode == true)
                         ? <View>
                             <Picker
+                                style={{color: 'white'}}
                                 selectedValue={this.state.selectedGiftListId}
                                 onValueChange={this.onGListSelected}
                                 mode="dropdown"
                                 >{giftLists}
+                                {sharedGiftLists}
                             </Picker>
                             <Button title="Move" onPress={this.confirmItemsMove} />
                         </View>
@@ -271,32 +309,35 @@ class WishList extends Component {
                     }
                     {(this.state.selectedItems.length > 0 && this.state.deleteMode == true)
                         ? <View>
-                            <Text>Are you sure you want to remove the selected items?</Text>
+                            <Text style={{color: 'white'}}>Are you sure you want to remove the selected items?</Text>
                             <Button title="Yes" onPress={this.confirmItemsDelete} />
                             <Button title="No" onPress={this.cancelActions} />
                         </View>
                         : null
                     }
                     {(this.state.deleteMode || this.state.moveMode) 
-                        ? <Text style={{fontSize: 20}}>You may select multiple items...</Text> 
+                        ? <Text style={styles.listActionText}>You may select multiple items...</Text> 
                         : (this.props.wishList.length > 0) 
-                        ? <Text style={{fontSize: 20}}>Select an item to see more details...</Text>
-                        : <Text style={{fontSize: 20}}>There are no items to display... {'\n'}Add some above!</Text>
+                        ? <Text style={styles.listActionText}>Select an item to see more details...</Text>
+                        : <Text style={styles.listActionText}>There are no items to display... {'\n'}Add some above!</Text>
                     }
-                </View>
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.listsContainer}>
-                        {wishList}
-                    </View>
-                    <Modal
-                        visible={this.state.openStoreSelector}
-                        onRequestClose={this.onStoreSelectorClosed}
-                    >
-                        <StoreSelector 
-                            onClose={this.onStoreSelectorClosed} 
-                        />
-                    </Modal>
-                </ScrollView>
+                </LinearGradient>
+                <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1, padding: 10}}>
+                    <ScrollView>
+                        <View style={styles.listContainer}>
+                            {wishList}
+                        </View>
+                        <Modal
+                            visible={this.state.openStoreSelector}
+                            onRequestClose={this.onStoreSelectorClosed}
+                        >
+                            <StoreSelector 
+                                onClose={this.onStoreSelectorClosed} 
+                                openStoreFront={this.openStoreFront}
+                            />
+                        </Modal>
+                    </ScrollView>
+                </LinearGradient>
             </Auxiliary>
         )
     }
@@ -311,14 +352,21 @@ const styles = StyleSheet.create({
     actionContainer: {
         padding: 10
     },
-    scrollView: {
-        padding: 10
-    },
     touchableSwatch: {
         width: '24%',
-        margin: 1
+        margin: 1,
+        backgroundColor: 'white'
     },
-    listsContainer: {
+    listContainer: {
+        marginBottom: 10,
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
+    listActionText: {
+        color: 'white',
+        fontSize: 20
+    },
+    listActionsContainer: {
         marginBottom: 10,
         flexDirection: 'row',
         flexWrap: 'wrap'
@@ -341,6 +389,7 @@ const mapDispatchToProps = dispatch => {
     return {
         getWishList: () => dispatch(actions.setWishList()),
         getGiftLists: () => dispatch(actions.setGiftLists()),
+        getEditableLists: () => dispatch(actions.getEditableSharedLists()),
         setWishListActive: (key) => dispatch(actions.setWishListActive(key)),
         setWishListInactive: (key) => dispatch(actions.setWishListInactive(key)),
         moveWishListItems: (itemData) => dispatch(actions.moveWishListItems(itemData)),
@@ -351,7 +400,9 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         wishList: state.wishListReducer.wishList,
-        giftLists: state.giftListsReducer.giftLists
+        giftLists: state.giftListsReducer.giftLists,
+        sharedLists: state.sharedListsReducer.sharedLists,
+        editableSharedLists: state.wishListReducer.editableSharedLists
     }
 }
 

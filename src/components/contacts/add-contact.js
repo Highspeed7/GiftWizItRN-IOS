@@ -5,7 +5,8 @@ import {
     Text,
     TextInput,
     Button,
-    StyleSheet
+    StyleSheet,
+    SafeAreaView
  } from 'react-native';
  import { connect } from 'react-redux';
 
@@ -26,17 +27,18 @@ class AddContactModal extends Component {
             email: val
         });
     }
-    confirmContactAdd = () => {
+    confirmContactAdd = async () => {
         if(this.state.name == null || this.state.email == null) {
             Alert.alert("Please complete all fields before submitting.")
             return;
         }
         let contactObj = {...this.state}
-        this.props.addContact(contactObj);
+        await this.props.addContact(contactObj);
+        this.props.onContactAdded();
     }
     render() {
         return (
-            <View style={styles.viewContainer}>
+            <SafeAreaView style={styles.viewContainer}>
                 <View style={styles.header}>
                     <Text style={styles.addContactHeading}>Add a Contact</Text>
                 </View>
@@ -52,8 +54,9 @@ class AddContactModal extends Component {
                 />
                 <View style={styles.btnContainer}>
                     <Button title="Add" onPress={this.confirmContactAdd} />
+                    <Button title="Cancel" onPress={this.props.onCancel} />
                 </View>
-            </View>
+            </SafeAreaView>
         )
     }
 }
@@ -70,6 +73,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     textInput: {
+        height: 40,
         borderBottomWidth: 1,
         borderBottomColor: '#eeeeee'
     },

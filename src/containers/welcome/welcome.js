@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {
-     ScrollView, StyleSheet } from 'react-native';
+     ScrollView, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import IntroStep1 from '../../components/intro-modal/step-1';
@@ -12,20 +12,17 @@ import NextHolidayCard from '../../components/info-content/next-holiday-card/nex
 import GiftIdeasCard from '../../components/info-content/gift-ideas-card/gift-ideas-card';
 import ListsViewed from '../../components/info-content/lists-viewed-card';
 import * as actions from '../../store/actions/index';
+import LinearGradient from 'react-native-linear-gradient';
+import SearchCard from '../../components/search/search-card';
 
 class Welcome extends Component {
-    async componentDidMount() {
-        try {
-            await this.props.getToken();
-        }catch(error) {
-            console.log(error.message);
-        }
-
-        if(this.props.isAuthenticated) {
-            this.props.navigation.navigate("postAuth");
-        }
+    openStoreFront = () => {
+        this.props.uiStartLoading();
+        this.props.navigation.navigate("Store");
     }
-    
+    searchCardPressed = () => {
+        this.props.navigation.navigate("SearchLists");
+    }
     render() {
         renderModal = () => {
             switch(this.props.introStep) {
@@ -38,38 +35,55 @@ class Welcome extends Component {
             }
         }
         return (
-            <ScrollView style={styles.scrollContainer}>
-                <InfoCard>
-                    <IntroductionCard />
-                </InfoCard>
-                <InfoCard>
-                    <NextHolidayCard />
-                </InfoCard>
-                <InfoCard>
-                    <GiftIdeasCard />
-                </InfoCard>
-                <InfoCard>
-                    <ListsViewed />
-                </InfoCard>
-                {/* <Modal
-                    visible={this.props.introComplete === null}
-                >
-                    {renderModal()}
-                </Modal> */}
-            </ScrollView>
+            <LinearGradient colors={['#1e5799', '#2989d8', '#7db9e8']} style={{flex: 1}}>
+                <ScrollView style={styles.scrollContainer}>
+                    <InfoCard>
+                        <IntroductionCard />
+                    </InfoCard>
+                    <InfoCard>
+                        <NextHolidayCard />
+                    </InfoCard>
+                    <InfoCard>
+                        <TouchableOpacity style={styles.infoCard} onPress={this.openStoreFront}>
+                            <Text style={[styles.cardText, {color: "black"}]}>Shop Our Store</Text>
+                        </TouchableOpacity>
+                    </InfoCard>
+                    <InfoCard>
+                        <LinearGradient colors={['#ffffff', '#00ffff']} style={{flex: 1, height: 100, width: '100%'}}>
+                            <GiftIdeasCard authed={false} />
+                        </LinearGradient>
+                    </InfoCard>
+                    <InfoCard>
+                        <SearchCard searchCardPressed={this.searchCardPressed} />
+                    </InfoCard>
+                    {/* <Modal
+                        visible={this.props.introComplete === null}
+                    >
+                        {renderModal()}
+                    </Modal> */}
+                </ScrollView>
+            </LinearGradient>
         )
     }
 }
 const styles = StyleSheet.create({
     scrollContainer: {
-        flex: 1,
-        backgroundColor: '#9FC8E8'
+        flex: 1
+    },
+    infoCard: {
+        width: '100%',
+        height: '100%',
+        padding: 10
+    },
+    cardText: {
+        color: 'black',
+        fontFamily: 'Graciela-Regular',
+        fontSize: 22
     }
 })
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.authReducer.isAuthenticated,
         introStep: state.preAuthReducer.introStep,
         introComplete: state.preAuthReducer.introComplete
     }
@@ -78,7 +92,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onModalClosed: () => dispatch({type: "MODAL_CLOSED"}),
-        getToken: () => dispatch(actions.getAuthToken())
+        uiStartLoading: () => dispatch(actions.uiStartLoading())
     }
 }
 

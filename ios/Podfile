@@ -28,12 +28,20 @@ target 'giftwizitmobile' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   target 'giftwizitmobileTests' do
     inherit! :search_paths
     # Pods for testing
   end
 
   use_native_modules!
+
+  # Other pods
+  pod 'appcenter', :path => '../node_modules/appcenter/ios'
+  pod 'appcenter-auth', :path => '../node_modules/appcenter-auth/ios'
+  pod 'appcenter-analytics', :path => '../node_modules/appcenter-analytics/ios'
+  pod 'appcenter-crashes', :path => '../node_modules/appcenter-crashes/ios'
 end
 
 target 'giftwizitmobile-tvOS' do
